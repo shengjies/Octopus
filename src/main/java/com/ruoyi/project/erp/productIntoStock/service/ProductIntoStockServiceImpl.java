@@ -11,6 +11,7 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.orderDetails.domain.OrderDetails;
 import com.ruoyi.project.erp.orderDetails.mapper.OrderDetailsMapper;
 import com.ruoyi.project.erp.orderInfo.domain.OrderInfo;
@@ -31,6 +32,8 @@ import com.ruoyi.project.erp.productIntoStock.mapper.ProductIntoStockMapper;
 import com.ruoyi.project.erp.productIntoStock.domain.ProductIntoStock;
 import com.ruoyi.project.erp.productIntoStock.service.IProductIntoStockService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 产品入库 服务层实现
@@ -82,8 +85,8 @@ public class ProductIntoStockServiceImpl implements IProductIntoStockService {
      * @return 产品入库集合
      */
     @Override
-    public List<ProductIntoStock> selectProductIntoStockList(ProductIntoStock productIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<ProductIntoStock> selectProductIntoStockList(ProductIntoStock productIntoStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) {
             return Collections.emptyList();
         }
@@ -98,8 +101,8 @@ public class ProductIntoStockServiceImpl implements IProductIntoStockService {
      * @return 结果
      */
     @Override
-    public int insertProductIntoStock(ProductIntoStock productIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public int insertProductIntoStock(ProductIntoStock productIntoStock,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) {
             return 0;
         }
@@ -246,8 +249,8 @@ public class ProductIntoStockServiceImpl implements IProductIntoStockService {
      * @return 结果
      */
     @Override
-    public int nullifyProductIntoStockByIds(Integer intoId) {
-        User user = ShiroUtils.getSysUser();
+    public int nullifyProductIntoStockByIds(Integer intoId,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return 0;
         /**
          * 订单和订单详情数据回滚

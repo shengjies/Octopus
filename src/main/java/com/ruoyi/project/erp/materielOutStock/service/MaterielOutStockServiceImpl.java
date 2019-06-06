@@ -7,6 +7,7 @@ import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materiel.mapper.MaterielMapper;
 import com.ruoyi.project.erp.materielIntoStock.service.MaterielIntoStockServiceImpl;
 import com.ruoyi.project.erp.materielOutStock.domain.MaterielOutStock;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -90,8 +92,8 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
      * @return 物料出库集合
      */
     @Override
-    public List<MaterielOutStock> selectMaterielOutStockList(MaterielOutStock materielOutStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<MaterielOutStock> selectMaterielOutStockList(MaterielOutStock materielOutStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }
@@ -106,8 +108,8 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
      * @return 结果
      */
     @Override
-    public int insertMaterielOutStock(MaterielOutStock materielOutStock) {
-        User user = ShiroUtils.getSysUser();
+    public int insertMaterielOutStock(MaterielOutStock materielOutStock,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) return 0;
         /**
          * 物料退货

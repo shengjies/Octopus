@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.materielOutStock.service;
 
 import com.ruoyi.project.erp.materielOutStock.domain.MaterielOutStock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface IMaterielOutStockService {
      * @param materielOutStock 物料出库信息
      * @return 物料出库集合
      */
-    public List<MaterielOutStock> selectMaterielOutStockList(MaterielOutStock materielOutStock);
+    public List<MaterielOutStock> selectMaterielOutStockList(MaterielOutStock materielOutStock, HttpServletRequest request);
 
     /**
      * 新增物料出库
@@ -34,7 +35,7 @@ public interface IMaterielOutStockService {
      * @param materielOutStock 物料出库信息
      * @return 结果
      */
-    public int insertMaterielOutStock(MaterielOutStock materielOutStock);
+    public int insertMaterielOutStock(MaterielOutStock materielOutStock,HttpServletRequest request);
 
     /**
      * 修改物料出库

@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品入库 信息操作处理
  *
@@ -48,9 +50,9 @@ public class ProductIntoStockController extends BaseController {
     @RequiresPermissions("erp:productIntoStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ProductIntoStock productIntoStock) {
+    public TableDataInfo list(ProductIntoStock productIntoStock, HttpServletRequest request) {
         startPage();
-        List<ProductIntoStock> list = productIntoStockService.selectProductIntoStockList(productIntoStock);
+        List<ProductIntoStock> list = productIntoStockService.selectProductIntoStockList(productIntoStock,request);
         return getDataTable(list);
     }
 
@@ -61,8 +63,8 @@ public class ProductIntoStockController extends BaseController {
     @RequiresPermissions("erp:productIntoStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ProductIntoStock productIntoStock) {
-        List<ProductIntoStock> list = productIntoStockService.selectProductIntoStockList(productIntoStock);
+    public AjaxResult export(ProductIntoStock productIntoStock,HttpServletRequest request) {
+        List<ProductIntoStock> list = productIntoStockService.selectProductIntoStockList(productIntoStock,request);
         ExcelUtil<ProductIntoStock> util = new ExcelUtil<ProductIntoStock>(ProductIntoStock.class);
         return util.exportExcel(list, "productIntoStock");
     }
@@ -82,9 +84,9 @@ public class ProductIntoStockController extends BaseController {
     @Log(title = "产品入库", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestBody ProductIntoStock productIntoStock) {
+    public AjaxResult addSave(@RequestBody ProductIntoStock productIntoStock,HttpServletRequest request) {
         try {
-            return toAjax(productIntoStockService.insertProductIntoStock(productIntoStock));
+            return toAjax(productIntoStockService.insertProductIntoStock(productIntoStock,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -129,8 +131,8 @@ public class ProductIntoStockController extends BaseController {
     @Log(title = "产品入库", businessType = BusinessType.DELETE)
     @PostMapping("/nullify")
     @ResponseBody
-    public AjaxResult nullify(Integer id) {
-        return toAjax(productIntoStockService.nullifyProductIntoStockByIds(id));
+    public AjaxResult nullify(Integer id,HttpServletRequest request) {
+        return toAjax(productIntoStockService.nullifyProductIntoStockByIds(id,request));
     }
 
     /**

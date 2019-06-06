@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品出库 信息操作处理
  *
@@ -49,9 +51,9 @@ public class ProductOutStockController extends BaseController {
     @RequiresPermissions("erp:productOutStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ProductOutStock productOutStock) {
+    public TableDataInfo list(ProductOutStock productOutStock, HttpServletRequest request) {
         startPage();
-        List<ProductOutStock> list = productOutStockService.selectProductOutStockList(productOutStock);
+        List<ProductOutStock> list = productOutStockService.selectProductOutStockList(productOutStock,request);
         return getDataTable(list);
     }
 
@@ -62,8 +64,8 @@ public class ProductOutStockController extends BaseController {
     @RequiresPermissions("erp:productOutStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ProductOutStock productOutStock) {
-        List<ProductOutStock> list = productOutStockService.selectProductOutStockList(productOutStock);
+    public AjaxResult export(ProductOutStock productOutStock,HttpServletRequest request) {
+        List<ProductOutStock> list = productOutStockService.selectProductOutStockList(productOutStock,request);
         ExcelUtil<ProductOutStock> util = new ExcelUtil<ProductOutStock>(ProductOutStock.class);
         return util.exportExcel(list, "productOutStock");
     }
@@ -83,9 +85,9 @@ public class ProductOutStockController extends BaseController {
     @Log(title = "产品出库", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestBody ProductOutStock productOutStock) {
+    public AjaxResult addSave(@RequestBody ProductOutStock productOutStock,HttpServletRequest request) {
         try {
-            return toAjax(productOutStockService.insertProductOutStock(productOutStock));
+            return toAjax(productOutStockService.insertProductOutStock(productOutStock,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }

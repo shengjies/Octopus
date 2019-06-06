@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.purchaseDetails.service;
 
 import com.ruoyi.project.erp.purchaseDetails.domain.PurchaseDetails;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -56,5 +58,5 @@ public interface IPurchaseDetailsService
 	 * @param purchaseId 采购单id
 	 * @return 结果
 	 */
-    List<PurchaseDetails> selectDetailsHavePreByPurId(Integer purchaseId);
+    List<PurchaseDetails> selectDetailsHavePreByPurId(Integer purchaseId, HttpServletRequest request);
 }

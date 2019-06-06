@@ -6,6 +6,7 @@ import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.customer.mapper.CustomerMapper;
 import com.ruoyi.project.erp.orderDetails.domain.OrderDetails;
 import com.ruoyi.project.erp.orderDetails.mapper.OrderDetailsMapper;
@@ -24,6 +25,7 @@ import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -82,8 +84,8 @@ public class ProductOutStockServiceImpl implements IProductOutStockService {
      * @return 产品出库集合
      */
     @Override
-    public List<ProductOutStock> selectProductOutStockList(ProductOutStock productOutStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<ProductOutStock> selectProductOutStockList(ProductOutStock productOutStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }
@@ -98,8 +100,8 @@ public class ProductOutStockServiceImpl implements IProductOutStockService {
      * @return 结果
      */
     @Override
-    public int insertProductOutStock(ProductOutStock productOutStock) {
-        User user = ShiroUtils.getSysUser();
+    public int insertProductOutStock(ProductOutStock productOutStock,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) {
             return 0;
         }

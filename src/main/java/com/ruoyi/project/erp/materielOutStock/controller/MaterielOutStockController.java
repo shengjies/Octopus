@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 物料出库 信息操作处理
  *
@@ -49,9 +51,9 @@ public class MaterielOutStockController extends BaseController {
     @RequiresPermissions("erp:materielOutStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(MaterielOutStock materielOutStock) {
+    public TableDataInfo list(MaterielOutStock materielOutStock, HttpServletRequest request) {
         startPage();
-        List<MaterielOutStock> list = materielOutStockService.selectMaterielOutStockList(materielOutStock);
+        List<MaterielOutStock> list = materielOutStockService.selectMaterielOutStockList(materielOutStock,request);
         return getDataTable(list);
     }
 
@@ -62,8 +64,8 @@ public class MaterielOutStockController extends BaseController {
     @RequiresPermissions("erp:materielOutStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(MaterielOutStock materielOutStock) {
-        List<MaterielOutStock> list = materielOutStockService.selectMaterielOutStockList(materielOutStock);
+    public AjaxResult export(MaterielOutStock materielOutStock,HttpServletRequest request) {
+        List<MaterielOutStock> list = materielOutStockService.selectMaterielOutStockList(materielOutStock,request);
         ExcelUtil<MaterielOutStock> util = new ExcelUtil<MaterielOutStock>(MaterielOutStock.class);
         return util.exportExcel(list, "materielOutStock");
     }
@@ -83,9 +85,9 @@ public class MaterielOutStockController extends BaseController {
     @Log(title = "物料出库", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestBody MaterielOutStock materielOutStock) {
+    public AjaxResult addSave(@RequestBody MaterielOutStock materielOutStock,HttpServletRequest request) {
         try {
-            return toAjax(materielOutStockService.insertMaterielOutStock(materielOutStock));
+            return toAjax(materielOutStockService.insertMaterielOutStock(materielOutStock,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }

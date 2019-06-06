@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 物料库存 信息操作处理
  *
@@ -46,9 +48,9 @@ public class MaterielStockController extends BaseController {
     @RequiresPermissions("erp:materielStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(MaterielStock materielStock) {
+    public TableDataInfo list(MaterielStock materielStock, HttpServletRequest request) {
         startPage();
-        List<MaterielStock> list = materielStockService.selectMaterielStockList(materielStock);
+        List<MaterielStock> list = materielStockService.selectMaterielStockList(materielStock,request);
         return getDataTable(list);
     }
 
@@ -59,8 +61,8 @@ public class MaterielStockController extends BaseController {
     @RequiresPermissions("erp:materielStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(MaterielStock materielStock) {
-        List<MaterielStock> list = materielStockService.selectMaterielStockList(materielStock);
+    public AjaxResult export(MaterielStock materielStock,HttpServletRequest request) {
+        List<MaterielStock> list = materielStockService.selectMaterielStockList(materielStock,request);
         ExcelUtil<MaterielStock> util = new ExcelUtil<MaterielStock>(MaterielStock.class);
         return util.exportExcel(list, "materielStock");
     }
@@ -164,9 +166,9 @@ public class MaterielStockController extends BaseController {
      */
     @PostMapping("/materielStockList")
     @ResponseBody
-    public AjaxResult materielStockList(){
+    public AjaxResult materielStockList(HttpServletRequest request){
         MaterielStock materielStock = new MaterielStock();
-        return AjaxResult.success("success",materielStockService.selectMaterielStockList(materielStock));
+        return AjaxResult.success("success",materielStockService.selectMaterielStockList(materielStock,request));
     }
 
 }

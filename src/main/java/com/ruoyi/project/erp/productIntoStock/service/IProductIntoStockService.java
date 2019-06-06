@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.productIntoStock.service;
 
 import com.ruoyi.project.erp.productIntoStock.domain.ProductIntoStock;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ public interface IProductIntoStockService
      * @param productIntoStock 产品入库信息
      * @return 产品入库集合
      */
-	public List<ProductIntoStock> selectProductIntoStockList(ProductIntoStock productIntoStock);
+	public List<ProductIntoStock> selectProductIntoStockList(ProductIntoStock productIntoStock, HttpServletRequest request);
 	
 	/**
      * 新增产品入库
@@ -33,7 +35,7 @@ public interface IProductIntoStockService
      * @param productIntoStock 产品入库信息
      * @return 结果
      */
-	public int insertProductIntoStock(ProductIntoStock productIntoStock);
+	public int insertProductIntoStock(ProductIntoStock productIntoStock,HttpServletRequest request);
 	
 	/**
      * 修改产品入库
@@ -57,5 +59,5 @@ public interface IProductIntoStockService
 	 * @param id 需要删除的数据ID
 	 * @return 结果
 	 */
-	int nullifyProductIntoStockByIds(Integer id);
+	int nullifyProductIntoStockByIds(Integer id,HttpServletRequest request);
 }

@@ -7,6 +7,7 @@ import java.util.UnknownFormatConversionException;
 import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.productStock.domain.ProductStock;
 import com.ruoyi.project.erp.productStock.mapper.ProductStockMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -16,6 +17,8 @@ import com.ruoyi.project.erp.productStockHandleDetails.mapper.ProductStockHandle
 import com.ruoyi.project.erp.productStockHandleDetails.domain.ProductStockHandleDetails;
 import com.ruoyi.project.erp.productStockHandleDetails.service.IProductStockHandleDetailsService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 产品库存内部调整清单 服务层实现
@@ -63,9 +66,9 @@ public class ProductStockHandleDetailsServiceImpl implements IProductStockHandle
      * @return 结果
      */
 	@Override
-	public int insertProductStockHandleDetails(ProductStockHandleDetails productStockHandleDetails)
+	public int insertProductStockHandleDetails(ProductStockHandleDetails productStockHandleDetails, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) return 0;
 		// 内部调整状态
 		Integer handleStatus = productStockHandleDetails.getHandleStatus();
@@ -146,8 +149,8 @@ public class ProductStockHandleDetailsServiceImpl implements IProductStockHandle
 	 * @return 结果
 	 */
 	@Override
-	public int handleScrap(int id) {
-		User user = ShiroUtils.getSysUser();
+	public int handleScrap(int id,HttpServletRequest request) {
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null) {
 		    return 0;
 		}

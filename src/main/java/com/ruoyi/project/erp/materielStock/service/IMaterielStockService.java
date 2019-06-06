@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.materielStock.service;
 
 import com.ruoyi.project.erp.materielStock.domain.MaterielStock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface IMaterielStockService {
      * @param materielStock 物料库存信息
      * @return 物料库存集合
      */
-    public List<MaterielStock> selectMaterielStockList(MaterielStock materielStock);
+    public List<MaterielStock> selectMaterielStockList(MaterielStock materielStock, HttpServletRequest request);
 
     /**
      * 新增物料库存

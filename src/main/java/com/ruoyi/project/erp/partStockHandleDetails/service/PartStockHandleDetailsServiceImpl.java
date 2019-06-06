@@ -7,6 +7,7 @@ import com.github.pagehelper.Page;
 import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.partsStock.domain.PartsStock;
 import com.ruoyi.project.erp.partsStock.mapper.PartsStockMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -16,6 +17,8 @@ import com.ruoyi.project.erp.partStockHandleDetails.mapper.PartStockHandleDetail
 import com.ruoyi.project.erp.partStockHandleDetails.domain.PartStockHandleDetails;
 import com.ruoyi.project.erp.partStockHandleDetails.service.IPartStockHandleDetailsService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 半成品库存内部调整清单 服务层实现
@@ -63,9 +66,9 @@ public class PartStockHandleDetailsServiceImpl implements IPartStockHandleDetail
      * @return 结果
      */
 	@Override
-	public int insertPartStockHandleDetails(PartStockHandleDetails partStockHandleDetails)
+	public int insertPartStockHandleDetails(PartStockHandleDetails partStockHandleDetails, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) {
 		    return 0;
 		}
@@ -147,8 +150,8 @@ public class PartStockHandleDetailsServiceImpl implements IPartStockHandleDetail
 	 * @return 结果
 	 */
 	@Override
-	public int handleScrap(int id) {
-		User user = ShiroUtils.getSysUser();
+	public int handleScrap(int id,HttpServletRequest request) {
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) {
 			return 0;
 		}

@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产线入库 信息操作处理
  *
@@ -49,9 +51,9 @@ public class LineIntoStockController extends BaseController {
     @RequiresPermissions("erp:lineIntoStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(LineIntoStock lineIntoStock) {
+    public TableDataInfo list(LineIntoStock lineIntoStock, HttpServletRequest request) {
         startPage();
-        List<LineIntoStock> list = lineIntoStockService.selectLineIntoStockList(lineIntoStock);
+        List<LineIntoStock> list = lineIntoStockService.selectLineIntoStockList(lineIntoStock,request);
         return getDataTable(list);
     }
 
@@ -62,8 +64,8 @@ public class LineIntoStockController extends BaseController {
     @RequiresPermissions("erp:lineIntoStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(LineIntoStock lineIntoStock) {
-        List<LineIntoStock> list = lineIntoStockService.selectLineIntoStockList(lineIntoStock);
+    public AjaxResult export(LineIntoStock lineIntoStock,HttpServletRequest request) {
+        List<LineIntoStock> list = lineIntoStockService.selectLineIntoStockList(lineIntoStock,request);
         ExcelUtil<LineIntoStock> util = new ExcelUtil<LineIntoStock>(LineIntoStock.class);
         return util.exportExcel(list, "lineIntoStock");
     }

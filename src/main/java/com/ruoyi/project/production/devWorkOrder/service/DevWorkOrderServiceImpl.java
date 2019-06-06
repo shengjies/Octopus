@@ -512,9 +512,9 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return
      */
     @Override
-    public int changeOrder(DevWorkOrder order) {
+    public int changeOrder(DevWorkOrder order,HttpServletRequest request) {
         if(order == null)return 0;
-        User user = ShiroUtils.getSysUser();
+        User user = JwtUtil.getTokenUser(request);
         if(user == null)return 0;
         DevWorkOrder devWorkOrder = devWorkOrderMapper.selectDevWorkOrderById(order.getId());
         if(devWorkOrder == null)return 0;

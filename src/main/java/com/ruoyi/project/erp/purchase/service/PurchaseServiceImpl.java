@@ -217,8 +217,8 @@ public class PurchaseServiceImpl implements IPurchaseService {
      * @return 结果
      */
     @Override
-    public List<Purchase> selectPurchaseHavePreNumberBySupId(Integer supplierId) {
-        User user = ShiroUtils.getSysUser();
+    public List<Purchase> selectPurchaseHavePreNumberBySupId(Integer supplierId,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) {
             return Collections.emptyList();
         }

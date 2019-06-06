@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 物料发料 信息操作处理
  * 
@@ -51,10 +53,10 @@ public class MaterielFeedController extends BaseController
 	@RequiresPermissions("erp:materielFeed:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(MaterielFeed materielFeed)
+	public TableDataInfo list(MaterielFeed materielFeed, HttpServletRequest request)
 	{
 		startPage();
-        List<MaterielFeed> list = materielFeedService.selectMaterielFeedList(materielFeed);
+        List<MaterielFeed> list = materielFeedService.selectMaterielFeedList(materielFeed,request);
 		return getDataTable(list);
 	}
 	
@@ -65,9 +67,9 @@ public class MaterielFeedController extends BaseController
 	@RequiresPermissions("erp:materielFeed:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(MaterielFeed materielFeed)
+    public AjaxResult export(MaterielFeed materielFeed,HttpServletRequest request)
     {
-    	List<MaterielFeed> list = materielFeedService.selectMaterielFeedList(materielFeed);
+    	List<MaterielFeed> list = materielFeedService.selectMaterielFeedList(materielFeed,request);
         ExcelUtil<MaterielFeed> util = new ExcelUtil<MaterielFeed>(MaterielFeed.class);
         return util.exportExcel(list, "materielFeed");
     }
@@ -88,10 +90,10 @@ public class MaterielFeedController extends BaseController
 	@Log(title = "物料发料", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody MaterielFeed materielFeed)
+	public AjaxResult addSave(@RequestBody MaterielFeed materielFeed,HttpServletRequest request)
 	{
 		try {
-			return toAjax(materielFeedService.insertMaterielFeed(materielFeed));
+			return toAjax(materielFeedService.insertMaterielFeed(materielFeed,request));
 		} catch (BusinessException e) {
 			return  error(e.getMessage());
 		}

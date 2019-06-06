@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 采购清单 信息操作处理
  * 
@@ -131,8 +133,8 @@ public class PurchaseDetailsController extends BaseController
 	 */
 	@PostMapping("/detailsByPurId")
 	@ResponseBody
-	public AjaxResult detailsByPurId(Integer purchaseId){
-		List<PurchaseDetails> purchaseDetailList = purchaseDetailsService.selectDetailsHavePreByPurId(purchaseId);
+	public AjaxResult detailsByPurId(Integer purchaseId, HttpServletRequest request){
+		List<PurchaseDetails> purchaseDetailList = purchaseDetailsService.selectDetailsHavePreByPurId(purchaseId,request);
 		return AjaxResult.success("success",purchaseDetailList);
 	}
 	

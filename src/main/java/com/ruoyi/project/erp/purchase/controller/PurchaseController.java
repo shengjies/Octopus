@@ -171,8 +171,8 @@ public class PurchaseController extends BaseController
 	 */
 	@PostMapping("/purchaseHavePreNumberBySupId")
 	@ResponseBody
-	public AjaxResult purchaseHavePreNumberBySupId(Integer supplierId){
-		List<Purchase> purchaseList = purchaseService.selectPurchaseHavePreNumberBySupId(supplierId);
+	public AjaxResult purchaseHavePreNumberBySupId(Integer supplierId,HttpServletRequest request){
+		List<Purchase> purchaseList = purchaseService.selectPurchaseHavePreNumberBySupId(supplierId,request);
 		return AjaxResult.success("success",purchaseList);
 	}
 

@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.partStockHandleDetails.service;
 
 import com.ruoyi.project.erp.partStockHandleDetails.domain.PartStockHandleDetails;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public interface IPartStockHandleDetailsService
      * @param partStockHandleDetails 半成品库存内部调整清单信息
      * @return 结果
      */
-	public int insertPartStockHandleDetails(PartStockHandleDetails partStockHandleDetails);
+	public int insertPartStockHandleDetails(PartStockHandleDetails partStockHandleDetails, HttpServletRequest request);
 	
 	/**
      * 修改半成品库存内部调整清单
@@ -56,5 +58,5 @@ public interface IPartStockHandleDetailsService
 	 * @param id 半成品库存id
 	 * @return 结果
 	 */
-    int handleScrap(int id);
+    int handleScrap(int id,HttpServletRequest request);
 }

@@ -138,8 +138,8 @@ public class RoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids) {
-        if (User.isSys(ShiroUtils.getSysUser()) == false) {
+    public AjaxResult remove(String ids,HttpServletRequest request) {
+        if (!User.isSys(JwtUtil.getTokenUser(request))) {
             if (ids.contains("2")) {
                 return error("不允许删除公司管理员");
             }
@@ -184,8 +184,9 @@ public class RoleController extends BaseController {
     @RequiresPermissions("system:role:edit")
     @PostMapping("/changeStatus")
     @ResponseBody
-    public AjaxResult changeStatus(Role role) {
-        if (null != role && role.getRoleId() == 2 && ShiroUtils.getSysUser().isAdmin() == false) {
+    public AjaxResult changeStatus(Role role,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
+        if (null != role && role.getRoleId() == 2 && u.isAdmin() == false) {
             return error("不允许修改公司管理员");
         }
         return toAjax(roleService.changeStatus(role));

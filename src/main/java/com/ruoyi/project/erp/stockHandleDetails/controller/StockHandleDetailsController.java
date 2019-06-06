@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 内部调整明细 信息操作处理
  * 
@@ -49,10 +51,10 @@ public class StockHandleDetailsController extends BaseController
 	@RequiresPermissions("erp:stockHandleDetails:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(StockHandleDetails stockHandleDetails)
+	public TableDataInfo list(StockHandleDetails stockHandleDetails, HttpServletRequest request)
 	{
 		startPage();
-        List<StockHandleDetails> list = stockHandleDetailsService.selectStockHandleDetailsList(stockHandleDetails);
+        List<StockHandleDetails> list = stockHandleDetailsService.selectStockHandleDetailsList(stockHandleDetails,request);
 		return getDataTable(list);
 	}
 	
@@ -63,9 +65,9 @@ public class StockHandleDetailsController extends BaseController
 	@RequiresPermissions("erp:stockHandleDetails:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(StockHandleDetails stockHandleDetails)
+    public AjaxResult export(StockHandleDetails stockHandleDetails,HttpServletRequest request)
     {
-    	List<StockHandleDetails> list = stockHandleDetailsService.selectStockHandleDetailsList(stockHandleDetails);
+    	List<StockHandleDetails> list = stockHandleDetailsService.selectStockHandleDetailsList(stockHandleDetails,request);
         ExcelUtil<StockHandleDetails> util = new ExcelUtil<StockHandleDetails>(StockHandleDetails.class);
         return util.exportExcel(list, "stockHandleDetails");
     }

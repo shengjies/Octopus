@@ -121,7 +121,7 @@ public interface IDevWorkOrderService {
      * @param order
      * @return
      */
-    int changeOrder(DevWorkOrder order);
+    int changeOrder(DevWorkOrder order,HttpServletRequest request);
 
     /**
      * 根据工单id查询对应的ECN信息

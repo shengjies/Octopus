@@ -324,8 +324,8 @@ public class DevWorkOrderController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/chang")
-    public AjaxResult changeOrder(DevWorkOrder order){
-        return toAjax(devWorkOrderService.changeOrder(order));
+    public AjaxResult changeOrder(DevWorkOrder order,HttpServletRequest request){
+        return toAjax(devWorkOrderService.changeOrder(order,request));
     }
 
     @RequestMapping("/workecn")

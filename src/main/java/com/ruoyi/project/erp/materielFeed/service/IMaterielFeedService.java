@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.materielFeed.service;
 
 import com.ruoyi.project.erp.materielFeed.domain.MaterielFeed;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public interface IMaterielFeedService
      * @param materielFeed 物料发料信息
      * @return 物料发料集合
      */
-	public List<MaterielFeed> selectMaterielFeedList(MaterielFeed materielFeed);
+	public List<MaterielFeed> selectMaterielFeedList(MaterielFeed materielFeed, HttpServletRequest request);
 	
 	/**
      * 新增物料发料
@@ -34,7 +36,7 @@ public interface IMaterielFeedService
      * @param materielFeed 物料发料信息
      * @return 结果
      */
-	public int insertMaterielFeed(MaterielFeed materielFeed);
+	public int insertMaterielFeed(MaterielFeed materielFeed,HttpServletRequest request);
 	
 	/**
      * 修改物料发料

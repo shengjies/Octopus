@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.stockHandleDetails.service;
 
 import com.ruoyi.project.erp.stockHandleDetails.domain.StockHandleDetails;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ public interface IStockHandleDetailsService
      * @param stockHandleDetails 内部调整明细信息
      * @return 内部调整明细集合
      */
-	public List<StockHandleDetails> selectStockHandleDetailsList(StockHandleDetails stockHandleDetails);
+	public List<StockHandleDetails> selectStockHandleDetailsList(StockHandleDetails stockHandleDetails, HttpServletRequest request);
 	
 	/**
      * 新增内部调整明细

@@ -5,12 +5,15 @@ import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.erp.materielStockIqc.mapper.MaterielStockIqcMapper;
 import com.ruoyi.project.erp.materielStockIqc.domain.MaterielStockIqc;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料库存IQC 服务层实现
@@ -90,9 +93,9 @@ public class MaterielStockIqcServiceImpl implements IMaterielStockIqcService
 	 * @return 结果
 	 */
 	@Override
-	public int updateMaterielIQCStatus(Integer stockIqc) {
+	public int updateMaterielIQCStatus(Integer stockIqc, HttpServletRequest request) {
 		// 判断该公司iqc状态是否存在记录
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) {
 		    return 0;
 		}

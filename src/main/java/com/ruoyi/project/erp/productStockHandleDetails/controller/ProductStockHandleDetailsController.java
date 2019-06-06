@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品库存内部调整清单 信息操作处理
  * 
@@ -103,10 +105,10 @@ public class ProductStockHandleDetailsController extends BaseController
 	@Log(title = "产品库存内部调整清单", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(ProductStockHandleDetails productStockHandleDetails)
+	public AjaxResult addSave(ProductStockHandleDetails productStockHandleDetails, HttpServletRequest request)
 	{
 		try {
-			return toAjax(productStockHandleDetailsService.insertProductStockHandleDetails(productStockHandleDetails));
+			return toAjax(productStockHandleDetailsService.insertProductStockHandleDetails(productStockHandleDetails,request));
 		} catch (BusinessException e) {
 			return error(e.getMessage());
 		}
@@ -165,7 +167,7 @@ public class ProductStockHandleDetailsController extends BaseController
 	@RequiresPermissions("erp:productStockHandleDetails:handleScrapFlag")
 	@RequestMapping("/handleScrap")
 	@ResponseBody
-	public AjaxResult handleScrap(int id){
-		return toAjax(productStockHandleDetailsService.handleScrap(id));
+	public AjaxResult handleScrap(int id,HttpServletRequest request){
+		return toAjax(productStockHandleDetailsService.handleScrap(id,request));
 	}
 }

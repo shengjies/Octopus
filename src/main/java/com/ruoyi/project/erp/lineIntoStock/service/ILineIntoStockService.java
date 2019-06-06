@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.lineIntoStock.service;
 
 import com.ruoyi.project.erp.lineIntoStock.domain.LineIntoStock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface ILineIntoStockService {
      * @param lineIntoStock 产线入库信息
      * @return 产线入库集合
      */
-    public List<LineIntoStock> selectLineIntoStockList(LineIntoStock lineIntoStock);
+    public List<LineIntoStock> selectLineIntoStockList(LineIntoStock lineIntoStock, HttpServletRequest request);
 
     /**
      * 新增产线入库
@@ -33,7 +34,7 @@ public interface ILineIntoStockService {
      * @param lineIntoStock 产线入库信息
      * @return 结果
      */
-    public int insertLineIntoStock(LineIntoStock lineIntoStock);
+    public int insertLineIntoStock(LineIntoStock lineIntoStock,HttpServletRequest request);
 
     /**
      * 修改产线入库

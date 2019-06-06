@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.materielStockIqc.service;
 
 import com.ruoyi.project.erp.materielStockIqc.domain.MaterielStockIqc;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -56,7 +58,7 @@ public interface IMaterielStockIqcService
 	 * @param stockIqc iqc状态
 	 * @return 结果
 	 */
-    int updateMaterielIQCStatus(Integer stockIqc);
+    int updateMaterielIQCStatus(Integer stockIqc, HttpServletRequest request);
 
 	/**
 	 * 查询物料检验IQC信息

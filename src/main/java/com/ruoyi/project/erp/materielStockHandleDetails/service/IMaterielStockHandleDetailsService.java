@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.materielStockHandleDetails.service;
 
 import com.ruoyi.project.erp.materielStockHandleDetails.domain.MaterielStockHandleDetails;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public interface IMaterielStockHandleDetailsService
      * @param materielStockHandleDetails 物料库存内部调整清单信息
      * @return 结果
      */
-	public int insertMaterielStockHandleDetails(MaterielStockHandleDetails materielStockHandleDetails);
+	public int insertMaterielStockHandleDetails(MaterielStockHandleDetails materielStockHandleDetails, HttpServletRequest request);
 	
 	/**
      * 修改物料库存内部调整清单
@@ -56,5 +58,5 @@ public interface IMaterielStockHandleDetailsService
 	 * @param id 物料库存id
 	 * @return 结果
 	 */
-	int handleScrap(Integer id);
+	int handleScrap(Integer id,HttpServletRequest request);
 }

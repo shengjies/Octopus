@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 物料库存IQC 信息操作处理
  * 
@@ -132,8 +134,8 @@ public class MaterielStockIqcController extends BaseController
 	@RequiresPermissions("erp:materielIntoStock:updateStatus")
 	@PostMapping("/updateStatus")
 	@ResponseBody
-	public AjaxResult updateStatus(Integer stockIqc){
-		return toAjax(materielStockIqcService.updateMaterielIQCStatus(stockIqc));
+	public AjaxResult updateStatus(Integer stockIqc, HttpServletRequest request){
+		return toAjax(materielStockIqcService.updateMaterielIQCStatus(stockIqc,request));
 	}
 	
 }

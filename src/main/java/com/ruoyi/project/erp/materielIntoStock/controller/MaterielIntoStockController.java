@@ -66,9 +66,9 @@ public class MaterielIntoStockController extends BaseController {
     @RequiresPermissions("erp:materielIntoStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(MaterielIntoStock materielIntoStock) {
+    public TableDataInfo list(MaterielIntoStock materielIntoStock,HttpServletRequest request) {
         startPage();
-        List<MaterielIntoStock> list = materielIntoStockService.selectMaterielIntoStockList(materielIntoStock);
+        List<MaterielIntoStock> list = materielIntoStockService.selectMaterielIntoStockList(materielIntoStock,request);
         return getDataTable(list);
     }
 
@@ -79,8 +79,8 @@ public class MaterielIntoStockController extends BaseController {
     @RequiresPermissions("erp:materielIntoStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(MaterielIntoStock materielIntoStock) {
-        List<MaterielIntoStock> list = materielIntoStockService.selectMaterielIntoStockList(materielIntoStock);
+    public AjaxResult export(MaterielIntoStock materielIntoStock,HttpServletRequest request) {
+        List<MaterielIntoStock> list = materielIntoStockService.selectMaterielIntoStockList(materielIntoStock,request);
         ExcelUtil<MaterielIntoStock> util = new ExcelUtil<MaterielIntoStock>(MaterielIntoStock.class);
         return util.exportExcel(list, "materielIntoStock");
     }
@@ -100,9 +100,9 @@ public class MaterielIntoStockController extends BaseController {
     @Log(title = "物料入库", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestBody MaterielIntoStock materielIntoStock) {
+    public AjaxResult addSave(@RequestBody MaterielIntoStock materielIntoStock,HttpServletRequest request) {
         try {
-            return toAjax(materielIntoStockService.insertMaterielIntoStock(materielIntoStock));
+            return toAjax(materielIntoStockService.insertMaterielIntoStock(materielIntoStock,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }

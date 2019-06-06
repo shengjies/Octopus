@@ -6,6 +6,7 @@ import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materiel.mapper.MaterielMapper;
 import com.ruoyi.project.erp.materielIntoStock.domain.MaterielIntoStock;
 import com.ruoyi.project.erp.materielIntoStock.mapper.MaterielIntoStockMapper;
@@ -27,6 +28,7 @@ import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -93,8 +95,8 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
      * @return 物料入库集合
      */
     @Override
-    public List<MaterielIntoStock> selectMaterielIntoStockList(MaterielIntoStock materielIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<MaterielIntoStock> selectMaterielIntoStockList(MaterielIntoStock materielIntoStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }
@@ -109,8 +111,8 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
      * @return 结果
      */
     @Override
-    public int insertMaterielIntoStock(MaterielIntoStock materielIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public int insertMaterielIntoStock(MaterielIntoStock materielIntoStock,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return 0;
         /**
          * 物料入库

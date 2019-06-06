@@ -7,6 +7,7 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materielFeedDetails.domain.MaterielFeedDetails;
 import com.ruoyi.project.erp.materielFeedDetails.mapper.MaterielFeedDetailsMapper;
 import com.ruoyi.project.erp.materielStock.domain.MaterielStock;
@@ -20,6 +21,8 @@ import com.ruoyi.project.erp.materielFeed.mapper.MaterielFeedMapper;
 import com.ruoyi.project.erp.materielFeed.domain.MaterielFeed;
 import com.ruoyi.project.erp.materielFeed.service.IMaterielFeedService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料发料 服务层实现
@@ -81,9 +84,9 @@ public class MaterielFeedServiceImpl implements IMaterielFeedService
      * @return 物料发料集合
      */
 	@Override
-	public List<MaterielFeed> selectMaterielFeedList(MaterielFeed materielFeed)
+	public List<MaterielFeed> selectMaterielFeedList(MaterielFeed materielFeed, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) {
 			return Collections.emptyList();
 		}
@@ -98,9 +101,9 @@ public class MaterielFeedServiceImpl implements IMaterielFeedService
      * @return 结果
      */
 	@Override
-	public int insertMaterielFeed(MaterielFeed materielFeed)
+	public int insertMaterielFeed(MaterielFeed materielFeed,HttpServletRequest request)
 	{
-        User user = ShiroUtils.getSysUser();
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) return 0;
         String lineOutStockCode = CodeUtils.getLineOutStockCode(); // 自动生成生产发料单
         materielFeed.setFeedCode(lineOutStockCode);

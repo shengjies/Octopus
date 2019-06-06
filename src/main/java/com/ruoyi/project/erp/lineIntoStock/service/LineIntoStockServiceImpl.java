@@ -10,6 +10,7 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.lineIntoStockDetails.domain.LineIntoStockDetails;
 import com.ruoyi.project.erp.lineIntoStockDetails.mapper.LineIntoStockDetailsMapper;
 import com.ruoyi.project.erp.parts.domain.Parts;
@@ -30,6 +31,9 @@ import com.ruoyi.project.erp.lineIntoStock.domain.LineIntoStock;
 import com.ruoyi.project.erp.lineIntoStock.service.ILineIntoStockService;
 import com.ruoyi.common.support.Convert;
 import springfox.documentation.spring.web.json.Json;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.HTML;
 
 /**
  * 产线入库 服务层实现
@@ -89,8 +93,8 @@ public class LineIntoStockServiceImpl implements ILineIntoStockService {
      * @return 产线入库集合
      */
     @Override
-    public List<LineIntoStock> selectLineIntoStockList(LineIntoStock lineIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<LineIntoStock> selectLineIntoStockList(LineIntoStock lineIntoStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }
@@ -105,8 +109,8 @@ public class LineIntoStockServiceImpl implements ILineIntoStockService {
      * @return 结果
      */
     @Override
-    public int insertLineIntoStock(LineIntoStock lineIntoStock) {
-        User user = ShiroUtils.getSysUser();
+    public int insertLineIntoStock(LineIntoStock lineIntoStock,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return 0;
         // 产线入库单
         try {

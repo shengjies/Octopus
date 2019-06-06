@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.materielIntoStock.service;
 
 import com.ruoyi.project.erp.materielIntoStock.domain.MaterielIntoStock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface IMaterielIntoStockService {
      * @param materielIntoStock 物料入库信息
      * @return 物料入库集合
      */
-    public List<MaterielIntoStock> selectMaterielIntoStockList(MaterielIntoStock materielIntoStock);
+    public List<MaterielIntoStock> selectMaterielIntoStockList(MaterielIntoStock materielIntoStock, HttpServletRequest request);
 
     /**
      * 新增物料入库
@@ -34,7 +35,7 @@ public interface IMaterielIntoStockService {
      * @param materielIntoStock 物料入库信息
      * @return 结果
      */
-    public int insertMaterielIntoStock(MaterielIntoStock materielIntoStock);
+    public int insertMaterielIntoStock(MaterielIntoStock materielIntoStock,HttpServletRequest request);
 
     /**
      * 修改物料入库

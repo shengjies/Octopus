@@ -68,7 +68,7 @@ public interface IPurchaseService
 	 * @param supplierId 供应商id
 	 * @return 结果
 	 */
-    List<Purchase> selectPurchaseHavePreNumberBySupId(Integer supplierId);
+    List<Purchase> selectPurchaseHavePreNumberBySupId(Integer supplierId,HttpServletRequest request);
 
 	/**
 	 * 关闭采购单

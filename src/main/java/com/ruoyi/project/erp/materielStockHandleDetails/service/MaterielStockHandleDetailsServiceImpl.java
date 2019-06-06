@@ -7,6 +7,7 @@ import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materielStock.domain.MaterielStock;
 import com.ruoyi.project.erp.materielStock.mapper.MaterielStockMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -16,6 +17,8 @@ import com.ruoyi.project.erp.materielStockHandleDetails.mapper.MaterielStockHand
 import com.ruoyi.project.erp.materielStockHandleDetails.domain.MaterielStockHandleDetails;
 import com.ruoyi.project.erp.materielStockHandleDetails.service.IMaterielStockHandleDetailsService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料库存内部调整清单 服务层实现
@@ -63,9 +66,9 @@ public class MaterielStockHandleDetailsServiceImpl implements IMaterielStockHand
      * @return 结果
      */
 	@Override
-	public int insertMaterielStockHandleDetails(MaterielStockHandleDetails materielStockHandleDetails)
+	public int insertMaterielStockHandleDetails(MaterielStockHandleDetails materielStockHandleDetails, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) return 0;
 		materielStockHandleDetails.setCompanyId(user.getCompanyId());
 		materielStockHandleDetails.setHandleBy(user.getUserId().intValue());
@@ -159,8 +162,8 @@ public class MaterielStockHandleDetailsServiceImpl implements IMaterielStockHand
 	 * @return 结果
 	 */
 	@Override
-	public int handleScrap(Integer id) {
-		User user = ShiroUtils.getSysUser();
+	public int handleScrap(Integer id,HttpServletRequest request) {
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null) {
 			return 0;
 		}
