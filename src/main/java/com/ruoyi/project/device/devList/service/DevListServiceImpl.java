@@ -1,23 +1,26 @@
 package com.ruoyi.project.device.devList.service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import com.ruoyi.common.constant.DevConstants;
+import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.common.utils.spring.DevId;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devIo.domain.DevIo;
 import com.ruoyi.project.device.devIo.mapper.DevIoMapper;
+import com.ruoyi.project.device.devList.domain.DevList;
+import com.ruoyi.project.device.devList.mapper.DevListMapper;
 import com.ruoyi.project.device.devModel.domain.DevModel;
 import com.ruoyi.project.device.devModel.mapper.DevModelMapper;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.project.device.devList.mapper.DevListMapper;
-import com.ruoyi.project.device.devList.domain.DevList;
-import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 硬件 服务层实现
@@ -56,9 +59,9 @@ public class DevListServiceImpl implements IDevListService
      * @return 硬件集合
      */
 	@Override
-	public List<DevList> selectDevListList(DevList devList)
+	public List<DevList> selectDevListList(DevList devList, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user == null){
 			return Collections.emptyList();
 		}
@@ -166,8 +169,8 @@ public class DevListServiceImpl implements IDevListService
 	}
 
 	@Override
-	public List<DevList> selectAll() {
-		User user = ShiroUtils.getSysUser();
+	public List<DevList> selectAll(Cookie[] cookies) {
+		User user = JwtUtil.getTokenCookie(cookies);
 		if(user == null){
 			return Collections.emptyList();
 		}

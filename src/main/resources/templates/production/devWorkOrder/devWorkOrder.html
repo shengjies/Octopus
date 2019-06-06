@@ -16,7 +16,7 @@
                         <li>
                             选择产线：
                             <select style="width: 200px" name="lineId" id="lineId"
-                                    th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId()}">
+                                    th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId(#httpServletRequest.getCookies())}">
                                 <option value="">全部</option>
                                 <option th:each="line : ${productionLine}" th:text="${line.lineName}"
                                         th:value="${line.Id}"></option>
@@ -25,7 +25,7 @@
                         <li>
                             选择产品：
                             <select style="width: 200px" id="productName" name="productName"
-                                    th:with="productList=${@product.selectProductAllByCompanyId()}">
+                                    th:with="productList=${@product.selectProductAllByCompanyId(#httpServletRequest.getCookies())}">
                                 <option value="">全部</option>
                                 <option th:each="pro : ${productList}" th:text="${pro.productName}"
                                         th:value="${pro.productName}"></option>
@@ -35,7 +35,7 @@
                         <li>
                             创建者：
                             <select style="width: 200px" id="createBy" name="createBy"
-                                    th:with="user=${@user.selectComAllUser()}">
+                                    th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
                                 <option value="">全部</option>
                                 <option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userName}"></option>
                             </select>
@@ -43,7 +43,7 @@
                         <li>
                             责任人：
                             <select style="width: 200px" id="deviceLiable" name="deviceLiable"
-                                    th:with="user=${@user.selectComAllUser()}">
+                                    th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
                                 <option value="">全部</option>
                                 <option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userId}"></option>
                             </select>

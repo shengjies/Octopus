@@ -9,7 +9,7 @@
             <label class="col-sm-3 control-label">选择产线：</label>
             <div class="col-sm-8">
                 <select name="lineId" id="lineId" class="form-control" onchange="selectWorkOrderBeInByLineId(this)"
-                        th:with="allLine=${@productionLine.selectProductionLineAll()}">
+                        th:with="allLine=${@productionLine.selectProductionLineAll(#httpServletRequest.getCookies())}">
                     <option value="">请选择</option>
                     <option th:each="line : ${allLine}" th:text="${line.lineName}"
                             th:value="${line.id}"></option>

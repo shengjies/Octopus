@@ -83,8 +83,8 @@ public class WorkExceptionListServiceImpl implements IWorkExceptionListService {
      * @return 结果
      */
     @Override
-    public int insertWorkExceptionList(WorkExceptionList workExceptionList) {
-        workExceptionList.setCompanyId(ShiroUtils.getSysUser().getCompanyId()); // 设置异常公司所属公司
+    public int insertWorkExceptionList(WorkExceptionList workExceptionList,HttpServletRequest request) {
+        workExceptionList.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId()); // 设置异常公司所属公司
         workExceptionList.setExceStatut(WorkConstants.WORKEXCE_STATUT_NOHANDLE); // 设置工单异常的处理状态为未处理
         workExceptionList.setCreateTime(new Date()); // 工单异常的创建时间
         return workExceptionListMapper.insertWorkExceptionList(workExceptionList);
@@ -126,8 +126,8 @@ public class WorkExceptionListServiceImpl implements IWorkExceptionListService {
      * @return
      */
     @Override
-    public int handleWorkExcp(WorkExceptionList workExceptionList) {
-        workExceptionList.setHandleUser(ShiroUtils.getSysUser().getUserName()); // 处理者
+    public int handleWorkExcp(WorkExceptionList workExceptionList,HttpServletRequest request) {
+        workExceptionList.setHandleUser(JwtUtil.getTokenUser(request).getUserName()); // 处理者
         workExceptionList.setHandleTime(new Date()); // 处理时间
         return  workExceptionListMapper.updateWorkExceptionList(workExceptionList);
     }

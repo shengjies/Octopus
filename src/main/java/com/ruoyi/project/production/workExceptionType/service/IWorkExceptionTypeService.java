@@ -35,7 +35,7 @@ public interface IWorkExceptionTypeService
      * @param workExceptionType 工单工单异常类型信息
      * @return 结果
      */
-	public int insertWorkExceptionType(WorkExceptionType workExceptionType);
+	public int insertWorkExceptionType(WorkExceptionType workExceptionType,HttpServletRequest request);
 	
 	/**
      * 修改工单工单异常类型

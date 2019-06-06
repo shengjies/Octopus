@@ -97,8 +97,8 @@ public class WorkExceptionListController extends BaseController {
     @Log(title = "各个工单异常情况记录", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(WorkExceptionList workExceptionList) {
-        return toAjax(workExceptionListService.insertWorkExceptionList(workExceptionList));
+    public AjaxResult addSave(WorkExceptionList workExceptionList,HttpServletRequest request) {
+        return toAjax(workExceptionListService.insertWorkExceptionList(workExceptionList,request));
     }
 
     /**
@@ -155,8 +155,8 @@ public class WorkExceptionListController extends BaseController {
      */
     @PostMapping("/handleWorkExcp")
     @ResponseBody
-    public AjaxResult handleWorkExcp(WorkExceptionList workExceptionList) {
-        return toAjax(workExceptionListService.handleWorkExcp(workExceptionList));
+    public AjaxResult handleWorkExcp(WorkExceptionList workExceptionList,HttpServletRequest request) {
+        return toAjax(workExceptionListService.handleWorkExcp(workExceptionList,request));
     }
 
     /**

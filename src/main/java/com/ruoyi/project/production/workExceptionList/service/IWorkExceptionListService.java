@@ -35,7 +35,7 @@ public interface IWorkExceptionListService
      * @param workExceptionList 各个工单异常情况记录信息
      * @return 结果
      */
-	public int insertWorkExceptionList(WorkExceptionList workExceptionList);
+	public int insertWorkExceptionList(WorkExceptionList workExceptionList,HttpServletRequest request);
 	
 	/**
      * 修改各个工单异常情况记录
@@ -57,7 +57,7 @@ public interface IWorkExceptionListService
 	 * 执行工单异常操作
 	 * @return
 	 */
-	public int handleWorkExcp(WorkExceptionList workExceptionList);
+	public int handleWorkExcp(WorkExceptionList workExceptionList,HttpServletRequest request);
 
 	/**
 	 * 解决完工单异常操作

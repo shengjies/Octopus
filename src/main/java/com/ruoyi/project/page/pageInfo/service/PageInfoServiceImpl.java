@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.PageTypeConstants;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.common.utils.spring.DevId;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.device.devIo.domain.DevIo;
 import com.ruoyi.project.device.devIo.mapper.DevIoMapper;
@@ -24,6 +25,7 @@ import com.ruoyi.project.production.productionLine.mapper.ProductionLineMapper;
 import com.ruoyi.project.production.workExceptionType.domain.WorkExceptionType;
 import com.ruoyi.project.production.workExceptionType.mapper.WorkExceptionTypeMapper;
 import com.ruoyi.project.system.user.domain.User;
+import org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ import com.ruoyi.project.page.pageInfo.mapper.PageInfoMapper;
 import com.ruoyi.project.page.pageInfo.domain.PageInfo;
 import com.ruoyi.common.support.Convert;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 页面管理 服务层实现
@@ -111,9 +116,9 @@ public class PageInfoServiceImpl implements IPageInfoService
      * @return 页面管理集合
      */
 	@Override
-	public List<PageInfo> selectPageInfoList(PageInfo pageInfo)
+	public List<PageInfo> selectPageInfoList(PageInfo pageInfo, HttpServletRequest request)
 	{
-	    User user = ShiroUtils.getSysUser();
+	    User user = JwtUtil.getTokenUser(request);
 	    if(user == null)return Collections.emptyList();
 	    if(!User.isSys(user)){
 	    	pageInfo.setCompanyId(user.getCompanyId());
@@ -132,10 +137,10 @@ public class PageInfoServiceImpl implements IPageInfoService
      * @return 结果
      */
 	@Override
-	public int insertPageInfo(PageInfo pageInfo)
+	public int insertPageInfo(PageInfo pageInfo,HttpServletRequest request)
 	{
 		//获取对应的公司
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user == null)return  0;
 		pageInfo.setCompanyId(user.getCompanyId());
 		pageInfo.setCreateBy(user.getUserName());
@@ -231,9 +236,9 @@ public class PageInfoServiceImpl implements IPageInfoService
 	 * @return
 	 */
 	@Override
-	public Map<String, Object> selectPageInitInfo(int a) {
+	public Map<String, Object> selectPageInitInfo(int a, Cookie[] cookies) {
 		Map<String,Object> map = new HashMap<>();
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenCookie(cookies);
 		if(user == null )return null;
 		//查询对应的公司下的所以的产线
 		List<ProductionLine> lines = productionLineMapper.selectAllDef0(user.getCompanyId());
@@ -255,8 +260,8 @@ public class PageInfoServiceImpl implements IPageInfoService
 	 * @return
 	 */
 	@Override
-	public List<PageInfo> selectAllPage(int a,int p_id) {
-		User user = ShiroUtils.getSysUser();
+	public List<PageInfo> selectAllPage(int a,int p_id,Cookie[] cookies) {
+		User user = JwtUtil.getTokenCookie(cookies);
 		if(user == null)return null;
 		List<PageInfo> infos = pageInfoMapper.selectAllPage(user.getCompanyId());
 		if(a == 1){

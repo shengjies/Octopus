@@ -86,9 +86,9 @@ public class WorkExceptionTypeController extends BaseController
 	@Log(title = "工单工单异常类型", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(WorkExceptionType workExceptionType)
+	public AjaxResult addSave(WorkExceptionType workExceptionType,HttpServletRequest request)
 	{		
-		return toAjax(workExceptionTypeService.insertWorkExceptionType(workExceptionType));
+		return toAjax(workExceptionTypeService.insertWorkExceptionType(workExceptionType,request));
 	}
 
 	/**

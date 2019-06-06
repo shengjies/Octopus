@@ -57,7 +57,7 @@
                                                 <tbody>
                                                 <tr th:each="c : ${config}">
                                                     <td align="center">
-                                                        <select class="form-control m-b"  style="width: 100%" name="devList"  th:with="list=${@devList.selectAll()}">
+                                                        <select class="form-control m-b"  style="width: 100%" name="devList"  th:with="list=${@devList.selectAll(#httpServletRequest.getCookies())}">
                                                             <option th:each="item : ${list}" th:selected="${c.dev_id == item.id?true:false}"  th:text="${item.deviceName}" th:value="${item.id}"></option>
                                                         </select>
                                                     </td>

@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.orderInfo.service;
 
 import com.ruoyi.project.erp.orderInfo.domain.OrderInfo;
+
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 /**
@@ -63,7 +65,7 @@ public interface IOrderInfoService
 	 * 查询对应的公司所以未交付的订单信息
 	 * @return
 	 */
-	List<OrderInfo> selectAllOrder();
+	List<OrderInfo> selectAllOrder(Cookie[] cookies);
 
 	/**
 	 * 关闭订单

@@ -32,13 +32,13 @@
 									<option th:each="dict : ${type}" th:text="${dict.modelName}" th:value="${dict.id}"></option>
 								</select>
 							</li>
-							<li th:if="${@product.isSys()}">
+							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
 								所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
 								<option value="-1">所有</option>
 								<option th:each="com : ${Company}" th:text="${com.comName}" th:value="${com.companyId}"></option>
 							</select>
 							</li>
-							<li th:if="${@product.isSys()}">
+							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
 								是否配置：<select name="configStatus" >
 								<option value="-1">所有</option>
 								<option value="0">否</option>

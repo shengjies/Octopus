@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devModel.service.IDevModelService;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.ibatis.annotations.Param;
@@ -27,6 +28,8 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 硬件 信息操作处理
@@ -57,10 +60,10 @@ public class DevListController extends BaseController
 	@RequiresPermissions("device:devList:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(DevList devList)
+	public TableDataInfo list(DevList devList,HttpServletRequest request)
 	{
 		startPage();
-        List<DevList> list = devListService.selectDevListList(devList);
+        List<DevList> list = devListService.selectDevListList(devList,request);
 		return getDataTable(list);
 	}
 	
@@ -71,9 +74,9 @@ public class DevListController extends BaseController
 	@RequiresPermissions("device:devList:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(DevList devList)
+    public AjaxResult export(DevList devList,HttpServletRequest request)
     {
-    	List<DevList> list = devListService.selectDevListList(devList);
+    	List<DevList> list = devListService.selectDevListList(devList,request);
         ExcelUtil<DevList> util = new ExcelUtil<DevList>(DevList.class);
         return util.exportExcel(list, "devList");
     }
@@ -203,9 +206,9 @@ public class DevListController extends BaseController
 	@Log(title = "用户添加硬件", businessType = BusinessType.UPDATE)
 	@PostMapping("/addSave")
 	@ResponseBody
-	public AjaxResult add1Save(DevList devList)
+	public AjaxResult add1Save(DevList devList,HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user == null){
 			return  toAjax(0);
 		}
@@ -217,9 +220,9 @@ public class DevListController extends BaseController
 	@Log(title = "查询硬件配置", businessType = BusinessType.UPDATE)
 	@PostMapping("/all")
 	@ResponseBody
-	public Map<String,Object> selectAll(){
+	public Map<String,Object> selectAll(HttpServletRequest request){
 		Map<String,Object> map = new HashMap<>();
-		map.put("code",devListService.selectAll());
+		map.put("code",devListService.selectAll(request.getCookies()));
 		return map;
 	}
 }

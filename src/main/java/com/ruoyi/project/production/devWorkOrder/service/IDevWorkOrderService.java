@@ -1,7 +1,9 @@
 package com.ruoyi.project.production.devWorkOrder.service;
 
 import com.ruoyi.project.production.devWorkOrder.domain.DevWorkOrder;
+import com.ruoyi.project.system.user.domain.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ public interface IDevWorkOrderService {
      * @param devWorkOrder 工单信息
      * @return 工单集合
      */
-    public List<DevWorkOrder> selectDevWorkOrderList(DevWorkOrder devWorkOrder);
+    public List<DevWorkOrder> selectDevWorkOrderList(DevWorkOrder devWorkOrder,HttpServletRequest request);
 
     /**
      * 新增工单
@@ -33,7 +35,7 @@ public interface IDevWorkOrderService {
      * @param devWorkOrder 工单信息
      * @return 结果
      */
-    public int insertDevWorkOrder(DevWorkOrder devWorkOrder);
+    public int insertDevWorkOrder(DevWorkOrder devWorkOrder,HttpServletRequest request);
 
     /**
      * 修改工单
@@ -41,7 +43,7 @@ public interface IDevWorkOrderService {
      * @param devWorkOrder 工单信息
      * @return 结果
      */
-    public int updateDevWorkOrder(DevWorkOrder devWorkOrder);
+    public int updateDevWorkOrder(DevWorkOrder devWorkOrder, User user);
 
     /**
      * 删除工单信息
@@ -55,14 +57,14 @@ public interface IDevWorkOrderService {
      * 校验工单号是否存在
      * @return
      */
-    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder);
+    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder, HttpServletRequest request);
 
     /**
      * 工单开始暂停状态修改，第一次点击开始初始化数据
      * @param id
      * @return
      */
-    int editWorkerOrderById(Integer id);
+    int editWorkerOrderById(Integer id,HttpServletRequest request);
 
     /**
      * 校验流水线是否只有一个处于生产状态的工单
@@ -76,14 +78,14 @@ public interface IDevWorkOrderService {
      * @param id
      * @return
      */
-    int finishWorkerOrder(Integer id);
+    int finishWorkerOrder(Integer id,HttpServletRequest request);
 
     /**
      * 页面点击提交工单，工单状态不可修改和删除
      * @param id
      * @return
      */
-    int submitWorkOrder(Integer id);
+    int submitWorkOrder(Integer id,HttpServletRequest request);
 
     /**
      * 根据工单编号查询对应的工单信息
@@ -97,7 +99,7 @@ public interface IDevWorkOrderService {
      * @param lineId
      * @return
      */
-    DevWorkOrder selectWorkOrderBeInByLineId(Integer lineId);
+    DevWorkOrder selectWorkOrderBeInByLineId(Integer lineId,HttpServletRequest request);
 
     /**
      * 通过产线id查询已经提交的工单列表

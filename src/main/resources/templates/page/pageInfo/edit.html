@@ -59,7 +59,7 @@
 							<div id="detail_pane" th:with="layout =${@layout.selectLayoutAll(0)}">
 								<div th:data-detail="${lay.id}" th:each="lay : ${layout}"  >
 									<div class="col-sm-12" th:if="${lay.layout_type == 1}">
-										<div class="row" th:with="init =${@page.selectPageInitInfo(1)}" >
+										<div class="row" th:with="init =${@page.selectPageInitInfo(1,#httpServletRequest.getCookies())}" >
 											<div th:if="${init == null or init['line'] == null }" class="col-sm-6">
 												<h4 style="color: red">请建立相关产线或者产线配置相关硬件...</h4>
 											</div>
@@ -129,7 +129,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-sm-10" th:if="${lay.layout_type == 3}" th:with="ph =${@page.selectPageInitInfo(1)}">
+									<div class="col-sm-10" th:if="${lay.layout_type == 3}" th:with="ph =${@page.selectPageInitInfo(1,#httpServletRequest.getCookies())}">
 										<div th:if="${ph == null}" class="col-sm-6">
 											<h4 style="color: red">请建立相关产线...</h4>
 										</div>
@@ -189,7 +189,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-sm-10" th:if="${lay.layout_type == 4}" th:with="ph =${@page.selectPageInitInfo(1)}">
+									<div class="col-sm-10" th:if="${lay.layout_type == 4}" th:with="ph =${@page.selectPageInitInfo(1,#httpServletRequest.getCookies())}">
 										<div th:if="${ph == null}" class="col-sm-6">
 											<h4 style="color: red">请建立相关产线...</h4>
 										</div>

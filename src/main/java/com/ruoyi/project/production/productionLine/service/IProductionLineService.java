@@ -4,6 +4,8 @@ import com.ruoyi.project.device.devIo.domain.DevIo;
 import com.ruoyi.project.production.productionLine.domain.ProductionLine;
 import com.ruoyi.project.system.user.domain.User;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public interface IProductionLineService
      * @param productionLine 生产线信息
      * @return 生产线集合
      */
-	public List<ProductionLine> selectProductionLineList(ProductionLine productionLine);
+	public List<ProductionLine> selectProductionLineList(ProductionLine productionLine, HttpServletRequest request);
 	
 	/**
      * 新增生产线
@@ -37,7 +39,7 @@ public interface IProductionLineService
      * @param productionLine 生产线信息
      * @return 结果
      */
-	public int insertProductionLine(ProductionLine productionLine);
+	public int insertProductionLine(ProductionLine productionLine,HttpServletRequest request);
 	
 	/**
      * 修改生产线
@@ -45,7 +47,7 @@ public interface IProductionLineService
      * @param productionLine 生产线信息
      * @return 结果
      */
-	public int updateProductionLine(ProductionLine productionLine);
+	public int updateProductionLine(ProductionLine productionLine,HttpServletRequest request);
 		
 	/**
      * 删除生产线信息
@@ -53,7 +55,7 @@ public interface IProductionLineService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-	public int deleteProductionLineByIds(String ids);
+	public int deleteProductionLineByIds(String ids,HttpServletRequest request);
 
 	/**
 	 * 查询对应产线已经配置的硬件信息
@@ -67,13 +69,13 @@ public interface IProductionLineService
 	 * @param line
 	 * @return
 	 */
-	int updateLineConfigClear(ProductionLine line);
+	int updateLineConfigClear(ProductionLine line,HttpServletRequest request);
 
 	/**
 	 * 查询对应公司的所有生产线
 	 * @return
 	 */
-	List<ProductionLine> selectAllProductionLineByCompanyId();
+	List<ProductionLine> selectAllProductionLineByCompanyId(Cookie[] cookies);
 
 	/**
 	 * 通过生产线id查询责任人名称

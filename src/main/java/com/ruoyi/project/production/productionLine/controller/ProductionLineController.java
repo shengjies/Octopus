@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 生产线 信息操作处理
  *
@@ -47,9 +49,9 @@ public class ProductionLineController extends BaseController {
     @RequiresPermissions("production:productionLine:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ProductionLine productionLine) {
+    public TableDataInfo list(ProductionLine productionLine, HttpServletRequest request) {
         startPage();
-        List<ProductionLine> list = productionLineService.selectProductionLineList(productionLine);
+        List<ProductionLine> list = productionLineService.selectProductionLineList(productionLine,request);
         return getDataTable(list);
     }
 
@@ -60,8 +62,8 @@ public class ProductionLineController extends BaseController {
     @RequiresPermissions("production:productionLine:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ProductionLine productionLine) {
-        List<ProductionLine> list = productionLineService.selectProductionLineList(productionLine);
+    public AjaxResult export(ProductionLine productionLine,HttpServletRequest request) {
+        List<ProductionLine> list = productionLineService.selectProductionLineList(productionLine,request);
         ExcelUtil<ProductionLine> util = new ExcelUtil<ProductionLine>(ProductionLine.class);
         return util.exportExcel(list, "productionLine");
     }
@@ -81,8 +83,8 @@ public class ProductionLineController extends BaseController {
     @Log(title = "生产线", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(ProductionLine productionLine) {
-        return toAjax(productionLineService.insertProductionLine(productionLine));
+    public AjaxResult addSave(ProductionLine productionLine,HttpServletRequest request) {
+        return toAjax(productionLineService.insertProductionLine(productionLine,request));
     }
 
     /**
@@ -102,9 +104,9 @@ public class ProductionLineController extends BaseController {
     @Log(title = "生产线", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(ProductionLine productionLine) {
+    public AjaxResult editSave(ProductionLine productionLine,HttpServletRequest request) {
         try {
-            return toAjax(productionLineService.updateProductionLine(productionLine));
+            return toAjax(productionLineService.updateProductionLine(productionLine,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -118,9 +120,9 @@ public class ProductionLineController extends BaseController {
     @Log(title = "生产线", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids) {
+    public AjaxResult remove(String ids,HttpServletRequest request) {
         try {
-            return toAjax(productionLineService.deleteProductionLineByIds(ids));
+            return toAjax(productionLineService.deleteProductionLineByIds(ids,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -149,9 +151,9 @@ public class ProductionLineController extends BaseController {
     @ResponseBody
     @RequestMapping("/save/config")
     @RequiresPermissions("production:productionLine:devconfig")
-    public AjaxResult saveDevConfig(@RequestBody ProductionLine line) {
+    public AjaxResult saveDevConfig(@RequestBody ProductionLine line,HttpServletRequest request) {
         try {
-            return toAjax(productionLineService.updateLineConfigClear(line));
+            return toAjax(productionLineService.updateLineConfigClear(line,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }

@@ -116,8 +116,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return 工单集合
      */
     @Override
-    public List<DevWorkOrder> selectDevWorkOrderList(DevWorkOrder devWorkOrder) {
-        User sysUser = ShiroUtils.getSysUser();
+    public List<DevWorkOrder> selectDevWorkOrderList(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         if (sysUser == null) {
             return Collections.emptyList();
         }
@@ -145,8 +145,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return 结果
      */
     @Override
-    public int insertDevWorkOrder(DevWorkOrder devWorkOrder) {
-        User u = ShiroUtils.getSysUser();
+    public int insertDevWorkOrder(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         if(u == null)return  0;
         Integer productId = Integer.valueOf(devWorkOrder.getProductCode());
         DevProductList devProductList = productListMapper.selectDevProductListById(productId);
@@ -199,9 +199,9 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return 结果
      */
     @Override
-    public int updateDevWorkOrder(DevWorkOrder devWorkOrder) {
+    public int updateDevWorkOrder(DevWorkOrder devWorkOrder,User user) {
         DevWorkOrder workOrder = devWorkOrderMapper.selectDevWorkOrderById(devWorkOrder.getId());
-        Long userId = ShiroUtils.getUserId(); // 登录用户id
+        Long userId = user.getUserId(); // 登录用户id
         ProductionLine productionLine = productionLineMapper.selectProductionLineById(workOrder.getLineId());
         // 不是工单负责人
         if (productionLine.getDeviceLiable() != userId.intValue() && productionLine.getDeviceLiableTow() != userId.intValue()) {
@@ -229,8 +229,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      */
     @Override
     @DataSource(value = DataSourceType.SLAVE)
-    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder) {
-        Integer companyId = ShiroUtils.getSysUser().getCompanyId();
+    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        Integer companyId = JwtUtil.getTokenUser(request).getCompanyId();
         Long count = devWorkOrderMapper.checkWorkOrderNumber(devWorkOrder.getWorkorderNumber(), companyId);
         if (count > 0) { // 说明数据库存在工单数据
             return WorkConstants.WORKERORDER_NUMBER_NOT_UNIQUE;
@@ -245,8 +245,9 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return
      */
     @Override
-    public int editWorkerOrderById(Integer id) {
-        Long userId = ShiroUtils.getUserId(); // 登录用户id
+    public int editWorkerOrderById(Integer id,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
+        Long userId = user.getUserId(); // 登录用户id
         DevWorkOrder devWorkOrder = devWorkOrderMapper.selectDevWorkOrderById(id);
 
         ProductionLine productionLine = productionLineMapper.selectProductionLineById(devWorkOrder.getLineId());
@@ -267,13 +268,13 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
             // 页面点击暂停按钮暂时暂停工单生产
             if (devWorkOrder.getOperationStatus().equals(WorkConstants.OPERATION_STATUS_STARTING)) {
                 devWorkOrder.setOperationStatus(WorkConstants.OPERATION_STATUS_PAUSE);
-                devWorkOrder.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+                devWorkOrder.setUpdateBy(user.getUserName());
                 //将其工单对应的数据需要重新记录初始值
                 devWorkDataMapper.updateWorkSigInit(devWorkOrder.getId());
             } else if (devWorkOrder.getOperationStatus().equals(WorkConstants.OPERATION_STATUS_PAUSE)) {
                 //页面点击开始按钮继续工单生产
                 devWorkOrder.setOperationStatus(WorkConstants.OPERATION_STATUS_STARTING);
-                devWorkOrder.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+                devWorkOrder.setUpdateBy(user.getUserName());
             }
         }
         //首次点击开始，工单处于未进行、未开始的状态，页面点击开始按钮
@@ -283,7 +284,7 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
             }
             devWorkOrder.setWorkorderStatus(WorkConstants.WORK_STATUS_STARTING);  // 修改工单的状态为进行中
             devWorkOrder.setOperationStatus(WorkConstants.OPERATION_STATUS_STARTING);   // 修改工单的操作状态为正在进行，页面显示暂停按钮
-            devWorkOrder.setUpdateBy(ShiroUtils.getSysUser().getUserName());   // 工单的更新者
+            devWorkOrder.setUpdateBy(user.getUserName());   // 工单的更新者
 
             // 通过产线id获取io口集合信息
             List<DevIo> devIos = devIoMapper.selectLineDevIO(devWorkOrder.getLineId()); // 对应产线IO口列表
@@ -344,8 +345,9 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return
      */
     @Override
-    public int finishWorkerOrder(Integer id) {
-        Long userId = ShiroUtils.getUserId(); // 登录用户id
+    public int finishWorkerOrder(Integer id,HttpServletRequest request) {
+        User tokenUser = JwtUtil.getTokenUser(request);
+        Long userId = tokenUser.getUserId(); // 登录用户id
         DevWorkOrder devWorkOrder = devWorkOrderMapper.selectDevWorkOrderById(id);
         ProductionLine productionLine = productionLineMapper.selectProductionLineById(devWorkOrder.getLineId());
         // 不是工单负责人
@@ -355,6 +357,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
         devWorkOrder.setWorkorderStatus(WorkConstants.WORK_STATUS_END); // 设置工单的生产状态为已经完成
         devWorkOrder.setOperationStatus(WorkConstants.OPERATION_STATUS_FINISH); // 设置工单的操作状态为结束
         devWorkOrder.setEndTime(new Date()); // 设置结束时间
+        devWorkOrder.setUpdateBy(tokenUser.getUserName());
+        devWorkOrder.setUpdateTime(new Date());
         return devWorkOrderMapper.updateDevWorkOrder(devWorkOrder); // 更新
     }
 
@@ -365,8 +369,9 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return
      */
     @Override
-    public int submitWorkOrder(Integer id) {
-        Long userId = ShiroUtils.getUserId(); // 登录用户id
+    public int submitWorkOrder(Integer id,HttpServletRequest request) {
+        User tokenUser = JwtUtil.getTokenUser(request);
+        Long userId = tokenUser.getUserId(); // 登录用户id
         DevWorkOrder devWorkOrder = devWorkOrderMapper.selectDevWorkOrderById(id);
         if (!devWorkOrder.getWorkorderStatus().equals(WorkConstants.WORK_STATUS_END)) {
             throw new BusinessException("未完成的工单不能提交");
@@ -380,6 +385,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
             throw new BusinessException("该工单已经提交过，不能重复提交");
         }
         devWorkOrder.setWorkSign(WorkConstants.WORK_SIGN_YES); // 设置状态为已确认数据不可进行修改和删除
+        devWorkOrder.setUpdateTime(new Date());
+        devWorkOrder.setUpdateBy(tokenUser.getUserName());
         return devWorkOrderMapper.updateDevWorkOrder(devWorkOrder);
     }
 
@@ -388,8 +395,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      *
      * @return
      */
-    public List<DevWorkOrder> selectWorkOrderAllBeIn() {
-        Integer companyId = ShiroUtils.getSysUser().getCompanyId();
+    public List<DevWorkOrder> selectWorkOrderAllBeIn(Cookie[] cookies) {
+        Integer companyId = JwtUtil.getTokenCookie(cookies).getCompanyId();
         return devWorkOrderMapper.selectWorkOrderAllBeIn(companyId);
     }
 
@@ -415,8 +422,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return
      */
     @Override
-    public DevWorkOrder selectWorkOrderBeInByLineId(Integer lineId) {
-        return devWorkOrderMapper.selectWorkByCompandAndLine(ShiroUtils.getSysUser().getCompanyId(), lineId);
+    public DevWorkOrder selectWorkOrderBeInByLineId(Integer lineId,HttpServletRequest request) {
+        return devWorkOrderMapper.selectWorkByCompandAndLine(JwtUtil.getTokenUser(request).getCompanyId(), lineId);
     }
 
     /**

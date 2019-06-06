@@ -60,8 +60,8 @@ public class WorkExceptionTypeServiceImpl implements IWorkExceptionTypeService {
      * @return 结果
      */
     @Override
-    public int insertWorkExceptionType(WorkExceptionType workExceptionType) {
-        workExceptionType.setCompanyId(ShiroUtils.getSysUser().getCompanyId()); // 设置异常类型所属公司
+    public int insertWorkExceptionType(WorkExceptionType workExceptionType,HttpServletRequest request) {
+        workExceptionType.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId()); // 设置异常类型所属公司
         workExceptionType.setCreateTime(new Date()); // 设置异常类型的创建时间
         return workExceptionTypeMapper.insertWorkExceptionType(workExceptionType);
     }

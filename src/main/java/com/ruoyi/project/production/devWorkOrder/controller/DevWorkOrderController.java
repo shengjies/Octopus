@@ -20,6 +20,7 @@ import com.ruoyi.project.production.devWorkOrder.mapper.DevWorkOrderMapper;
 import com.ruoyi.project.production.productionLine.domain.ProductionLine;
 import com.ruoyi.project.production.productionLine.service.IProductionLineService;
 import com.ruoyi.project.system.user.domain.User;
+import com.sun.jna.platform.win32.OaIdl;
 import com.sun.org.apache.regexp.internal.RE;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +71,9 @@ public class DevWorkOrderController extends BaseController {
     @RequiresPermissions("device:devWorkOrder:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(DevWorkOrder devWorkOrder) {
+    public TableDataInfo list(DevWorkOrder devWorkOrder,HttpServletRequest request) {
         startPage();
-        List<DevWorkOrder> list = devWorkOrderService.selectDevWorkOrderList(devWorkOrder);
+        List<DevWorkOrder> list = devWorkOrderService.selectDevWorkOrderList(devWorkOrder,request);
         return getDataTable(list);
     }
 
@@ -83,8 +84,8 @@ public class DevWorkOrderController extends BaseController {
     @RequiresPermissions("device:devWorkOrder:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(DevWorkOrder devWorkOrder) {
-        List<DevWorkOrder> list = devWorkOrderService.selectDevWorkOrderList(devWorkOrder);
+    public AjaxResult export(DevWorkOrder devWorkOrder, HttpServletRequest request) {
+        List<DevWorkOrder> list = devWorkOrderService.selectDevWorkOrderList(devWorkOrder,request);
         ExcelUtil<DevWorkOrder> util = new ExcelUtil<DevWorkOrder>(DevWorkOrder.class);
         return util.exportExcel(list, "devWorkOrder");
     }
@@ -115,8 +116,8 @@ public class DevWorkOrderController extends BaseController {
     @Log(title = "工单", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(DevWorkOrder devWorkOrder) {
-        return toAjax(devWorkOrderService.insertDevWorkOrder(devWorkOrder));
+    public AjaxResult addSave(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        return toAjax(devWorkOrderService.insertDevWorkOrder(devWorkOrder,request));
     }
 
     /**
@@ -136,13 +137,13 @@ public class DevWorkOrderController extends BaseController {
     @Log(title = "工单", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(DevWorkOrder devWorkOrder) {
-        User u = ShiroUtils.getSysUser();
+    public AjaxResult editSave(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) {
             return error();
         }
         try {
-            return toAjax(devWorkOrderService.updateDevWorkOrder(devWorkOrder));
+            return toAjax(devWorkOrderService.updateDevWorkOrder(devWorkOrder,u));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -171,8 +172,8 @@ public class DevWorkOrderController extends BaseController {
      */
     @PostMapping("/checkWorkOrderNumber")
     @ResponseBody
-    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder) {
-        return devWorkOrderService.checkWorkOrderNumber(devWorkOrder);
+    public String checkWorkOrderNumber(DevWorkOrder devWorkOrder,HttpServletRequest request) {
+        return devWorkOrderService.checkWorkOrderNumber(devWorkOrder,request);
     }
 
     /**
@@ -183,13 +184,13 @@ public class DevWorkOrderController extends BaseController {
      */
     @PostMapping("/editWorkerOrderById")
     @ResponseBody
-    public AjaxResult editWorkerOrderById(Integer id) {
-        User u = ShiroUtils.getSysUser();
+    public AjaxResult editWorkerOrderById(Integer id,HttpServletRequest request) {
+        User u =JwtUtil.getTokenUser(request);
         if (u == null) {
             return error();
         }
         try {
-            return toAjax(devWorkOrderService.editWorkerOrderById(id));
+            return toAjax(devWorkOrderService.editWorkerOrderById(id,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -203,13 +204,13 @@ public class DevWorkOrderController extends BaseController {
      */
     @PostMapping("/submitWorkOrder")
     @ResponseBody
-    public AjaxResult submitWorkOrder(Integer id) {
-        User u = ShiroUtils.getSysUser();
+    public AjaxResult submitWorkOrder(Integer id,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) {
             return error();
         }
         try {
-            return toAjax(devWorkOrderService.submitWorkOrder(id));
+            return toAjax(devWorkOrderService.submitWorkOrder(id,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -224,14 +225,14 @@ public class DevWorkOrderController extends BaseController {
      */
     @PostMapping("/finishWorkerOrder")
     @ResponseBody
-    public AjaxResult finishWorkerOrder(Integer id) {
+    public AjaxResult finishWorkerOrder(Integer id,HttpServletRequest request) {
 
-        User u = ShiroUtils.getSysUser();
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) {
             return error();
         }
         try {
-            return toAjax(devWorkOrderService.finishWorkerOrder(id));
+            return toAjax(devWorkOrderService.finishWorkerOrder(id,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -246,8 +247,8 @@ public class DevWorkOrderController extends BaseController {
      */
     @PostMapping("/selectWorkOrderBeInByLineId")
     @ResponseBody
-    public AjaxResult selectWorkOrderBeInByLineId(Integer lineId) {
-        DevWorkOrder workOrder = devWorkOrderService.selectWorkOrderBeInByLineId(lineId);
+    public AjaxResult selectWorkOrderBeInByLineId(Integer lineId,HttpServletRequest request) {
+        DevWorkOrder workOrder = devWorkOrderService.selectWorkOrderBeInByLineId(lineId,request);
         return AjaxResult.success("success", workOrder);
     }
     /**

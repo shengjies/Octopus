@@ -291,9 +291,9 @@ public class DevProductListServiceImpl implements IDevProductListService {
      */
     @Override
     @DataSource(value = DataSourceType.SLAVE)
-    public DevProductList findProductInfo(Integer productId) {
+    public DevProductList findProductInfo(Integer productId,HttpServletRequest request) {
         DevProductList productInfo = devProductListMapper.findProductInfo(productId);
-        EcnLog ecnLog = ecnLogMapper.findByCompanyIdAndProductId(ShiroUtils.getCompanyId(), productId);
+        EcnLog ecnLog = ecnLogMapper.findByCompanyIdAndProductId(JwtUtil.getTokenUser(request).getCompanyId(), productId);
         if (!StringUtils.isNull(ecnLog)) {
             productInfo.setEcnText(ecnLog.getEcnText());
         }

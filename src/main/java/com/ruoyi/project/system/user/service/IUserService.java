@@ -2,6 +2,7 @@ package com.ruoyi.project.system.user.service;
 
 import com.ruoyi.project.system.user.domain.User;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -169,7 +170,7 @@ public interface IUserService
      * 查询对应的公司的所有的员工信息
      * @return
      */
-    List<User> selectComAllUser();
+    List<User> selectComAllUser(Cookie[] cookies);
 
     /**
      * 获取系统登录用户

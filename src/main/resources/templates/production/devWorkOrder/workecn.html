@@ -30,8 +30,8 @@
     <script type="text/javascript">
 
 		function submitHandler() {
-			$.modal.closeLoading();
-			$.modal.enable();
+            $.modal.close();
+            window.parent.$.table.refresh();
 	    }
 	</script>
 </body>

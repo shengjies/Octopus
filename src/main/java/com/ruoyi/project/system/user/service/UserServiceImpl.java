@@ -31,6 +31,7 @@ import com.ruoyi.project.system.user.mapper.UserMapper;
 import com.ruoyi.project.system.user.mapper.UserPostMapper;
 import com.ruoyi.project.system.user.mapper.UserRoleMapper;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -508,8 +509,8 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public List<User> selectComAllUser() {
-        User user = ShiroUtils.getSysUser();
+    public List<User> selectComAllUser(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) return Collections.emptyList();
         return userMapper.selectComAllUser(user.getCompanyId());
     }

@@ -7,6 +7,8 @@ import com.ruoyi.project.page.pageInfo.domain.PageInfo;
 import com.ruoyi.project.page.pageInfoConfig.domain.PageInfoConfig;
 import com.ruoyi.project.production.devWorkOrder.domain.DevWorkOrder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public interface IPageInfoService
      * @param pageInfo 页面管理信息
      * @return 页面管理集合
      */
-	public List<PageInfo> selectPageInfoList(PageInfo pageInfo);
+	public List<PageInfo> selectPageInfoList(PageInfo pageInfo,HttpServletRequest request);
 	
 	/**
      * 新增页面管理
@@ -47,7 +49,7 @@ public interface IPageInfoService
      * @param pageInfo 页面管理信息
      * @return 结果
      */
-	public int insertPageInfo(PageInfo pageInfo);
+	public int insertPageInfo(PageInfo pageInfo,HttpServletRequest request);
 	
 	/**
      * 修改页面管理
@@ -69,13 +71,13 @@ public interface IPageInfoService
 	 * 查询对应公司页面初始数据
 	 * @return
 	 */
-	Map<String,Object> selectPageInitInfo(int a);
+	Map<String,Object> selectPageInitInfo(int a, Cookie[] cookies);
 
 	/**
 	 * 查询对应公司所以非轮播页面
 	 * @return
 	 */
-	List<PageInfo> selectAllPage(int a,int p_id);
+	List<PageInfo> selectAllPage(int a, int p_id,Cookie[] cookies);
 
 	/**
 	 * 根据页面编辑查询对应的页面信息

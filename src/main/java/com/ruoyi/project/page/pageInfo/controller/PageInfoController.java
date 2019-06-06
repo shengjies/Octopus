@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.config.RuoYiConfig;
+import com.ruoyi.framework.jwt.JwtUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 页面管理 信息操作处理
@@ -53,10 +56,10 @@ public class PageInfoController extends BaseController
 	@RequiresPermissions("page:pageInfo:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(PageInfo pageInfo)
+	public TableDataInfo list(PageInfo pageInfo,HttpServletRequest request)
 	{
 		startPage();
-        List<PageInfo> list = pageInfoService.selectPageInfoList(pageInfo);
+        List<PageInfo> list = pageInfoService.selectPageInfoList(pageInfo,request);
 		return getDataTable(list);
 	}
 	
@@ -67,9 +70,9 @@ public class PageInfoController extends BaseController
 	@RequiresPermissions("page:pageInfo:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(PageInfo pageInfo)
+    public AjaxResult export(PageInfo pageInfo,HttpServletRequest request)
     {
-    	List<PageInfo> list = pageInfoService.selectPageInfoList(pageInfo);
+    	List<PageInfo> list = pageInfoService.selectPageInfoList(pageInfo,request);
         ExcelUtil<PageInfo> util = new ExcelUtil<PageInfo>(PageInfo.class);
         return util.exportExcel(list, "pageInfo");
     }
@@ -90,20 +93,20 @@ public class PageInfoController extends BaseController
 	@Log(title = "页面管理", businessType = BusinessType.INSERT)
 	@RequestMapping("/save")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody PageInfo pageInfo)
+	public AjaxResult addSave(@RequestBody PageInfo pageInfo,HttpServletRequest request)
 	{		
-		return toAjax(pageInfoService.insertPageInfo(pageInfo));
+		return toAjax(pageInfoService.insertPageInfo(pageInfo,request));
 	}
 
 	/**
 	 * 修改页面管理
 	 */
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") Integer id, ModelMap mmap)
+	public String edit(@PathVariable("id") Integer id, ModelMap mmap, HttpServletRequest request)
 	{
 		PageInfo pageInfo = pageInfoService.selectPageInfoById(id);
 		mmap.put("pageInfo", pageInfo);
-		mmap.put("page1",pageInfoService.selectAllPage(1,id));
+		mmap.put("page1",pageInfoService.selectAllPage(1,id, request.getCookies()));
 	    return prefix + "/edit";
 	}
 	

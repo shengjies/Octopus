@@ -6,17 +6,22 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.device.devIo.domain.DevIo;
 import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.mapper.UserMapper;
+import org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.production.productionLine.mapper.ProductionLineMapper;
 import com.ruoyi.project.production.productionLine.domain.ProductionLine;
 import com.ruoyi.project.production.productionLine.service.IProductionLineService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 生产线 服务层实现
@@ -53,8 +58,8 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      * @return 生产线集合
      */
     @Override
-    public List<ProductionLine> selectProductionLineList(ProductionLine productionLine) {
-        User u = ShiroUtils.getSysUser();
+    public List<ProductionLine> selectProductionLineList(ProductionLine productionLine, HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) return Collections.emptyList();
         if (!User.isSys(u)) {
             productionLine.setCompanyId(u.getCompanyId());
@@ -81,8 +86,8 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      */
     @Override
     @DataSource(DataSourceType.SLAVE)
-    public int insertProductionLine(ProductionLine productionLine) {
-        User user = ShiroUtils.getSysUser();
+    public int insertProductionLine(ProductionLine productionLine,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user != null) {
             productionLine.setCompanyId(user.getCompanyId());
             productionLine.setCreate_by(user.getUserId().intValue());
@@ -99,9 +104,9 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      */
     @Override
     @DataSource(value = DataSourceType.SLAVE)
-    public int updateProductionLine(ProductionLine productionLine) {
+    public int updateProductionLine(ProductionLine productionLine,HttpServletRequest request) {
         ProductionLine line = productionLineMapper.selectProductionLineById(productionLine.getId());
-        User sysUser = ShiroUtils.getSysUser(); // 在线用户
+        User sysUser = JwtUtil.getTokenUser(request); // 在线用户
         checkDeviceLiable(sysUser, line);
         return productionLineMapper.updateProductionLine(productionLine);
     }
@@ -113,8 +118,8 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      * @return 结果
      */
     @Override
-    public int deleteProductionLineByIds(String ids) {
-        User sysUser = ShiroUtils.getSysUser(); // 在线用户
+    public int deleteProductionLineByIds(String ids,HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request); // 在线用户
         String[] lineIds = Convert.toStrArray(ids);
         ProductionLine productionLine = null;
         if (!User.isSys(sysUser) && !sysUser.getLoginName().equals(sysUser.getCreateBy())) { // 非系统用户或者非注册用户
@@ -139,8 +144,8 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      * @return
      */
     @Override
-    public int updateLineConfigClear(ProductionLine line) {
-        User sysUser = ShiroUtils.getSysUser(); // 在线用户
+    public int updateLineConfigClear(ProductionLine line,HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request); // 在线用户
         ProductionLine productionLine = productionLineMapper.selectProductionLineById(line.getId()); // 查询产线信息
         checkDeviceLiable(sysUser, productionLine);
         try {
@@ -200,8 +205,8 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      */
     @Override
     @DataSource(value = DataSourceType.SLAVE)
-    public List<ProductionLine> selectAllProductionLineByCompanyId() {
-        User user = ShiroUtils.getSysUser();
+    public List<ProductionLine> selectAllProductionLineByCompanyId(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) return Collections.emptyList();
         return productionLineMapper.selectAllProductionLineByCompanyId(user.getCompanyId());
     }
@@ -237,11 +242,11 @@ public class ProductionLineServiceImpl implements IProductionLineService {
      *
      * @return
      */
-    public List<ProductionLine> selectProductionLineAll() {
-        User sysUser = ShiroUtils.getSysUser();
+    public List<ProductionLine> selectProductionLineAll(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         Integer companyId = null;
-        if (!User.isSys(sysUser)) { // 非系统用户
-            companyId = sysUser.getCompanyId();
+        if (!User.isSys(user)) { // 非系统用户
+            companyId = user.getCompanyId();
         }
         return productionLineMapper.selectAllProductionLineByCompanyId(companyId);
     }

@@ -15,7 +15,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">责任人1：</label>
 				<div class="col-sm-8">
-					<select id="deviceLiable" name="deviceLiable" class="form-control m-b"  th:with="user=${@user.selectComAllUser()}">
+					<select id="deviceLiable" name="deviceLiable" class="form-control m-b"  th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 						<option th:each="u : ${user}" th:text="${u.userName}" th:field="*{deviceLiable}" th:value="${u.userId}"></option>
 					</select>
 				</div>
@@ -23,7 +23,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">责任人2：</label>
 				<div class="col-sm-8">
-					<select id="deviceLiableTow" name="deviceLiableTow" class="form-control m-b"  th:with="user=${@user.selectComAllUser()}">
+					<select id="deviceLiableTow" name="deviceLiableTow" class="form-control m-b"  th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 						<option th:each="u : ${user}" th:text="${u.userName}" th:field="*{deviceLiableTow}" th:value="${u.userId}"></option>
 					</select>
 				</div>

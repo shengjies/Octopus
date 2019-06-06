@@ -74,7 +74,7 @@ public interface IDevProductListService
 	 * @param productId
 	 * @return
 	 */
-	public DevProductList findProductInfo(Integer productId);
+	public DevProductList findProductInfo(Integer productId, HttpServletRequest request);
 
 	/**
 	 * 检验产品编码是否唯一

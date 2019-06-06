@@ -10,7 +10,7 @@
 				<form id="formId">
 					<div class="select-list">
 						<ul>
-							<li th:if="${@product.isSys()}">
+							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
 								所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
 								<option value="-1">所有</option>
 								<option th:each="com : ${Company}" th:text="${com.comName}"
@@ -126,7 +126,7 @@
          * 添加
          */
         function add() {
-            $.modal.open("异常类型添加",prefix+"/add",800,230);
+            $.modal.open("异常类型添加",prefix+"/add",600,430);
         }
 
         /**
@@ -145,7 +145,7 @@
                 }
                 url = $.table._option.updateUrl.replace("{id}", id);
             }
-            $.modal.open("修改异常类型",url,800,230);
+            $.modal.open("修改异常类型",url,600,430);
         }
     </script>
 </body>

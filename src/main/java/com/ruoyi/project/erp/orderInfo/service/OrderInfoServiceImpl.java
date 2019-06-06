@@ -11,6 +11,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.orderDetails.domain.OrderDetails;
 import com.ruoyi.project.erp.orderDetails.mapper.OrderDetailsMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -21,6 +22,8 @@ import com.ruoyi.project.erp.orderInfo.domain.OrderInfo;
 import com.ruoyi.project.erp.orderInfo.service.IOrderInfoService;
 import com.ruoyi.common.support.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
 
 /**
  * 订单数据 服务层实现
@@ -181,8 +184,8 @@ public class OrderInfoServiceImpl implements IOrderInfoService
 	 * @return
 	 */
 	@Override
-	public List<OrderInfo> selectAllOrder() {
-		User user = ShiroUtils.getSysUser();
+	public List<OrderInfo> selectAllOrder(Cookie[] cookies) {
+		User user = JwtUtil.getTokenCookie(cookies);
 		if(user == null)return Collections.emptyList();
 		return orderInfoMapper.selectAllOrder(user.getCompanyId());
 	}

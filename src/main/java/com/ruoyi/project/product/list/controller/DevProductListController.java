@@ -160,8 +160,8 @@ public class DevProductListController extends BaseController {
      */
     @PostMapping("/findProductInfo")
     @ResponseBody
-    public AjaxResult findProductInfo(Integer productId) {
-        DevProductList productCode = devProductListService.findProductInfo(productId);
+    public AjaxResult findProductInfo(Integer productId,HttpServletRequest request) {
+        DevProductList productCode = devProductListService.findProductInfo(productId,request);
         return AjaxResult.success("成功", productCode);
     }
 

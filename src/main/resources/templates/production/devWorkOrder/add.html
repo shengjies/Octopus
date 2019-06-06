@@ -29,7 +29,7 @@
                             <label class="col-sm-3 control-label">选择产线：</label>
                             <div class="col-sm-8">
                                 <select onchange="findDeviceLiableByLineId(this)" name="lineId" id="lineId" class="form-control"
-                                        th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId()}">
+                                        th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId(#httpServletRequest.getCookies())}">
                                     <option value="">请选择</option>
                                     <option th:each="line : ${productionLine}" th:text="${line.lineName}"
                                             th:value="${line.Id}"></option>
@@ -92,7 +92,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">订单：</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="orderCode" name="orderCode" onchange="orderChangeCode(this)" th:with="order=${@order.selectAllOrder()}">
+                                <select class="form-control" id="orderCode" name="orderCode" onchange="orderChangeCode(this)" th:with="order=${@order.selectAllOrder(#httpServletRequest.getCookies())}">
                                     <option value="NaN" data-order-id="-1">无</option>
                                     <option  th:data-order-id="${item.id}" th:value="${item.orderCode}" th:text="${item.orderCode}"
                                             th:each="item:${order}" ></option>
@@ -105,7 +105,7 @@
                             <label class="col-sm-3 control-label">产品编码：</label>
                             <div class="col-sm-8">
                                 <select id="productCode" name="productCode" onchange="findProductCode(this)"
-                                        class="form-control" th:with="productList=${@product.selectProductAllByCompanyId()}">
+                                        class="form-control" th:with="productList=${@product.selectProductAllByCompanyId(#httpServletRequest.getCookies())}">
                                     <option value="">请选择</option>
                                     <option th:each="pro : ${productList}"
                                             th:data-code="${pro.productCode}"  th:text="${pro.productCode}" th:value="${pro.id}"></option>

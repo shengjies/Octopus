@@ -11,7 +11,7 @@
             <label class="col-sm-3 control-label">工单号：</label>
             <div class="col-sm-8">
                 <select name="workId" id="workId" class="form-control" disabled="disabled"
-                        th:with="workOrder=${@workOrder.selectWorkOrderAllBeIn()}">
+                        th:with="workOrder=${@workOrder.selectWorkOrderAllBeIn(#httpServletRequest.getCookies())}">
                     <option th:each="order : ${workOrder}" th:text="${order.workorderNumber}"
                             th:selected="*{workId}==${order.Id}?true:false" th:value="${order.Id}"></option>
                 </select>
