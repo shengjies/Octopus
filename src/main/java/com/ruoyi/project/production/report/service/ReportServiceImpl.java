@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.poi.PdfUtil;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.production.devWorkOrder.domain.DevWorkOrder;
@@ -50,7 +51,7 @@ public class ReportServiceImpl implements IReportService {
     @Override
     public int exportReport(int lineId, String productCode,String startTime, String endTime,
                             HttpServletResponse response, HttpServletRequest request) {
-        User user = ShiroUtils.getSysUser();
+        User user = JwtUtil.getTokenUser(request);
         String path = "test_A4.jrxml";
         String pdfName = "全局";
         Map<String,Object> param = new HashMap<>();

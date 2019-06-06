@@ -11,7 +11,7 @@
                         <label class="col-sm-3 control-label">选择产线：</label>
                         <div class="col-sm-8">
                             <select  name="lineId" id="lineId" class="form-control m-b"
-                                    th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId()}">
+                                    th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId(#httpServletRequest.getCookies())}">
                                 <option value="-1">请选择</option>
                                 <option th:each="line : ${productionLine}" th:text="${line.lineName}"
                                         th:value="${line.Id}"></option>
@@ -22,7 +22,7 @@
                         <label class="col-sm-3 control-label">选择产品：</label>
                         <div class="col-sm-8">
                             <select id="productCode" name="productCode"
-                                    class="form-control" th:with="productList=${@product.selectProductAllByCompanyId()}">
+                                    class="form-control" th:with="productList=${@product.selectProductAllByCompanyId(#httpServletRequest.getCookies())}">
                                 <option value="">请选择</option>
                                 <option th:each="pro : ${productList}"  th:text="${pro.productCode}" th:value="${pro.productCode}"></option>
                             </select>
