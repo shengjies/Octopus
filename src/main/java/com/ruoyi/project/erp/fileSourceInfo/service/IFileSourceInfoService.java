@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.fileSourceInfo.service;
 
 import com.ruoyi.project.erp.fileSourceInfo.domain.FileSourceInfo;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public interface IFileSourceInfoService
      * @param fileSourceInfo 文件素材管理信息
      * @return 文件素材管理集合
      */
-	public List<FileSourceInfo> selectFileSourceInfoList(FileSourceInfo fileSourceInfo);
+	public List<FileSourceInfo> selectFileSourceInfoList(FileSourceInfo fileSourceInfo, HttpServletRequest request);
 	
 	/**
      * 新增文件素材管理

@@ -1,11 +1,13 @@
 package com.ruoyi.project.production.ecnLog.service;
 
+import java.net.HttpRetryException;
 import java.util.Collections;
 import java.util.List;
 
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import com.ruoyi.project.production.ecnLog.mapper.EcnLogMapper;
 import com.ruoyi.project.production.ecnLog.domain.EcnLog;
 import com.ruoyi.project.production.ecnLog.service.IEcnLogService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * ECN 变更记录 服务层实现
@@ -46,9 +50,9 @@ public class EcnLogServiceImpl implements IEcnLogService
      */
 	@Override
 	@DataSource(DataSourceType.SLAVE)
-	public List<EcnLog> selectEcnLogList(EcnLog ecnLog)
+	public List<EcnLog> selectEcnLogList(EcnLog ecnLog, HttpServletRequest request)
 	{
-		User u = ShiroUtils.getSysUser();
+		User u = JwtUtil.getTokenUser(request);
 		if(u == null)return Collections.emptyList();
 		ecnLog.setCompanyId(u.getCompanyId());
 	    return ecnLogMapper.selectEcnLogList(ecnLog);

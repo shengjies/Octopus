@@ -15,7 +15,7 @@
 					<ul>
 						<li>
 							产品编码：
-							<select id="productCode" style="width:100px" name="productCode" th:with="allProductCode=${@product.selectProductAllByCompanyId()}">
+							<select id="productCode" style="width:100px" name="productCode" th:with="allProductCode=${@product.selectProductAllByCompanyId(#httpServletRequest.getCookies())}">
 								<option value="">请选择</option>
 								<option th:each="pro:${allProductCode}" th:text="${pro.productCode}" th:value="${pro.productCode}"></option>
 							</select>
@@ -23,7 +23,7 @@
 
 						<li>
 							产品型号：
-							<select id="productModel" style="width: 100px" name="productModel" th:with="allProductCode=${@product.selectProductAllByCompanyId()}">
+							<select id="productModel" style="width: 100px" name="productModel" th:with="allProductCode=${@product.selectProductAllByCompanyId(#httpServletRequest.getCookies())}">
 								<option value="">请选择</option>
 								<option th:each="pro:${allProductCode}" th:text="${pro.productModel}" th:value="${pro.productModel}"></option>
 							</select>
@@ -31,12 +31,12 @@
 
 						<li>
 							产品名称：
-							<select id="productName" style="width: 100px" name="productName" th:with="allProName=${@product.selectProNameAllByComId()}">
+							<select id="productName" style="width: 100px" name="productName" th:with="allProName=${@product.selectProNameAllByComId(#httpServletRequest.getCookies())}">
 								<option value="">请选择</option>
 								<option th:each="pro:${allProName}" th:text="${pro.productName}" th:value="${pro.productName}"></option>
 							</select>
 						</li>
-						<li th:if="${@product.isSys()}">
+						<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
 							所属公司：<select id="companyId" name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
 							<option value="-1">所有</option>
 							<option th:each="com : ${Company}" th:text="${com.comName}" th:value="${com.companyId}"></option>

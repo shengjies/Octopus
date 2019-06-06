@@ -1,5 +1,6 @@
 package com.ruoyi.project.production.ecnLog.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.ruoyi.project.product.list.domain.DevProductList;
@@ -20,6 +21,8 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * ECN 变更记录 信息操作处理
@@ -50,9 +53,9 @@ public class EcnLogController extends BaseController {
     @RequiresPermissions("production:ecnLog:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(EcnLog ecnLog) {
+    public TableDataInfo list(EcnLog ecnLog, HttpServletRequest request) {
         startPage();
-        List<EcnLog> list = ecnLogService.selectEcnLogList(ecnLog);
+        List<EcnLog> list = ecnLogService.selectEcnLogList(ecnLog,request);
         return getDataTable(list);
     }
 

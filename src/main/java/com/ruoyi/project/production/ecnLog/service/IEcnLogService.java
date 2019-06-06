@@ -1,6 +1,8 @@
 package com.ruoyi.project.production.ecnLog.service;
 
 import com.ruoyi.project.production.ecnLog.domain.EcnLog;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public interface IEcnLogService
      * @param ecnLog ECN 变更记录信息
      * @return ECN 变更记录集合
      */
-	public List<EcnLog> selectEcnLogList(EcnLog ecnLog);
+	public List<EcnLog> selectEcnLogList(EcnLog ecnLog, HttpServletRequest request);
 	
 	/**
      * 新增ECN 变更记录

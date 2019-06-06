@@ -2,6 +2,7 @@ package com.ruoyi.project.device.devCompany.service;
 
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 /**

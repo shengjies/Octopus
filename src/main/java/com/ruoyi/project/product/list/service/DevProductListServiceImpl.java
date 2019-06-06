@@ -12,6 +12,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.erp.fileSourceInfo.domain.FileSourceInfo;
@@ -38,6 +39,9 @@ import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 产品管理 服务层实现
@@ -68,8 +72,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
     @Autowired
     private FileSourceInfoMapper fileSourceInfoMapper;
 
-    public boolean isSys() {
-        User user = ShiroUtils.getSysUser();
+    public boolean isSys(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) {
             return false;
         }
@@ -95,8 +99,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 产品管理集合
      */
     @Override
-    public List<DevProductList> selectDevProductListList(DevProductList devProductList) {
-        User user = ShiroUtils.getSysUser();
+    public List<DevProductList> selectDevProductListList(DevProductList devProductList, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) {
             return Collections.emptyList();
         }
@@ -130,8 +134,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 结果
      */
     @Override
-    public int insertDevProductList(DevProductList devProductList) {
-        User currentUser = ShiroUtils.getSysUser();
+    public int insertDevProductList(DevProductList devProductList,HttpServletRequest request) {
+        User currentUser = JwtUtil.getTokenUser(request);
         if (StringUtils.isNull(currentUser)) {
             return 0;
         }
@@ -168,11 +172,11 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 结果
      */
     @Override
-    public int updateDevProductList(DevProductList devProductList) {
+    public int updateDevProductList(DevProductList devProductList,HttpServletRequest request) {
         if (devProductList.getPriceImport() != 0.0f) {
             devProductList.setPrice(new BigDecimal(devProductList.getPriceImport())); // 设置导入价格
         }
-        devProductList.setCompanyId(ShiroUtils.getCompanyId());
+        devProductList.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId());
         // 更新产品库存记录的产品信息
         ProductStock productStock = productStockMapper.selectProductStockByProId(devProductList.getId());
         if (!StringUtils.isNull(productStock)) {
@@ -191,13 +195,13 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 结果
      */
     @Override
-    public int deleteDevProductListByIds(String ids) {
+    public int deleteDevProductListByIds(String ids,HttpServletRequest request) {
         Integer[] productIds = Convert.toIntArray(ids);
         DevProductList product = null;
         for (Integer productId : productIds) {
             product = devProductListMapper.selectDevProductListById(productId);
             // 校验是否有相关联的产品文件未删除
-            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(productId, ShiroUtils.getCompanyId());
+            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(productId, JwtUtil.getTokenUser(request).getCompanyId());
             if (!StringUtils.isEmpty(fileSourceInfos)) {
                 throw new BusinessException("请先删除" + product.getProductCode() + "的关联文件");
             }
@@ -218,7 +222,7 @@ public class DevProductListServiceImpl implements IDevProductListService {
     }
 
     @Override
-    public String importProduct(List<DevProductList> list, boolean isUpdateSupport) {
+    public String importProduct(List<DevProductList> list, boolean isUpdateSupport, HttpServletRequest request) {
         if (StringUtils.isNull(list) || list.size() == 0) {
             throw new BusinessException("导入产品数据不能为空！");
         }
@@ -227,7 +231,7 @@ public class DevProductListServiceImpl implements IDevProductListService {
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
 
-        User currentUser = ShiroUtils.getSysUser();
+        User currentUser =JwtUtil.getTokenUser(request);
         if (StringUtils.isNull(currentUser)) {
             throw new BusinessException("操作异常!");
         }
@@ -241,11 +245,11 @@ public class DevProductListServiceImpl implements IDevProductListService {
                 if (StringUtils.isNull(devProductList)) {
                     product.setDef_id(0);
                     successNum++;
-                    this.insertDevProductList(product);
+                    this.insertDevProductList(product,request);
                     successMsg.append("<br/>" + successNum + "、产品 " + product.getProductCode() + " 导入成功");
                 } else if (isUpdateSupport) {
                     product.setId(devProductList.getId());
-                    this.updateDevProductList(product);
+                    this.updateDevProductList(product,request);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、产品 " + product.getProductCode() + " 更新成功");
                 } else {
@@ -273,8 +277,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return
      */
     @Override
-    public List<DevProductList> selectProductAllByCompanyId() {
-        User user = ShiroUtils.getSysUser();
+    public List<DevProductList> selectProductAllByCompanyId(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) return Collections.emptyList();
         return devProductListMapper.selectProductAllByCompanyId(user.getCompanyId());
     }
@@ -303,8 +307,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return
      */
     @Override
-    public String checkProductCodeUnique(DevProductList product) {
-        Integer companyId = ShiroUtils.getSysUser().getCompanyId();
+    public String checkProductCodeUnique(DevProductList product,HttpServletRequest request) {
+        Integer companyId = JwtUtil.getTokenUser(request).getCompanyId();
         DevProductList productUnique = devProductListMapper.checkProductCodeUnique(product.getProductCode(), companyId);
         if (!StringUtils.isNull(productUnique) && product.getId() != productUnique.getId()) { //公司存在该产品编码
             return ProductConstants.PRODUCT_CODE_NOT_UNIQUE;
@@ -384,9 +388,9 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return
      */
     @Override
-    public int ecnChange(DevProductList productList) {
+    public int ecnChange(DevProductList productList,HttpServletRequest request) {
         if (productList == null) return 0;
-        User u = ShiroUtils.getSysUser();
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) return 0;
         // 查询产品信息
         DevProductList product = devProductListMapper.selectDevProductListById(productList.getId());
@@ -415,9 +419,9 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return
      */
     @Override
-    public List<DevProductList> selectProductAllByOrderId(int orderId) {
+    public List<DevProductList> selectProductAllByOrderId(int orderId,HttpServletRequest request) {
         if (orderId == -1) {
-            return this.selectProductAllByCompanyId();
+            return this.selectProductAllByCompanyId(request.getCookies());
         } else {
             return devProductListMapper.findProductByOrderId(orderId);
         }
@@ -430,8 +434,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 结果
      */
     @Override
-    public List<DevProductList> selectProNameAllByComId() {
-        User user = ShiroUtils.getSysUser();
+    public List<DevProductList> selectProNameAllByComId(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) {
             return Collections.emptyList();
         }

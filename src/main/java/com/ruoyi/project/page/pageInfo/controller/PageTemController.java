@@ -20,6 +20,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,7 @@ public class PageTemController extends BaseController {
      */
     @PostMapping("/file/list")
     @ResponseBody
-    public TableDataInfo list(FileSourceInfo fileSourceInfo)
+    public TableDataInfo list(FileSourceInfo fileSourceInfo, HttpServletRequest request)
     {
         if(fileSourceInfo.getSaveId() != null) {
             //根据工单id查询对应的产品id
@@ -129,7 +130,7 @@ public class PageTemController extends BaseController {
                 if (productList != null) {
                     fileSourceInfo.setSaveId(productList.getId());
                     startPage();
-                    List<FileSourceInfo> list = fileSourceInfoService.selectFileSourceInfoList(fileSourceInfo);
+                    List<FileSourceInfo> list = fileSourceInfoService.selectFileSourceInfoList(fileSourceInfo,request);
                     return getDataTable(list);
                 }
             }

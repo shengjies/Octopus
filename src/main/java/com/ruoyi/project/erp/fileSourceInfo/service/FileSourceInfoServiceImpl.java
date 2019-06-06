@@ -8,6 +8,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import com.ruoyi.project.erp.fileSourceInfo.mapper.FileSourceInfoMapper;
 import com.ruoyi.project.erp.fileSourceInfo.domain.FileSourceInfo;
 import com.ruoyi.project.erp.fileSourceInfo.service.IFileSourceInfoService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 文件素材管理 服务层实现
@@ -37,10 +40,10 @@ public class FileSourceInfoServiceImpl implements IFileSourceInfoService
      */
 	@Override
 	@DataSource(DataSourceType.ERP)
-	public List<FileSourceInfo> selectFileSourceInfoList(FileSourceInfo fileSourceInfo)
+	public List<FileSourceInfo> selectFileSourceInfoList(FileSourceInfo fileSourceInfo, HttpServletRequest request)
 	{
 		if(fileSourceInfo.getCompanyId() == null) {
-			User user = ShiroUtils.getSysUser();
+			User user = JwtUtil.getTokenUser(request);
 			if (user == null) return Collections.emptyList();
 			fileSourceInfo.setCompanyId(user.getCompanyId());
 		}

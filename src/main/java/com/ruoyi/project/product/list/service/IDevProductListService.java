@@ -1,7 +1,10 @@
 package com.ruoyi.project.product.list.service;
 
 import com.ruoyi.project.product.list.domain.DevProductList;
+import com.sun.jna.platform.win32.OaIdl;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -26,7 +29,7 @@ public interface IDevProductListService
      * @param devProductList 产品管理信息
      * @return 产品管理集合
      */
-	public List<DevProductList> selectDevProductListList(DevProductList devProductList);
+	public List<DevProductList> selectDevProductListList(DevProductList devProductList, HttpServletRequest request);
 	
 	/**
      * 新增产品管理
@@ -34,7 +37,7 @@ public interface IDevProductListService
      * @param devProductList 产品管理信息
      * @return 结果
      */
-	public int insertDevProductList(DevProductList devProductList);
+	public int insertDevProductList(DevProductList devProductList,HttpServletRequest request);
 	
 	/**
      * 修改产品管理
@@ -42,7 +45,7 @@ public interface IDevProductListService
      * @param devProductList 产品管理信息
      * @return 结果
      */
-	public int updateDevProductList(DevProductList devProductList);
+	public int updateDevProductList(DevProductList devProductList,HttpServletRequest request);
 		
 	/**
      * 删除产品管理信息
@@ -50,7 +53,7 @@ public interface IDevProductListService
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-	public int deleteDevProductListByIds(String ids);
+	public int deleteDevProductListByIds(String ids,HttpServletRequest request);
 
 	/**
 	 * 导入产品数据
@@ -58,13 +61,13 @@ public interface IDevProductListService
 	 * @param isUpdateSupport
 	 * @return
 	 */
-	String importProduct(List<DevProductList> list,boolean isUpdateSupport);
+	String importProduct(List<DevProductList> list, boolean isUpdateSupport, HttpServletRequest request);
 
 	/**
 	 * 查询所属公司所有的产品信息
 	 * @return
 	 */
-	public List<DevProductList> selectProductAllByCompanyId();
+	public List<DevProductList> selectProductAllByCompanyId(Cookie[] cookies);
 
 	/**
 	 * 通过产品id查询产品信息
@@ -78,7 +81,7 @@ public interface IDevProductListService
 	 * @param product
 	 * @return
 	 */
-	String checkProductCodeUnique(DevProductList product);
+	String checkProductCodeUnique(DevProductList product,HttpServletRequest request);
 
 	/**
 	 * 通过客户id查询相关联的产品信息
@@ -107,20 +110,20 @@ public interface IDevProductListService
 	 * @param productList
 	 * @return
 	 */
-	int ecnChange(DevProductList productList);
+	int ecnChange(DevProductList productList,HttpServletRequest request);
 
 	/**
 	 * 根据订单id查询对应的产品信息
 	 * @param orderId 订单id
 	 * @return
 	 */
-	List<DevProductList> selectProductAllByOrderId(int orderId);
+	List<DevProductList> selectProductAllByOrderId(int orderId,HttpServletRequest request);
 
 	/**
 	 * 查询各公司的产品名称信息
 	 * @return 结果
 	 */
-	List<DevProductList> selectProNameAllByComId();
+	List<DevProductList> selectProNameAllByComId(Cookie[] cookies);
 
 	/**
 	 * 根据公司id和产品编号查询对应的产品信息

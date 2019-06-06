@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品管理 信息操作处理
  *
@@ -49,9 +51,9 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(DevProductList devProductList) {
+    public TableDataInfo list(DevProductList devProductList, HttpServletRequest request) {
         startPage();
-        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList);
+        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList, request);
         return getDataTable(list);
     }
 
@@ -62,8 +64,8 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(DevProductList devProductList) {
-        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList);
+    public AjaxResult export(DevProductList devProductList, HttpServletRequest request) {
+        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList, request);
         ExcelUtil<DevProductList> util = new ExcelUtil<DevProductList>(DevProductList.class);
         return util.exportExcel(list, "devProductList");
     }
@@ -83,8 +85,8 @@ public class DevProductListController extends BaseController {
     @Log(title = "产品管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(DevProductList devProductList) {
-        return toAjax(devProductListService.insertDevProductList(devProductList));
+    public AjaxResult addSave(DevProductList devProductList, HttpServletRequest request) {
+        return toAjax(devProductListService.insertDevProductList(devProductList, request));
     }
 
     /**
@@ -104,8 +106,8 @@ public class DevProductListController extends BaseController {
     @Log(title = "产品管理", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(DevProductList devProductList) {
-        return toAjax(devProductListService.updateDevProductList(devProductList));
+    public AjaxResult editSave(DevProductList devProductList,HttpServletRequest request) {
+        return toAjax(devProductListService.updateDevProductList(devProductList,request));
     }
 
     /**
@@ -115,9 +117,9 @@ public class DevProductListController extends BaseController {
     @Log(title = "产品管理", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids) {
+    public AjaxResult remove(String ids,HttpServletRequest request) {
         try {
-            return toAjax(devProductListService.deleteDevProductListByIds(ids));
+            return toAjax(devProductListService.deleteDevProductListByIds(ids,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -140,11 +142,11 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+    public AjaxResult importData(MultipartFile file, boolean updateSupport, HttpServletRequest request) throws Exception {
         ExcelUtil<DevProductList> util = new ExcelUtil<>(DevProductList.class);
         List<DevProductList> devProductList = util.importExcel(file.getInputStream());
         try {
-            return AjaxResult.success(devProductListService.importProduct(devProductList, updateSupport));
+            return AjaxResult.success(devProductListService.importProduct(devProductList, updateSupport, request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -170,65 +172,70 @@ public class DevProductListController extends BaseController {
      */
     @PostMapping("/checkProductCodeUnique")
     @ResponseBody
-    public String checkProductCodeUnique(DevProductList product) {
-        return devProductListService.checkProductCodeUnique(product);
+    public String checkProductCodeUnique(DevProductList product, HttpServletRequest request) {
+        return devProductListService.checkProductCodeUnique(product, request);
     }
 
     /**
      * 通过客户id查询相关产品信息
+     *
      * @param customerId 客户id
      * @return 结果
      */
     @PostMapping("/findProductByCustomerId")
     @ResponseBody
-    public AjaxResult findProductByCustomerId(Integer customerId){
+    public AjaxResult findProductByCustomerId(Integer customerId) {
         List<DevProductList> productList = devProductListService.findProductByCustomerId(customerId);
         return AjaxResult.success("success", productList);
     }
 
     /**
      * 通过产品id和客户id查询产品信息
-     * @param productId 产品id
+     *
+     * @param productId  产品id
      * @param customerId 客户id
      * @return 结果
      */
     @PostMapping("/findProductByProIdAndCusId")
     @ResponseBody
-    public AjaxResult findProductByProIdAndCusId(Integer productId,Integer customerId){
-        return AjaxResult.success("success",devProductListService.findProductByProIdAndCusId(productId,customerId));
+    public AjaxResult findProductByProIdAndCusId(Integer productId, Integer customerId) {
+        return AjaxResult.success("success", devProductListService.findProductByProIdAndCusId(productId, customerId));
     }
 
     /**
      * 查询对应客户关联的产品信息
+     *
      * @param customerId 客户编号
      * @return
      */
     @ResponseBody
     @RequestMapping("/selectProductByCustomerId")
-    public AjaxResult selectProductByCustomerId(int customerId){
+    public AjaxResult selectProductByCustomerId(int customerId) {
         List<DevProductList> productLists = devProductListService.selectProductByCustomerId(customerId);
         return AjaxResult.success("success", productLists);
     }
 
     /**
      * ecn 变更
+     *
      * @param productList
      * @return
      */
     @ResponseBody
     @RequestMapping("/ecn")
-    public AjaxResult ecnChange(DevProductList productList){
-        return toAjax(devProductListService.ecnChange(productList));
+    public AjaxResult ecnChange(DevProductList productList,HttpServletRequest request) {
+        return toAjax(devProductListService.ecnChange(productList,request));
     }
 
     /**
      * 查询对应的产品数据
+     *
      * @param orderId
      * @return
      */
     @ResponseBody
     @RequestMapping("/selectProductAllByOrderId")
-    public AjaxResult selectProductAllByOrderId(int orderId){
-        return AjaxResult.success("success",devProductListService.selectProductAllByOrderId(orderId));
+    public AjaxResult selectProductAllByOrderId(int orderId, HttpServletRequest request) {
+        return AjaxResult.success("success", devProductListService.selectProductAllByOrderId(orderId, request));
     }
 }

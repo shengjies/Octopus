@@ -27,6 +27,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 文件素材管理 信息操作处理
  * 
@@ -66,10 +68,10 @@ public class FileSourceInfoController extends BaseController
 	@RequiresPermissions("erp:fileSourceInfo:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(FileSourceInfo fileSourceInfo)
+	public TableDataInfo list(FileSourceInfo fileSourceInfo, HttpServletRequest request)
 	{
 		startPage();
-        List<FileSourceInfo> list = fileSourceInfoService.selectFileSourceInfoList(fileSourceInfo);
+        List<FileSourceInfo> list = fileSourceInfoService.selectFileSourceInfoList(fileSourceInfo,request);
 		return getDataTable(list);
 	}
 	
