@@ -17,6 +17,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 物料供应商关联 信息操作处理
  *
@@ -77,9 +79,9 @@ public class MaterielSupplierController extends BaseController {
     @Log(title = "物料供应商关联", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(MaterielSupplier materielSupplier) {
+    public AjaxResult addSave(MaterielSupplier materielSupplier, HttpServletRequest request) {
         try {
-            return toAjax(materielSupplierService.insertMaterielSupplier(materielSupplier));
+            return toAjax(materielSupplierService.insertMaterielSupplier(materielSupplier,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -153,8 +155,8 @@ public class MaterielSupplierController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/findSupplierCodeByMaterielId")
-    public AjaxResult findSupplierCodeByMaterielId(int mid,int sid){
-            return AjaxResult.success("success",materielSupplierService.findSupplierCodeByMaterielId(mid,sid));
+    public AjaxResult findSupplierCodeByMaterielId(int mid,int sid,HttpServletRequest request){
+            return AjaxResult.success("success",materielSupplierService.findSupplierCodeByMaterielId(mid,sid,request));
     }
 
     /**

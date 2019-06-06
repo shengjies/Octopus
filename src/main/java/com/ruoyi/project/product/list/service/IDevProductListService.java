@@ -1,7 +1,6 @@
 package com.ruoyi.project.product.list.service;
 
 import com.ruoyi.project.product.list.domain.DevProductList;
-import com.sun.jna.platform.win32.OaIdl;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +28,7 @@ public interface IDevProductListService
      * @param devProductList 产品管理信息
      * @return 产品管理集合
      */
-	public List<DevProductList> selectDevProductListList(DevProductList devProductList, HttpServletRequest request);
+	public List<DevProductList> selectDevProductListList(DevProductList devProductList);
 	
 	/**
      * 新增产品管理
@@ -45,7 +44,7 @@ public interface IDevProductListService
      * @param devProductList 产品管理信息
      * @return 结果
      */
-	public int updateDevProductList(DevProductList devProductList,HttpServletRequest request);
+	public int updateDevProductList(DevProductList devProductList);
 		
 	/**
      * 删除产品管理信息
@@ -61,7 +60,7 @@ public interface IDevProductListService
 	 * @param isUpdateSupport
 	 * @return
 	 */
-	String importProduct(List<DevProductList> list, boolean isUpdateSupport, HttpServletRequest request);
+	String importProduct(List<DevProductList> list,boolean isUpdateSupport,HttpServletRequest request);
 
 	/**
 	 * 查询所属公司所有的产品信息
@@ -81,7 +80,7 @@ public interface IDevProductListService
 	 * @param product
 	 * @return
 	 */
-	String checkProductCodeUnique(DevProductList product,HttpServletRequest request);
+	String checkProductCodeUnique(DevProductList product, HttpServletRequest request);
 
 	/**
 	 * 通过客户id查询相关联的产品信息

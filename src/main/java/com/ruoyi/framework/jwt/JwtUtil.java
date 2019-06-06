@@ -77,6 +77,7 @@ public static final String CLAIM_KEY_USER="sub";
 
     public static User getTokenCookie(Cookie[] cookies){
         String token = null;
+        if(cookies == null)return null;
         for (Cookie cookie : cookies) {
             if(cookie.getName().equals("token")){
                 token = cookie.getValue();

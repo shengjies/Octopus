@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 库存内部处理主 信息操作处理
  * 
@@ -111,9 +113,9 @@ public class StockHandleController extends BaseController
 	@Log(title = "库存内部处理主", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody StockHandle stockHandle)
+	public AjaxResult addSave(@RequestBody StockHandle stockHandle, HttpServletRequest request)
 	{		
-		return toAjax(stockHandleService.insertStockHandle(stockHandle));
+		return toAjax(stockHandleService.insertStockHandle(stockHandle,request));
 	}
 
 	/**

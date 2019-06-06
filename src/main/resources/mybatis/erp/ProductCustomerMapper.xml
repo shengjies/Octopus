@@ -104,4 +104,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectProductCustomerVo"/>
          where product_id = #{pid} and customer_id = #{cid} limit 1;
     </select>
+
+    <!--查询对应产品是否关联客户-->
+    <select id="selectProductCustomerByProIdOrCusIdLimit1" resultMap="ProductCustomerResult">
+        <include refid="selectProductCustomerVo"/> where product_id = #{productId} limit 1;
+    </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.ruoyi.project.erp.orderInfo.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
@@ -19,6 +20,8 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 订单数据 信息操作处理
@@ -48,10 +51,10 @@ public class OrderInfoController extends BaseController
 	@RequiresPermissions("erp:orderInfo:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(OrderInfo orderInfo)
+	public TableDataInfo list(OrderInfo orderInfo,HttpServletRequest request)
 	{
 		startPage();
-        List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo);
+        List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo,request);
 		return getDataTable(list);
 	}
 	
@@ -62,9 +65,9 @@ public class OrderInfoController extends BaseController
 	@RequiresPermissions("erp:orderInfo:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(OrderInfo orderInfo)
+    public AjaxResult export(OrderInfo orderInfo,HttpServletRequest request)
     {
-    	List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo);
+    	List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo,request);
         ExcelUtil<OrderInfo> util = new ExcelUtil<OrderInfo>(OrderInfo.class);
         return util.exportExcel(list, "orderInfo");
     }
@@ -85,9 +88,9 @@ public class OrderInfoController extends BaseController
 	@Log(title = "订单数据", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody OrderInfo orderInfo)
+	public AjaxResult addSave(@RequestBody OrderInfo orderInfo, HttpServletRequest request)
 	{
-		return toAjax(orderInfoService.insertOrderInfo(orderInfo));
+		return toAjax(orderInfoService.insertOrderInfo(orderInfo,request));
 	}
 
 	/**

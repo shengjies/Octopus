@@ -8,6 +8,7 @@ import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.customer.mapper.CustomerMapper;
 import com.ruoyi.project.erp.orderDetails.domain.OrderDetails;
 import com.ruoyi.project.erp.orderDetails.mapper.OrderDetailsMapper;
@@ -15,12 +16,15 @@ import com.ruoyi.project.erp.orderInfo.domain.OrderInfo;
 import com.ruoyi.project.erp.orderInfo.mapper.OrderInfoMapper;
 import com.ruoyi.project.product.list.domain.DevProductList;
 import com.ruoyi.project.product.list.mapper.DevProductListMapper;
+import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.erp.productCustomer.mapper.ProductCustomerMapper;
 import com.ruoyi.project.erp.productCustomer.domain.ProductCustomer;
 import com.ruoyi.project.erp.productCustomer.service.IProductCustomerService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 产品客户关联 服务层实现
@@ -82,7 +86,7 @@ public class ProductCustomerServiceImpl implements IProductCustomerService {
      * @return 结果
      */
     @Override
-    public int insertProductCustomer(ProductCustomer productCustomer) {
+    public int insertProductCustomer(ProductCustomer productCustomer, HttpServletRequest request) {
 
         // 判断客户是否存在相同的产品编码
         int count = productCustomerMapper.checkCustomerCodeUnique(productCustomer.getCustomerId(), productCustomer.getCustomerCode());
@@ -94,7 +98,7 @@ public class ProductCustomerServiceImpl implements IProductCustomerService {
         if (count1 > 0) { // 数据库存在记录
             throw new BusinessException("该产品已经关联过该客户");
         }
-        productCustomer.setCreateId(ShiroUtils.getUserId().intValue()); // 创建者id
+        productCustomer.setCreateId(JwtUtil.getTokenUser(request).getUserId().intValue()); // 创建者id
         productCustomer.setCreateTime(new Date()); // 创建时间
         return productCustomerMapper.insertProductCustomer(productCustomer);
     }
@@ -129,13 +133,14 @@ public class ProductCustomerServiceImpl implements IProductCustomerService {
      * @return
      */
     @Override
-    public ProductCustomer findCustomerCode(int cid, int pid) {
+    public ProductCustomer findCustomerCode(int cid, int pid,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         // 产品信息
-        DevProductList product = productMapper.selectDevProductListById(pid);
+//        DevProductList product = productMapper.selectDevProductListById(pid);
         // 客户产品关联
         ProductCustomer customerCode = productCustomerMapper.findCustomerCode(cid, pid);
         // 查询各公司已审核未交付完成的订单明细信息
-        List<OrderDetails> orderDetailsList = orderDetailsMapper.selectOrderDetailsListByProIdAndCusId(ShiroUtils.getCompanyId(), cid, pid, StockConstants.ORDER_STATUS_TWO);
+        List<OrderDetails> orderDetailsList = orderDetailsMapper.selectOrderDetailsListByProIdAndCusId(u.getCompanyId(), cid, pid, StockConstants.ORDER_STATUS_TWO);
         customerCode.setOrderDetails(orderDetailsList);
         return customerCode;
     }

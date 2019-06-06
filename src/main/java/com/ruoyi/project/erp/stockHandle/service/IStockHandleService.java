@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.stockHandle.service;
 
 import com.ruoyi.project.erp.stockHandle.domain.StockHandle;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public interface IStockHandleService
      * @param stockHandle 库存内部处理主信息
      * @return 结果
      */
-	public int insertStockHandle(StockHandle stockHandle);
+	public int insertStockHandle(StockHandle stockHandle, HttpServletRequest request);
 	
 	/**
      * 修改库存内部处理主

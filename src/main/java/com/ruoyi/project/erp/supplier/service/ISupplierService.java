@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.supplier.service;
 
 import com.ruoyi.project.erp.supplier.domain.Supplier;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface ISupplierService {
      * @param supplier 供应商数据信息
      * @return 供应商数据集合
      */
-    public List<Supplier> selectSupplierList(Supplier supplier);
+    public List<Supplier> selectSupplierList(Supplier supplier, HttpServletRequest request);
 
     /**
      * 新增供应商数据
@@ -33,7 +34,7 @@ public interface ISupplierService {
      * @param supplier 供应商数据信息
      * @return 结果
      */
-    public int insertSupplier(Supplier supplier);
+    public int insertSupplier(Supplier supplier,HttpServletRequest request);
 
     /**
      * 修改供应商数据

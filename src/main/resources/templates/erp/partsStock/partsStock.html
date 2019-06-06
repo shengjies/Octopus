@@ -12,14 +12,14 @@
 						<ul>
 							<li>
 								半成品编码：
-								<select id="partCode" name="partCode" th:with="allParts=${@parts.selectAllPartsByComId()}">
+								<select id="partCode" name="partCode" th:with="allParts=${@parts.selectAllPartsByComId(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="par:${allParts}" th:text="${par.partsCode}" th:value="${par.partsCode}"></option>
 								</select>
 							</li>
 							<li>
 								半成品名称：
-								<select id="partName" name="partName" th:with="allParts=${@parts.selectAllPartsNameByComId()}">
+								<select id="partName" name="partName" th:with="allParts=${@parts.selectAllPartsNameByComId(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="par:${allParts}" th:text="${par.partsName}" th:value="${par.partsName}"></option>
 								</select>

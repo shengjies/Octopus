@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 客户数据 信息操作处理
  *
@@ -46,9 +48,9 @@ public class CustomerController extends BaseController {
     @RequiresPermissions("erp:customer:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Customer customer) {
+    public TableDataInfo list(Customer customer, HttpServletRequest request) {
         startPage();
-        List<Customer> list = customerService.selectCustomerList(customer);
+        List<Customer> list = customerService.selectCustomerList(customer,request);
         return getDataTable(list);
     }
 
@@ -59,8 +61,8 @@ public class CustomerController extends BaseController {
     @RequiresPermissions("erp:customer:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Customer customer) {
-        List<Customer> list = customerService.selectCustomerList(customer);
+    public AjaxResult export(Customer customer,HttpServletRequest request) {
+        List<Customer> list = customerService.selectCustomerList(customer,request);
         ExcelUtil<Customer> util = new ExcelUtil<Customer>(Customer.class);
         return util.exportExcel(list, "customer");
     }
@@ -80,8 +82,8 @@ public class CustomerController extends BaseController {
     @Log(title = "客户数据", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Customer customer) {
-        return toAjax(customerService.insertCustomer(customer));
+    public AjaxResult addSave(Customer customer,HttpServletRequest request) {
+        return toAjax(customerService.insertCustomer(customer,request));
     }
 
     /**

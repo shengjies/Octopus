@@ -3,6 +3,7 @@ package com.ruoyi.project.erp.materielLedger.service;
 import com.ruoyi.project.erp.materielLedger.domain.MaterielLedger;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public interface IMaterielLedgerService
      * @param materielLedger 物料对账信息
      * @return 物料对账集合
      */
-	public List<MaterielLedger> selectMaterielLedgerList(MaterielLedger materielLedger);
+	public List<MaterielLedger> selectMaterielLedgerList(MaterielLedger materielLedger,HttpServletRequest request);
 	
 	/**
      * 新增物料对账
@@ -35,7 +36,7 @@ public interface IMaterielLedgerService
      * @param materielLedger 物料对账信息
      * @return 结果
      */
-	public int insertMaterielLedger(MaterielLedger materielLedger);
+	public int insertMaterielLedger(MaterielLedger materielLedger, HttpServletRequest request);
 	
 	/**
      * 修改物料对账
@@ -50,7 +51,7 @@ public interface IMaterielLedgerService
 	 * @param materielLedger 对账对象
 	 * @return
 	 */
-	int  cancel(MaterielLedger materielLedger);
+	int  cancel(MaterielLedger materielLedger,HttpServletRequest request);
 
 	/**
 	 * 下载物料对账EXCEl

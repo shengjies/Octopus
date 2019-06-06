@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.customer.service;
 
 import com.ruoyi.project.erp.customer.domain.Customer;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface ICustomerService {
      * @param customer 客户数据信息
      * @return 客户数据集合
      */
-    public List<Customer> selectCustomerList(Customer customer);
+    public List<Customer> selectCustomerList(Customer customer, HttpServletRequest request);
 
     /**
      * 新增客户数据
@@ -33,7 +34,7 @@ public interface ICustomerService {
      * @param customer 客户数据信息
      * @return 结果
      */
-    public int insertCustomer(Customer customer);
+    public int insertCustomer(Customer customer,HttpServletRequest request);
 
     /**
      * 修改客户数据

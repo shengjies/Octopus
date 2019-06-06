@@ -14,6 +14,7 @@ import com.ruoyi.common.utils.poi.ExcelUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
@@ -36,6 +37,8 @@ import com.ruoyi.project.erp.materielLedger.mapper.MaterielLedgerMapper;
 import com.ruoyi.project.erp.materielLedger.domain.MaterielLedger;
 import com.ruoyi.project.erp.materielLedger.service.IMaterielLedgerService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料对账 服务层实现
@@ -86,8 +89,8 @@ public class MaterielLedgerServiceImpl implements IMaterielLedgerService {
      */
     @Override
     @DataSource(DataSourceType.ERP)
-    public List<MaterielLedger> selectMaterielLedgerList(MaterielLedger materielLedger) {
-        User user = ShiroUtils.getSysUser();
+    public List<MaterielLedger> selectMaterielLedgerList(MaterielLedger materielLedger,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return Collections.emptyList();
         materielLedger.setCompanyId(user.getCompanyId());
         return materielLedgerMapper.selectMaterielLedgerList(materielLedger);
@@ -100,8 +103,8 @@ public class MaterielLedgerServiceImpl implements IMaterielLedgerService {
      * @return 结果
      */
     @Override
-    public int insertMaterielLedger(MaterielLedger materielLedger) {
-        User user = ShiroUtils.getSysUser();
+    public int insertMaterielLedger(MaterielLedger materielLedger, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return 0;
         Supplier supplier = supplierMapper.selectSupplierById(materielLedger.getSupplierId());
         if (supplier == null) return 0;
@@ -183,8 +186,8 @@ public class MaterielLedgerServiceImpl implements IMaterielLedgerService {
      */
     @Override
     @DataSource(DataSourceType.ERP)
-    public int cancel(MaterielLedger materielLedger) {
-        User u = ShiroUtils.getSysUser();
+    public int cancel(MaterielLedger materielLedger,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         if (u == null) return 0;
         if (materielLedger.getLedgerStatus() == 2) {
             materielLedger.setLedgerPeople(u.getUserName());

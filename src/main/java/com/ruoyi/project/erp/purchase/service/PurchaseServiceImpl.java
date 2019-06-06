@@ -13,6 +13,7 @@ import com.ruoyi.common.utils.poi.ExcelUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.erp.contract.domain.Contract;
@@ -31,6 +32,8 @@ import com.ruoyi.project.erp.purchase.mapper.PurchaseMapper;
 import com.ruoyi.project.erp.purchase.domain.Purchase;
 import com.ruoyi.common.support.Convert;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 采购单 服务层实现
@@ -79,8 +82,8 @@ public class PurchaseServiceImpl implements IPurchaseService {
      * @return 采购单集合
      */
     @Override
-    public List<Purchase> selectPurchaseList(Purchase purchase) {
-        User user = ShiroUtils.getSysUser();
+    public List<Purchase> selectPurchaseList(Purchase purchase,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return Collections.emptyList();
         purchase.setCompanyId(user.getCompanyId());
         return purchaseMapper.selectPurchaseList(purchase);
@@ -93,9 +96,9 @@ public class PurchaseServiceImpl implements IPurchaseService {
      * @return 结果
      */
     @Override
-    public int insertPurchase(Purchase purchase) {
+    public int insertPurchase(Purchase purchase,HttpServletRequest request) {
         if (purchase.getSupplierId() == null) return 0;
-        User user = ShiroUtils.getSysUser();
+        User user = JwtUtil.getTokenUser(request);
         if (user == null) return 0;
         //根据供应商id查询对应的供应商信息
         Supplier supplier = supplierMapper.selectSupplierById(purchase.getSupplierId());
@@ -247,7 +250,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
      * @return
      */
     @Override
-    public Workbook uploadPurchase(Integer id) {
+    public Workbook uploadPurchase(Integer id, HttpServletRequest request) {
         // 查询采购单
         Purchase purchase = purchaseMapper.selectPurchaseById(id);
         // 查询采购单明细
@@ -256,7 +259,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
         List<PurchaseDetails> purchaseDetailList = detailsMapper.selectPurchaseDetailsList(purchaseDetails);
         purchase.setDetails(purchaseDetailList);
         // 查询合同
-        Contract contract = contractService.selectContractByCompanyId();
+        Contract contract = contractService.selectContractByCompanyId(request);
         // 查询公司
         DevCompany company = companyMapper.selectDevCompanyById(purchase.getCompanyId());
         // 创建工作簿对象

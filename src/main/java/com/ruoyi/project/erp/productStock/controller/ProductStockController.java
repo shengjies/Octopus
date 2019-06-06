@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品库存 信息操作处理
  *
@@ -46,9 +48,9 @@ public class ProductStockController extends BaseController {
     @RequiresPermissions("erp:productStock:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ProductStock productStock) {
+    public TableDataInfo list(ProductStock productStock, HttpServletRequest request) {
         startPage();
-        List<ProductStock> list = productStockService.selectProductStockList(productStock);
+        List<ProductStock> list = productStockService.selectProductStockList(productStock,request);
         return getDataTable(list);
     }
 
@@ -59,8 +61,8 @@ public class ProductStockController extends BaseController {
     @RequiresPermissions("erp:productStock:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ProductStock productStock) {
-        List<ProductStock> list = productStockService.selectProductStockList(productStock);
+    public AjaxResult export(ProductStock productStock,HttpServletRequest request) {
+        List<ProductStock> list = productStockService.selectProductStockList(productStock,request);
         ExcelUtil<ProductStock> util = new ExcelUtil<ProductStock>(ProductStock.class);
         return util.exportExcel(list, "productStock");
     }
@@ -150,8 +152,8 @@ public class ProductStockController extends BaseController {
      */
     @PostMapping("/productStockList")
     @ResponseBody
-    public AjaxResult productStockList(){
+    public AjaxResult productStockList(HttpServletRequest request){
         ProductStock productStock = new ProductStock();
-        return AjaxResult.success("success",productStockService.selectProductStockList(productStock));
+        return AjaxResult.success("success",productStockService.selectProductStockList(productStock,request));
     }
 }

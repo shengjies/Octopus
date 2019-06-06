@@ -36,7 +36,7 @@ public interface IProductLedgerService
      * @param productLedger 产品对账信息
      * @return 结果
      */
-	public int insertProductLedger(ProductLedger productLedger);
+	public int insertProductLedger(ProductLedger productLedger,HttpServletRequest request);
 	
 	/**
      * 修改产品对账
@@ -51,7 +51,7 @@ public interface IProductLedgerService
 	 * @param productLedger
 	 * @return
 	 */
-	int cancelLedger(ProductLedger productLedger);
+	int cancelLedger(ProductLedger productLedger,HttpServletRequest request);
 		
 	/**
      * 删除产品对账信息

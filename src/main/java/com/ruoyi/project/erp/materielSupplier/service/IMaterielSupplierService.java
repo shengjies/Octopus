@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.materielSupplier.service;
 
 import com.ruoyi.project.erp.materielSupplier.domain.MaterielSupplier;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public interface IMaterielSupplierService {
      * @param materielSupplier 物料供应商关联信息
      * @return 结果
      */
-    public int insertMaterielSupplier(MaterielSupplier materielSupplier);
+    public int insertMaterielSupplier(MaterielSupplier materielSupplier, HttpServletRequest request);
 
     /**
      * 修改物料供应商关联
@@ -64,7 +65,7 @@ public interface IMaterielSupplierService {
      * @param sid 供应商id
      * @return
      */
-    MaterielSupplier findSupplierCodeByMaterielId(int mid,int sid);
+    MaterielSupplier findSupplierCodeByMaterielId(int mid,int sid,HttpServletRequest request);
 
     /**
      * 查询物料退货采购单信息

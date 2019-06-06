@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 订单数据 服务层实现
  * 
@@ -63,9 +65,9 @@ public class OrderInfoServiceImpl implements IOrderInfoService
      */
 	@Override
 	@DataSource(DataSourceType.ERP)
-	public List<OrderInfo> selectOrderInfoList(OrderInfo orderInfo)
+	public List<OrderInfo> selectOrderInfoList(OrderInfo orderInfo,HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user == null)return Collections.emptyList();
 		orderInfo.setCompanyId(user.getCompanyId());
 	    return orderInfoMapper.selectOrderInfoList(orderInfo);
@@ -78,11 +80,9 @@ public class OrderInfoServiceImpl implements IOrderInfoService
      * @return 结果
      */
 	@Override
-	@DataSource(DataSourceType.ERP)
-	@Transactional
-	public int insertOrderInfo(OrderInfo orderInfo)
+	public int insertOrderInfo(OrderInfo orderInfo, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user ==null)return  0;
 		orderInfo.setCompanyId(user.getCompanyId());
 		orderInfo.setCreate_by(user.getUserId().intValue());

@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.parts.service;
 
 import com.ruoyi.project.erp.parts.domain.Parts;
+
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 /**
@@ -55,12 +57,12 @@ public interface IPartsService
 	 * 查询公司的半成品信息
 	 * @return 半成品列表
 	 */
-	public List<Parts> selectAllPartsByComId();
+	public List<Parts> selectAllPartsByComId(Cookie[] cookies);
 
 	/**
 	 * 查询公司的半成品名称信息，去重查询
 	 * @return 半成品列表
 	 */
-	public List<Parts> selectAllPartsNameByComId();
+	public List<Parts> selectAllPartsNameByComId(Cookie[] cookies);
 	
 }

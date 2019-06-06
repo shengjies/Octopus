@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import com.ruoyi.project.erp.productStock.mapper.ProductStockMapper;
 import com.ruoyi.project.erp.productStock.domain.ProductStock;
 import com.ruoyi.project.erp.productStock.service.IProductStockService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 产品库存 服务层实现
@@ -41,8 +44,8 @@ public class ProductStockServiceImpl implements IProductStockService {
      * @return 产品库存集合
      */
     @Override
-    public List<ProductStock> selectProductStockList(ProductStock productStock) {
-        User user = ShiroUtils.getSysUser();
+    public List<ProductStock> selectProductStockList(ProductStock productStock, HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }

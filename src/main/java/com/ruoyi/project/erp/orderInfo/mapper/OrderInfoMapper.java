@@ -40,6 +40,7 @@ public interface OrderInfoMapper {
      * @param orderInfo 订单数据信息
      * @return 结果
      */
+    @DataSource(DataSourceType.ERP)
     public int insertOrderInfo(OrderInfo orderInfo);
 
     /**

@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.contract.service;
 
 import com.ruoyi.project.erp.contract.domain.Contract;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface IContractService
 	 * 根据公司查询对应的合同
 	 * @return
 	 */
-	Contract selectContractByCompanyId();
+	Contract selectContractByCompanyId(HttpServletRequest request);
 	
 	/**
      * 查询合同列表
@@ -39,7 +41,7 @@ public interface IContractService
      * @param contract 合同信息
      * @return 结果
      */
-	public Contract insertContract(Contract contract) throws Exception;
+	public Contract insertContract(Contract contract,HttpServletRequest request) throws Exception;
 	
 	/**
      * 修改合同

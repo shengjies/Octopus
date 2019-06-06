@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.productCustomer.service;
 
 import com.ruoyi.project.erp.productCustomer.domain.ProductCustomer;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public interface IProductCustomerService {
      * @param productCustomer 产品客户关联信息
      * @return 结果
      */
-    public int insertProductCustomer(ProductCustomer productCustomer);
+    public int insertProductCustomer(ProductCustomer productCustomer, HttpServletRequest request);
 
     /**
      * 修改产品客户关联
@@ -57,6 +58,6 @@ public interface IProductCustomerService {
      * @param pid 产品编号
      * @return
      */
-    ProductCustomer findCustomerCode(int cid,int pid);
+    ProductCustomer findCustomerCode(int cid,int pid,HttpServletRequest request);
 
 }

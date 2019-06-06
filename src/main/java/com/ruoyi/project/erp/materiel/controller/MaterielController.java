@@ -3,6 +3,7 @@ package com.ruoyi.project.erp.materiel.controller;
 import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materielSupplier.domain.MaterielSupplier;
 import com.ruoyi.project.erp.materielSupplier.service.IMaterielSupplierService;
 import com.ruoyi.project.product.list.domain.DevProductList;
@@ -25,6 +26,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料 信息操作处理
@@ -55,9 +58,9 @@ public class MaterielController extends BaseController {
     @RequiresPermissions("erp:materiel:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Materiel materiel) {
+    public TableDataInfo list(Materiel materiel, HttpServletRequest request) {
         startPage();
-        List<Materiel> list = materielService.selectMaterielList(materiel);
+        List<Materiel> list = materielService.selectMaterielList(materiel,request);
         return getDataTable(list);
     }
 
@@ -86,12 +89,12 @@ public class MaterielController extends BaseController {
     @RequiresPermissions("erp:materiel:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+    public AjaxResult importData(MultipartFile file, boolean updateSupport,HttpServletRequest request) throws Exception {
         ExcelUtil<Materiel> util = new ExcelUtil<Materiel>(Materiel.class);
         List<Materiel> materielList = util.importExcel(file.getInputStream());
         String message = null;
         try {
-            message = materielService.importMateriel(materielList, updateSupport);
+            message = materielService.importMateriel(materielList, updateSupport,request);
         } catch (BusinessException e) {
             return AjaxResult.error(e.getMessage());
         }
@@ -104,8 +107,8 @@ public class MaterielController extends BaseController {
     @RequiresPermissions("erp:materiel:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Materiel materiel) {
-        List<Materiel> list = materielService.selectMaterielList(materiel);
+    public AjaxResult export(Materiel materiel,HttpServletRequest request) {
+        List<Materiel> list = materielService.selectMaterielList(materiel,request);
         ExcelUtil<Materiel> util = new ExcelUtil<Materiel>(Materiel.class);
         return util.exportExcel(list, "materiel");
     }
@@ -125,8 +128,8 @@ public class MaterielController extends BaseController {
     @Log(title = "物料", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Materiel materiel) {
-        return toAjax(materielService.insertMateriel(materiel));
+    public AjaxResult addSave(Materiel materiel,HttpServletRequest request) {
+        return toAjax(materielService.insertMateriel(materiel,request));
     }
 
     /**
@@ -157,9 +160,9 @@ public class MaterielController extends BaseController {
     @Log(title = "物料", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids) {
+    public AjaxResult remove(String ids,HttpServletRequest request) {
         try {
-            return toAjax(materielService.deleteMaterielByIds(ids));
+            return toAjax(materielService.deleteMaterielByIds(ids,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -174,8 +177,8 @@ public class MaterielController extends BaseController {
      */
     @RequestMapping("/materielListBySupplierId")
     @ResponseBody
-    public AjaxResult materielListBySupplierId(Integer supplierId) {
-        List<Materiel> materielList = materielService.materielListBySupplierId(supplierId);
+    public AjaxResult materielListBySupplierId(Integer supplierId,HttpServletRequest request) {
+        List<Materiel> materielList = materielService.materielListBySupplierId(supplierId,request);
         return AjaxResult.success("success", materielList);
     }
 
@@ -200,13 +203,14 @@ public class MaterielController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/selectMaterielBySupplierId")
-    public AjaxResult selectMaterielBySupplierId(int sid){
-        return AjaxResult.success("success",materielService.selectMaterielBySupplierId(sid));
+    public AjaxResult selectMaterielBySupplierId(int sid,HttpServletRequest request){
+        return AjaxResult.success("success",materielService.selectMaterielBySupplierId(sid,request));
     }
 
     @PostMapping("/checkMaterielCodeUnique")
     @ResponseBody
-    public String checkMaterielCodeUnique(Materiel materiel){
+    public String checkMaterielCodeUnique(Materiel materiel,HttpServletRequest request){
+        materiel.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId());
         return materielService.checkMaterielCodeUnique(materiel);
     }
 }

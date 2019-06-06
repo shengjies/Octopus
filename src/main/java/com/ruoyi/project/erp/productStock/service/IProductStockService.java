@@ -2,6 +2,7 @@ package com.ruoyi.project.erp.productStock.service;
 
 import com.ruoyi.project.erp.productStock.domain.ProductStock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface IProductStockService {
      * @param productStock 产品库存信息
      * @return 产品库存集合
      */
-    public List<ProductStock> selectProductStockList(ProductStock productStock);
+    public List<ProductStock> selectProductStockList(ProductStock productStock, HttpServletRequest request);
 
     /**
      * 新增产品库存

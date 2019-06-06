@@ -15,6 +15,7 @@ import com.ruoyi.project.erp.customer.service.ICustomerService;
 import com.ruoyi.common.support.Convert;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 客户数据 服务层实现
@@ -45,8 +46,8 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return 客户数据集合
      */
     @Override
-    public List<Customer> selectCustomerList(Customer customer) {
-        User sysUser = ShiroUtils.getSysUser();
+    public List<Customer> selectCustomerList(Customer customer, HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         if (sysUser == null) return Collections.emptyList();
         if (!User.isSys(sysUser)) {
             customer.setCompanyId(sysUser.getCompanyId()); // 查询自己公司的客户
@@ -61,8 +62,8 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return 结果
      */
     @Override
-    public int insertCustomer(Customer customer) {
-        User sysUser = ShiroUtils.getSysUser();
+    public int insertCustomer(Customer customer,HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         customer.setCompanyId(sysUser.getCompanyId()); // 所属公司
         customer.setCreateId(sysUser.getUserId().intValue()); // 创建者ID
         customer.setCreateName(sysUser.getUserName()); // 创建者名称

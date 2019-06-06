@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 产品客户关联 信息操作处理
  *
@@ -83,9 +85,9 @@ public class ProductCustomerController extends BaseController {
     @Log(title = "产品客户关联", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(ProductCustomer productCustomer) {
+    public AjaxResult addSave(ProductCustomer productCustomer, HttpServletRequest request) {
         try {
-            return toAjax(productCustomerService.insertProductCustomer(productCustomer));
+            return toAjax(productCustomerService.insertProductCustomer(productCustomer,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -144,8 +146,8 @@ public class ProductCustomerController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/findCustomerCode")
-    public AjaxResult findCustomerCode(int cid,int pid){
-        return AjaxResult.success("sucess",productCustomerService.findCustomerCode(cid,pid));
+    public AjaxResult findCustomerCode(int cid,int pid,HttpServletRequest request){
+        return AjaxResult.success("sucess",productCustomerService.findCustomerCode(cid,pid,request));
     }
 
 }

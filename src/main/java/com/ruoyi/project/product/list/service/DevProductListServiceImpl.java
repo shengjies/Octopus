@@ -99,26 +99,16 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 产品管理集合
      */
     @Override
-    public List<DevProductList> selectDevProductListList(DevProductList devProductList, HttpServletRequest request) {
-        User user = JwtUtil.getTokenUser(request);
-        if (user == null) {
-            return Collections.emptyList();
-        }
-        if (!User.isSys(user)) {
-            devProductList.setCompanyId(user.getCompanyId());
-        }
+    public List<DevProductList> selectDevProductListList(DevProductList devProductList) {
         List<DevProductList> list = devProductListMapper.selectDevProductListList(devProductList);
         for (DevProductList productList : list) {
             if (productList.getCompanyId() == null) continue;
             DevCompany devCompany = devCompanyMapper.selectDevCompanyById(productList.getCompanyId());
             if (devCompany != null) productList.setComName(devCompany.getComName());
             // 查询产品是否关联过客户
-            List<ProductCustomer> productCustomers = productCustomerMapper.selectProductCustomerByProIdOrCusId(productList.getId(), null);
-            if (!StringUtils.isEmpty(productCustomers)) {
-                productList.setProductCustomer(productCustomers.get(0));
-            }
+            productList.setProductCustomer(productCustomerMapper.selectProductCustomerByProIdOrCusIdLimit1(productList.getId()));
             // 查询产品是否上传过文件
-            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(productList.getId(), user.getCompanyId());
+            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(productList.getId(), devProductList.getCompanyId());
             if (!StringUtils.isEmpty(fileSourceInfos)) {
                 productList.setFileSourceInfo(fileSourceInfos.get(0));
             }
@@ -172,11 +162,10 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return 结果
      */
     @Override
-    public int updateDevProductList(DevProductList devProductList,HttpServletRequest request) {
+    public int updateDevProductList(DevProductList devProductList) {
         if (devProductList.getPriceImport() != 0.0f) {
             devProductList.setPrice(new BigDecimal(devProductList.getPriceImport())); // 设置导入价格
         }
-        devProductList.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId());
         // 更新产品库存记录的产品信息
         ProductStock productStock = productStockMapper.selectProductStockByProId(devProductList.getId());
         if (!StringUtils.isNull(productStock)) {
@@ -222,7 +211,7 @@ public class DevProductListServiceImpl implements IDevProductListService {
     }
 
     @Override
-    public String importProduct(List<DevProductList> list, boolean isUpdateSupport, HttpServletRequest request) {
+    public String importProduct(List<DevProductList> list, boolean isUpdateSupport,HttpServletRequest request) {
         if (StringUtils.isNull(list) || list.size() == 0) {
             throw new BusinessException("导入产品数据不能为空！");
         }
@@ -231,7 +220,7 @@ public class DevProductListServiceImpl implements IDevProductListService {
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
 
-        User currentUser =JwtUtil.getTokenUser(request);
+        User currentUser = JwtUtil.getTokenUser(request);
         if (StringUtils.isNull(currentUser)) {
             throw new BusinessException("操作异常!");
         }
@@ -249,7 +238,8 @@ public class DevProductListServiceImpl implements IDevProductListService {
                     successMsg.append("<br/>" + successNum + "、产品 " + product.getProductCode() + " 导入成功");
                 } else if (isUpdateSupport) {
                     product.setId(devProductList.getId());
-                    this.updateDevProductList(product,request);
+                    product.setCompanyId(currentUser.getCompanyId());
+                    this.updateDevProductList(product);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、产品 " + product.getProductCode() + " 更新成功");
                 } else {
@@ -307,7 +297,7 @@ public class DevProductListServiceImpl implements IDevProductListService {
      * @return
      */
     @Override
-    public String checkProductCodeUnique(DevProductList product,HttpServletRequest request) {
+    public String checkProductCodeUnique(DevProductList product, HttpServletRequest request) {
         Integer companyId = JwtUtil.getTokenUser(request).getCompanyId();
         DevProductList productUnique = devProductListMapper.checkProductCodeUnique(product.getProductCode(), companyId);
         if (!StringUtils.isNull(productUnique) && product.getId() != productUnique.getId()) { //公司存在该产品编码

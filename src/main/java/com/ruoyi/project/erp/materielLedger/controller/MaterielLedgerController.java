@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.poi.ExcelUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,6 +29,7 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -61,10 +63,10 @@ public class MaterielLedgerController extends BaseController
 	@RequiresPermissions("erp:materielLedger:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(MaterielLedger materielLedger)
+	public TableDataInfo list(MaterielLedger materielLedger,HttpServletRequest request)
 	{
 		startPage();
-        List<MaterielLedger> list = materielLedgerService.selectMaterielLedgerList(materielLedger);
+        List<MaterielLedger> list = materielLedgerService.selectMaterielLedgerList(materielLedger,request);
 		return getDataTable(list);
 	}
 
@@ -85,20 +87,20 @@ public class MaterielLedgerController extends BaseController
 	@Log(title = "物料对账", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(MaterielLedger materielLedger)
+	public AjaxResult addSave(MaterielLedger materielLedger, HttpServletRequest request)
 	{		
-		return toAjax(materielLedgerService.insertMaterielLedger(materielLedger));
+		return toAjax(materielLedgerService.insertMaterielLedger(materielLedger,request));
 	}
 
 	/**
 	 * 修改物料对账
 	 */
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") Integer id, ModelMap mmap)
+	public String edit(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request)
 	{
 		MaterielLedger materielLedger = materielLedgerService.selectMaterielLedgerById(id);
 		mmap.put("ledger", materielLedger);
-		DevCompany company = devCompanyService.selectDevCompanyById(ShiroUtils.getCompanyId());
+		DevCompany company = devCompanyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId());
 		mmap.put("company", company);
 	    return prefix + "/edit";
 	}
@@ -110,8 +112,8 @@ public class MaterielLedgerController extends BaseController
 	@Log(title = "物料对账", businessType = BusinessType.UPDATE)
 	@PostMapping("/cancel")
 	@ResponseBody
-	public AjaxResult cancel(MaterielLedger materielLedger){
-		return toAjax(materielLedgerService.cancel(materielLedger));
+	public AjaxResult cancel(MaterielLedger materielLedger,HttpServletRequest request){
+		return toAjax(materielLedgerService.cancel(materielLedger,request));
 	}
 
 	/**

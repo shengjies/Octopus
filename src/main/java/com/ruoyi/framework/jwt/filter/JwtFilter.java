@@ -32,6 +32,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest req = (HttpServletRequest) request;
         String token = null;
         Cookie[] cookies = req.getCookies();
+        if(cookies == null)return false;
         for (Cookie cookie : cookies) {
             if(cookie.getName().equals("token")){
                 token = cookie.getValue();
@@ -52,6 +53,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest req = (HttpServletRequest) request;
         String token = null;
         Cookie[] cookies = req.getCookies();
+        if(cookies == null)return false;
         for (Cookie cookie : cookies) {
             if(cookie.getName().equals("token")){
                 token = cookie.getValue();

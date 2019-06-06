@@ -1,6 +1,8 @@
 package com.ruoyi.project.erp.contractContent.service;
 
 import com.ruoyi.project.erp.contractContent.domain.ContractContent;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public interface IContractContentService
      * @param contractContent 合同内容信息
      * @return 结果
      */
-	public int insertContractContent(ContractContent contractContent);
+	public int insertContractContent(ContractContent contractContent, HttpServletRequest request);
 	
 	/**
      * 修改合同内容

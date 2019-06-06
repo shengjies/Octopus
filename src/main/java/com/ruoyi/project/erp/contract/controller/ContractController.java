@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 合同 信息操作处理
  * 
@@ -36,9 +38,9 @@ public class ContractController extends BaseController
 	
 	@RequiresPermissions("erp:contract:view")
 	@GetMapping()
-	public String contract(ModelMap mmap)
+	public String contract(ModelMap mmap, HttpServletRequest request)
 	{
-		mmap.put("contract",contractService.selectContractByCompanyId());
+		mmap.put("contract",contractService.selectContractByCompanyId(request));
 		return prefix + "/contract";
 	}
 	
@@ -85,10 +87,10 @@ public class ContractController extends BaseController
 	@Log(title = "合同", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(Contract contract)
+	public AjaxResult addSave(Contract contract,HttpServletRequest request)
 	{
 		try {
-			return AjaxResult.success("success",contractService.insertContract(contract));
+			return AjaxResult.success("success",contractService.insertContract(contract,request));
 		}catch (Exception e){
 			return error(e.getMessage());
 		}

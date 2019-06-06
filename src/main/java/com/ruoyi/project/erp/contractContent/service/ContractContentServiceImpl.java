@@ -7,6 +7,7 @@ import java.util.List;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.contract.domain.Contract;
 import com.ruoyi.project.erp.contract.mapper.ContractMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -16,6 +17,8 @@ import com.ruoyi.project.erp.contractContent.mapper.ContractContentMapper;
 import com.ruoyi.project.erp.contractContent.domain.ContractContent;
 import com.ruoyi.project.erp.contractContent.service.IContractContentService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 合同内容 服务层实现
@@ -66,9 +69,9 @@ public class ContractContentServiceImpl implements IContractContentService
      */
 	@Override
 	@DataSource(DataSourceType.ERP)
-	public int insertContractContent(ContractContent contractContent)
+	public int insertContractContent(ContractContent contractContent, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if(user ==null)return 0;
 		Contract contract = contractMapper.selectContractByCompanyId(user.getCompanyId());
 		if(contract ==null)return 0;

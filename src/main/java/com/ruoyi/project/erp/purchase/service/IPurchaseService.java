@@ -4,6 +4,7 @@ import com.ruoyi.project.erp.contract.domain.Contract;
 import com.ruoyi.project.erp.purchase.domain.Purchase;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public interface IPurchaseService
      * @param purchase 采购单信息
      * @return 采购单集合
      */
-	public List<Purchase> selectPurchaseList(Purchase purchase);
+	public List<Purchase> selectPurchaseList(Purchase purchase,HttpServletRequest request);
 	
 	/**
      * 新增采购单
@@ -37,7 +38,7 @@ public interface IPurchaseService
      * @param purchase 采购单信息
      * @return 结果
      */
-	public int insertPurchase(Purchase purchase);
+	public int insertPurchase(Purchase purchase,HttpServletRequest request);
 	
 	/**
      * 修改采购单
@@ -81,5 +82,5 @@ public interface IPurchaseService
 	 * @param id 采购单主键
 	 * @return 结果
 	 */
-    Workbook uploadPurchase(Integer id);
+    Workbook uploadPurchase(Integer id, HttpServletRequest request);
 }

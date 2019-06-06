@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.poi.ExcelUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -84,21 +85,21 @@ public class ProductLedgerController extends BaseController
 	@Log(title = "产品对账", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(ProductLedger productLedger)
+	public AjaxResult addSave(ProductLedger productLedger,HttpServletRequest request)
 	{
-		return toAjax(productLedgerService.insertProductLedger(productLedger));
+		return toAjax(productLedgerService.insertProductLedger(productLedger,request));
 	}
 
 	/**
 	 * 修改产品对账
 	 */
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") Integer id, ModelMap mmap)
+	public String edit(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request)
 	{
 
 		ProductLedger productLedger = productLedgerService.selectProductLedgerById(id);
 		mmap.put("ledger", productLedger);
-		DevCompany company = devCompanyService.selectDevCompanyById(ShiroUtils.getCompanyId());
+		DevCompany company = devCompanyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId());
 		mmap.put("company", company);
 	    return prefix + "/edit";
 	}
@@ -124,8 +125,8 @@ public class ProductLedgerController extends BaseController
 	@Log(title = "产品对账", businessType = BusinessType.UPDATE)
 	@PostMapping("/cancel")
 	@ResponseBody
-	public AjaxResult cancelLedger(ProductLedger productLedger){
-		return toAjax(productLedgerService.cancelLedger(productLedger));
+	public AjaxResult cancelLedger(ProductLedger productLedger,HttpServletRequest request){
+		return toAjax(productLedgerService.cancelLedger(productLedger,request));
 	}
 
 	/**

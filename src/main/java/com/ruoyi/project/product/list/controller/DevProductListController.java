@@ -1,8 +1,10 @@
 package com.ruoyi.project.product.list.controller;
 
 import java.util.List;
+import java.util.jar.JarEntry;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.product.list.domain.DevProductList;
 import com.ruoyi.project.product.list.service.IDevProductListService;
 import com.ruoyi.project.production.devWorkOrder.domain.DevWorkOrder;
@@ -51,9 +53,10 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(DevProductList devProductList, HttpServletRequest request) {
+    public TableDataInfo list(DevProductList devProductList,HttpServletRequest request) {
         startPage();
-        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList, request);
+        devProductList.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId());
+        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList);
         return getDataTable(list);
     }
 
@@ -64,8 +67,8 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(DevProductList devProductList, HttpServletRequest request) {
-        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList, request);
+    public AjaxResult export(DevProductList devProductList) {
+        List<DevProductList> list = devProductListService.selectDevProductListList(devProductList);
         ExcelUtil<DevProductList> util = new ExcelUtil<DevProductList>(DevProductList.class);
         return util.exportExcel(list, "devProductList");
     }
@@ -85,8 +88,8 @@ public class DevProductListController extends BaseController {
     @Log(title = "产品管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(DevProductList devProductList, HttpServletRequest request) {
-        return toAjax(devProductListService.insertDevProductList(devProductList, request));
+    public AjaxResult addSave(DevProductList devProductList,HttpServletRequest request) {
+        return toAjax(devProductListService.insertDevProductList(devProductList,request));
     }
 
     /**
@@ -107,7 +110,8 @@ public class DevProductListController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(DevProductList devProductList,HttpServletRequest request) {
-        return toAjax(devProductListService.updateDevProductList(devProductList,request));
+        devProductList.setCompanyId(JwtUtil.getTokenUser(request).getCompanyId());
+        return toAjax(devProductListService.updateDevProductList(devProductList));
     }
 
     /**
@@ -142,11 +146,11 @@ public class DevProductListController extends BaseController {
     @RequiresPermissions("device:devProductList:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport, HttpServletRequest request) throws Exception {
+    public AjaxResult importData(MultipartFile file, boolean updateSupport,HttpServletRequest request) throws Exception {
         ExcelUtil<DevProductList> util = new ExcelUtil<>(DevProductList.class);
         List<DevProductList> devProductList = util.importExcel(file.getInputStream());
         try {
-            return AjaxResult.success(devProductListService.importProduct(devProductList, updateSupport, request));
+            return AjaxResult.success(devProductListService.importProduct(devProductList, updateSupport,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
@@ -173,7 +177,7 @@ public class DevProductListController extends BaseController {
     @PostMapping("/checkProductCodeUnique")
     @ResponseBody
     public String checkProductCodeUnique(DevProductList product, HttpServletRequest request) {
-        return devProductListService.checkProductCodeUnique(product, request);
+        return devProductListService.checkProductCodeUnique(product,request);
     }
 
     /**
@@ -217,7 +221,6 @@ public class DevProductListController extends BaseController {
 
     /**
      * ecn 变更
-     *
      * @param productList
      * @return
      */
@@ -235,7 +238,7 @@ public class DevProductListController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/selectProductAllByOrderId")
-    public AjaxResult selectProductAllByOrderId(int orderId, HttpServletRequest request) {
-        return AjaxResult.success("success", devProductListService.selectProductAllByOrderId(orderId, request));
+    public AjaxResult selectProductAllByOrderId(int orderId,HttpServletRequest request){
+        return AjaxResult.success("success",devProductListService.selectProductAllByOrderId(orderId,request));
     }
 }

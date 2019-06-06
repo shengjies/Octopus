@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.partsStock.domain.PartsStock;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import com.ruoyi.project.erp.parts.mapper.PartsMapper;
 import com.ruoyi.project.erp.parts.domain.Parts;
 import com.ruoyi.project.erp.parts.service.IPartsService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.Cookie;
 
 /**
  * 半成品 服务层实现
@@ -91,8 +94,8 @@ public class PartsServiceImpl implements IPartsService
 	 * @return 半成品列表
 	 */
 	@Override
-	public List<Parts> selectAllPartsByComId() {
-		User user = ShiroUtils.getSysUser();
+	public List<Parts> selectAllPartsByComId(Cookie[] cookies) {
+		User user = JwtUtil.getTokenCookie(cookies);
 		if (user == null ) {
 		    return Collections.emptyList();
 		}
@@ -106,8 +109,8 @@ public class PartsServiceImpl implements IPartsService
 	 * @return 半成品列表
 	 */
 	@Override
-	public List<Parts> selectAllPartsNameByComId() {
-		User user = ShiroUtils.getSysUser();
+	public List<Parts> selectAllPartsNameByComId(Cookie[] cookies) {
+		User user = JwtUtil.getTokenCookie(cookies);
 		if (user == null) {
 		    return Collections.emptyList();
 		}

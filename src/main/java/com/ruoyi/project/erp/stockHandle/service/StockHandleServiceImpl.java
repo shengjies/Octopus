@@ -8,6 +8,7 @@ import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materielStock.domain.MaterielStock;
 import com.ruoyi.project.erp.materielStock.mapper.MaterielStockMapper;
 import com.ruoyi.project.erp.partsStock.domain.PartsStock;
@@ -23,6 +24,8 @@ import com.ruoyi.project.erp.stockHandle.mapper.StockHandleMapper;
 import com.ruoyi.project.erp.stockHandle.domain.StockHandle;
 import com.ruoyi.project.erp.stockHandle.service.IStockHandleService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 库存内部处理主 服务层实现
@@ -89,9 +92,9 @@ public class StockHandleServiceImpl implements IStockHandleService
      * @return 结果
      */
 	@Override
-	public int insertStockHandle(StockHandle stockHandle)
+	public int insertStockHandle(StockHandle stockHandle, HttpServletRequest request)
 	{
-		User user = ShiroUtils.getSysUser();
+		User user = JwtUtil.getTokenUser(request);
 		if (user == null ) {
 		    return 0;
 		}

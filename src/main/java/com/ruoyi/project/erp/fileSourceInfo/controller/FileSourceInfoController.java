@@ -10,6 +10,7 @@ import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.config.RuoYiConfig;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +85,12 @@ public class FileSourceInfoController extends BaseController
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(@RequestParam("avatarfile") MultipartFile file,
-							  @RequestParam("saveType") int saveType,@RequestParam("saveId")int saveId)
+							  @RequestParam("saveType") int saveType,@RequestParam("saveId")int saveId,HttpServletRequest request)
 	{
 		try {
 			if(!file.isEmpty()){
 				FileSourceInfo info = new FileSourceInfo();
-				User user = ShiroUtils.getSysUser();
+				User user = JwtUtil.getTokenUser(request);
 				if(user == null)return error();
 				info.setCompanyId(user.getCompanyId());
 				String originalFilename = file.getOriginalFilename().toUpperCase();

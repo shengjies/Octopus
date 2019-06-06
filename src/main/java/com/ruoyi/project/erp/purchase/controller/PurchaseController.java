@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.poi.ExcelUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.erp.contract.service.IContractService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,6 +23,8 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 采购单 信息操作处理
@@ -57,10 +60,10 @@ public class PurchaseController extends BaseController
 	@RequiresPermissions("erp:purchase:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(Purchase purchase)
+	public TableDataInfo list(Purchase purchase,HttpServletRequest request)
 	{
 		startPage();
-        List<Purchase> list = purchaseService.selectPurchaseList(purchase);
+        List<Purchase> list = purchaseService.selectPurchaseList(purchase,request);
 		return getDataTable(list);
 	}
 	
@@ -71,9 +74,9 @@ public class PurchaseController extends BaseController
 	@RequiresPermissions("erp:purchase:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Purchase purchase)
+    public AjaxResult export(Purchase purchase,HttpServletRequest request)
     {
-    	List<Purchase> list = purchaseService.selectPurchaseList(purchase);
+    	List<Purchase> list = purchaseService.selectPurchaseList(purchase,request);
         ExcelUtil<Purchase> util = new ExcelUtil<Purchase>(Purchase.class);
         return util.exportExcel(list, "purchase");
     }
@@ -94,9 +97,9 @@ public class PurchaseController extends BaseController
 	@Log(title = "采购单", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody Purchase purchase)
+	public AjaxResult addSave(@RequestBody Purchase purchase,HttpServletRequest request)
 	{
-		return toAjax(purchaseService.insertPurchase(purchase));
+		return toAjax(purchaseService.insertPurchase(purchase,request));
 	}
 
 	/**
@@ -154,10 +157,10 @@ public class PurchaseController extends BaseController
 	 */
 	@RequestMapping("/detail")
 	@RequiresPermissions("erp:purchase:details")
-	public String detailsPurchase(int id,ModelMap mmap){
+	public String detailsPurchase(int id, ModelMap mmap, HttpServletRequest request){
 		mmap.put("purchase",purchaseService.selectPurchaseById(id));
-		mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
-		mmap.put("contract",contractService.selectContractByCompanyId());
+		mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
+		mmap.put("contract",contractService.selectContractByCompanyId(request));
 		return prefix +"/details";
 	}
 
@@ -196,8 +199,8 @@ public class PurchaseController extends BaseController
 	 */
 	@PostMapping("/uploadPurchase")
 	@ResponseBody
-	public AjaxResult uploadPurchase(Integer id){
-		Workbook wb = purchaseService.uploadPurchase(id);
+	public AjaxResult uploadPurchase(Integer id,HttpServletRequest request){
+		Workbook wb = purchaseService.uploadPurchase(id,request);
 		String fileName = ExcelUtils.encodingFilename("采购单");
 		return ExcelUtils.getAjaxResult(wb,fileName);
 	}

@@ -7,6 +7,7 @@ import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.materiel.domain.Materiel;
 import com.ruoyi.project.erp.materiel.mapper.MaterielMapper;
 import com.ruoyi.project.erp.purchase.domain.Purchase;
@@ -21,6 +22,8 @@ import com.ruoyi.project.erp.materielSupplier.mapper.MaterielSupplierMapper;
 import com.ruoyi.project.erp.materielSupplier.domain.MaterielSupplier;
 import com.ruoyi.project.erp.materielSupplier.service.IMaterielSupplierService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料供应商关联 服务层实现
@@ -79,7 +82,7 @@ public class MaterielSupplierServiceImpl implements IMaterielSupplierService {
      * @return 结果
      */
     @Override
-    public int insertMaterielSupplier(MaterielSupplier materielSupplier) {
+    public int insertMaterielSupplier(MaterielSupplier materielSupplier, HttpServletRequest request) {
         // 判断供应商是否存在相同的编码
         int count = materielSupplierMapper.checkSupplierCodeUnique(materielSupplier.getSupplierId(),materielSupplier.getSupplierCode());
         if (count > 0) { // 数据库存在记录
@@ -90,7 +93,7 @@ public class MaterielSupplierServiceImpl implements IMaterielSupplierService {
         if (count1 > 0) { // 数据库存在记录
             throw new BusinessException("该物料已经关联过该供应商");
         }
-        materielSupplier.setCreateId(ShiroUtils.getUserId().intValue()); // 创建者id
+        materielSupplier.setCreateId(JwtUtil.getTokenUser(request).getUserId().intValue()); // 创建者id
         materielSupplier.setCreateTime(new Date()); // 创建时间
         return materielSupplierMapper.insertMaterielSupplier(materielSupplier);
     }
@@ -134,16 +137,17 @@ public class MaterielSupplierServiceImpl implements IMaterielSupplierService {
      * @return
      */
     @Override
-    public MaterielSupplier findSupplierCodeByMaterielId(int mid, int sid) {
+    public MaterielSupplier findSupplierCodeByMaterielId(int mid, int sid,HttpServletRequest request) {
+        User u = JwtUtil.getTokenUser(request);
         // 查询物料信息
         Materiel materiel = materielMapper.selectMaterielById(mid);
         MaterielSupplier materielSupplier = materielSupplierMapper.findSupplierCodeByMaterielId(mid, sid);
         // 查询对应供应商已审核未完成交付的采购单信息
-        List<Purchase> purchaseList = purchaseMapper.selectPurchaseBySupIdAndComId(sid,ShiroUtils.getCompanyId());
+        List<Purchase> purchaseList = purchaseMapper.selectPurchaseBySupIdAndComId(sid,u.getCompanyId());
         List<PurchaseDetails> purchaseDetails = null;
         for (Purchase purchase : purchaseList) {
             // 查询对应供应商对应物料的所有采购单信息
-            purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(ShiroUtils.getCompanyId(),sid,purchase.getId(),materiel.getMaterielCode());
+            purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(u.getCompanyId(),sid,purchase.getId(),materiel.getMaterielCode());
             materielSupplier.setPurchaseDetailsList(purchaseDetails);
         }
         return materielSupplier;

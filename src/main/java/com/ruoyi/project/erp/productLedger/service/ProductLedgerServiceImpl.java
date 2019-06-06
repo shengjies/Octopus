@@ -101,13 +101,13 @@ public class ProductLedgerServiceImpl implements IProductLedgerService
      * @return 结果
      */
 	@Override
-	public int insertProductLedger(ProductLedger productLedger)
+	public int insertProductLedger(ProductLedger productLedger,HttpServletRequest request)
 	{
 		//查询客户信息
 		if(productLedger.getCustomerId() == null)return 0;
 		Customer customer =  customerMapper.selectCustomerById(productLedger.getCustomerId());
 		if(customer == null)return  0;
-		User u = ShiroUtils.getSysUser();
+		User u = JwtUtil.getTokenUser(request);
 		if (u == null)return 0;
 		productLedger.setCompanyId(u.getCompanyId());
 		productLedger.setCustomerCompanyName(customer.getCompanyName());
@@ -185,8 +185,8 @@ public class ProductLedgerServiceImpl implements IProductLedgerService
 	 * @return
 	 */
 	@Override
-	public int cancelLedger(ProductLedger productLedger) {
-		User u = ShiroUtils.getSysUser();
+	public int cancelLedger(ProductLedger productLedger,HttpServletRequest request) {
+		User u = JwtUtil.getTokenUser(request);
 		if(u == null)return 0;
 		if(productLedger.getLedgerStatus() == 3){
 			//作废

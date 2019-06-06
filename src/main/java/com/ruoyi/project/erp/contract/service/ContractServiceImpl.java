@@ -7,6 +7,7 @@ import java.util.List;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.contractContent.domain.ContractContent;
 import com.ruoyi.project.erp.contractContent.mapper.ContractContentMapper;
 import com.ruoyi.project.system.user.domain.User;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.erp.contract.mapper.ContractMapper;
 import com.ruoyi.project.erp.contract.domain.Contract;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 合同 服务层实现
@@ -48,8 +51,8 @@ public class ContractServiceImpl implements IContractService
 	 */
 	@Override
 	@DataSource(DataSourceType.ERP)
-	public Contract selectContractByCompanyId() {
-		User user = ShiroUtils.getSysUser();
+	public Contract selectContractByCompanyId(HttpServletRequest request) {
+		User user = JwtUtil.getTokenUser(request);
 		if(user ==null) return  null;
 		Contract contract = contractMapper.selectContractByCompanyId(user.getCompanyId());
 		if(contract != null){
@@ -80,8 +83,8 @@ public class ContractServiceImpl implements IContractService
 	 */
 	@Override
 	@DataSource(DataSourceType.ERP)
-	public Contract insertContract(Contract contract) throws Exception {
-		User user = ShiroUtils.getSysUser();
+	public Contract insertContract(Contract contract,HttpServletRequest request) throws Exception {
+		User user = JwtUtil.getTokenUser(request);
 		if(user ==null)
 			throw  new Exception("操作异常");
 		contract.setCompanyId(user.getCompanyId());

@@ -19,6 +19,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 合同内容 信息操作处理
  * 
@@ -84,9 +86,9 @@ public class ContractContentController extends BaseController
 	@Log(title = "合同内容", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(ContractContent contractContent)
+	public AjaxResult addSave(ContractContent contractContent, HttpServletRequest request)
 	{		
-		return toAjax(contractContentService.insertContractContent(contractContent));
+		return toAjax(contractContentService.insertContractContent(contractContent,request));
 	}
 
 	/**

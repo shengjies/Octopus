@@ -12,6 +12,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.erp.fileSourceInfo.domain.FileSourceInfo;
 import com.ruoyi.project.erp.fileSourceInfo.mapper.FileSourceInfoMapper;
 import com.ruoyi.project.erp.materiel.controller.MaterielController;
@@ -26,6 +27,9 @@ import com.ruoyi.project.erp.materiel.mapper.MaterielMapper;
 import com.ruoyi.project.erp.materiel.domain.Materiel;
 import com.ruoyi.project.erp.materiel.service.IMaterielService;
 import com.ruoyi.common.support.Convert;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 物料 服务层实现
@@ -65,8 +69,8 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return 物料集合
      */
     @Override
-    public List<Materiel> selectMaterielList(Materiel materiel) {
-        User sysUser = ShiroUtils.getSysUser();
+    public List<Materiel> selectMaterielList(Materiel materiel, HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         if (sysUser == null) return Collections.emptyList();
         if (!User.isSys(sysUser)) {
             materiel.setCompanyId(sysUser.getCompanyId()); // 查询自己公司的物料
@@ -95,8 +99,8 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return 结果
      */
     @Override
-    public int insertMateriel(Materiel materiel) {
-        User user = ShiroUtils.getSysUser();
+    public int insertMateriel(Materiel materiel,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         materiel.setCompanyId(user.getCompanyId()); // 所属公司
         materiel.setCreateId(user.getUserId().intValue()); // 创建者ID
         materiel.setCreateName(user.getUserName()); // 创建者名称
@@ -173,13 +177,13 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return 结果
      */
     @Override
-    public int deleteMaterielByIds(String ids) {
+    public int deleteMaterielByIds(String ids,HttpServletRequest request) {
         Integer[] materielIds = Convert.toIntArray(ids);
         Materiel materiel = null;
         for (Integer materielId : materielIds) {
             materiel = materielMapper.selectMaterielById(materielId);
             // 校验是否有相关联的物料文件未删除
-            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(materielId, ShiroUtils.getCompanyId());
+            List<FileSourceInfo> fileSourceInfos = fileSourceInfoMapper.selectFileSourceInfoBySaveIdAndComId(materielId,JwtUtil.getTokenUser(request).getCompanyId());
             if (!StringUtils.isEmpty(fileSourceInfos)) {
                 throw new BusinessException("请先删除" + materiel.getMaterielCode() + "的关联文件");
             }
@@ -205,7 +209,7 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return
      */
     @Override
-    public String importMateriel(List<Materiel> list, boolean isUpdateSupport) {
+    public String importMateriel(List<Materiel> list, boolean isUpdateSupport,HttpServletRequest request) {
         if (StringUtils.isNull(list) || list.size() == 0) {
             throw new BusinessException("导入物料数据不能为空！");
         }
@@ -214,7 +218,7 @@ public class MaterielServiceImpl implements IMaterielService {
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
 
-        User currentUser = ShiroUtils.getSysUser();
+        User currentUser = JwtUtil.getTokenUser(request);
         if (StringUtils.isNull(currentUser)) {
             throw new BusinessException("操作异常!");
         }
@@ -227,7 +231,7 @@ public class MaterielServiceImpl implements IMaterielService {
                 // 验证物料是否存在
                 Materiel m = materielMapper.selectMaterielByMaterielCode(materiel.getMaterielCode().trim(), currentUser.getCompanyId());
                 if (StringUtils.isNull(m)) {
-                    this.insertMateriel(materiel);
+                    this.insertMateriel(materiel,request);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、物料 " + materiel.getMaterielCode() + " 导入成功");
                 } else if (isUpdateSupport) {
@@ -260,7 +264,7 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return 结果
      */
     @Override
-    public List<Materiel> materielListBySupplierId(Integer supplierId) {
+    public List<Materiel> materielListBySupplierId(Integer supplierId,HttpServletRequest request) {
         List<Materiel> materielList = new ArrayList<>();
         Materiel materiel = null;
         List<MaterielSupplier> materielSupplierList = materielSupplierMapper.selectMaterielSupplierListByMatIdAndSupId(null, supplierId);
@@ -271,7 +275,7 @@ public class MaterielServiceImpl implements IMaterielService {
         }
         // 查询物料不良品数量
         for (Materiel mat : materielList) {
-            mat.setBadNumber(materielStockMapper.selectMaterielStockByMatCodeAndComId(mat.getMaterielCode(), ShiroUtils.getCompanyId()).getBadNumber());
+            mat.setBadNumber(materielStockMapper.selectMaterielStockByMatCodeAndComId(mat.getMaterielCode(), JwtUtil.getTokenUser(request).getCompanyId()).getBadNumber());
         }
         return materielList;
     }
@@ -303,8 +307,8 @@ public class MaterielServiceImpl implements IMaterielService {
      */
     @Override
     @DataSource(DataSourceType.ERP)
-    public List<Materiel> selectMaterielBySupplierId(int sid) {
-        return materielMapper.selectMaterielBySupplierId(ShiroUtils.getCompanyId(), sid);
+    public List<Materiel> selectMaterielBySupplierId(int sid,HttpServletRequest request) {
+        return materielMapper.selectMaterielBySupplierId(JwtUtil.getTokenUser(request).getCompanyId(), sid);
     }
 
     /**
@@ -315,7 +319,7 @@ public class MaterielServiceImpl implements IMaterielService {
      */
     @Override
     public String checkMaterielCodeUnique(Materiel materiel) {
-        Materiel materielUnique = materielMapper.selectMaterielByMaterielCode(materiel.getMaterielCode(), ShiroUtils.getCompanyId());
+        Materiel materielUnique = materielMapper.selectMaterielByMaterielCode(materiel.getMaterielCode(), materiel.getCompanyId());
         if (!StringUtils.isNull(materielUnique) && materiel.getId() != materielUnique.getId()) { // 存在相同的编码信息
             return MaterielConstants.PRODUCT_CODE_NOT_UNIQUE;
         }
@@ -328,8 +332,8 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return
      */
     @Override
-    public List<Materiel> selectAllMatByComId() {
-        User user = ShiroUtils.getSysUser();
+    public List<Materiel> selectAllMatByComId(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) {
             return Collections.emptyList();
         }
@@ -342,8 +346,8 @@ public class MaterielServiceImpl implements IMaterielService {
      * @return 结果
      */
     @Override
-    public List<Materiel> selectAllMatNameByComId() {
-        User user = ShiroUtils.getSysUser();
+    public List<Materiel> selectAllMatNameByComId(Cookie[] cookies) {
+        User user = JwtUtil.getTokenCookie(cookies);
         if (user == null) {
             return Collections.emptyList();
         }

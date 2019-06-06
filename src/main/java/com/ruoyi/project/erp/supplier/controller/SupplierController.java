@@ -20,6 +20,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 供应商数据 信息操作处理
  *
@@ -46,9 +48,9 @@ public class SupplierController extends BaseController {
     @RequiresPermissions("erp:supplier:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Supplier supplier) {
+    public TableDataInfo list(Supplier supplier, HttpServletRequest request) {
         startPage();
-        List<Supplier> list = supplierService.selectSupplierList(supplier);
+        List<Supplier> list = supplierService.selectSupplierList(supplier,request);
         return getDataTable(list);
     }
 
@@ -59,8 +61,8 @@ public class SupplierController extends BaseController {
     @RequiresPermissions("erp:supplier:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Supplier supplier) {
-        List<Supplier> list = supplierService.selectSupplierList(supplier);
+    public AjaxResult export(Supplier supplier,HttpServletRequest request) {
+        List<Supplier> list = supplierService.selectSupplierList(supplier,request);
         ExcelUtil<Supplier> util = new ExcelUtil<Supplier>(Supplier.class);
         return util.exportExcel(list, "supplier");
     }
@@ -80,8 +82,8 @@ public class SupplierController extends BaseController {
     @Log(title = "供应商数据", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Supplier supplier) {
-        return toAjax(supplierService.insertSupplier(supplier));
+    public AjaxResult addSave(Supplier supplier,HttpServletRequest request) {
+        return toAjax(supplierService.insertSupplier(supplier,request));
     }
 
     /**

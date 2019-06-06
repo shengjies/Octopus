@@ -109,6 +109,14 @@ public interface ProductCustomerMapper {
     List<ProductCustomer> selectProductCustomerByProIdOrCusId(@Param("productId") Integer productId, @Param("customerId") Integer customerId);
 
     /**
+     * 查询对应产品是否关联客户
+     * @param productId
+     * @return
+     */
+    @DataSource(DataSourceType.ERP)
+    ProductCustomer selectProductCustomerByProIdOrCusIdLimit1(@Param("productId")int productId);
+
+    /**
      * 根据客户编号和产品编号查询对应的客户编号
      * @param cid 客户编号
      * @param pid 产品编号

@@ -2,6 +2,8 @@ package com.ruoyi.project.erp.orderInfo.service;
 
 import com.ruoyi.project.erp.orderInfo.domain.OrderInfo;
 
+import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.Cookie;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface IOrderInfoService
      * @param orderInfo 订单数据信息
      * @return 订单数据集合
      */
-	public List<OrderInfo> selectOrderInfoList(OrderInfo orderInfo);
+	public List<OrderInfo> selectOrderInfoList(OrderInfo orderInfo,HttpServletRequest request);
 	
 	/**
      * 新增订单数据
@@ -35,7 +37,7 @@ public interface IOrderInfoService
      * @param orderInfo 订单数据信息
      * @return 结果
      */
-	public int insertOrderInfo(OrderInfo orderInfo);
+	public int insertOrderInfo(OrderInfo orderInfo, HttpServletRequest request);
 	
 	/**
      * 修改订单数据

@@ -15,6 +15,7 @@ import com.ruoyi.project.erp.supplier.service.ISupplierService;
 import com.ruoyi.common.support.Convert;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 供应商数据 服务层实现
@@ -45,8 +46,8 @@ public class SupplierServiceImpl implements ISupplierService {
      * @return 供应商数据集合
      */
     @Override
-    public List<Supplier> selectSupplierList(Supplier supplier) {
-        User sysUser = ShiroUtils.getSysUser();
+    public List<Supplier> selectSupplierList(Supplier supplier, HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         if (sysUser == null) return Collections.emptyList();
         if (!User.isSys(sysUser)) {
             supplier.setCompanyId(sysUser.getCompanyId()); // 查询自己公司的供应商
@@ -61,8 +62,8 @@ public class SupplierServiceImpl implements ISupplierService {
      * @return 结果
      */
     @Override
-    public int insertSupplier(Supplier supplier) {
-        User sysUser = ShiroUtils.getSysUser();
+    public int insertSupplier(Supplier supplier,HttpServletRequest request) {
+        User sysUser = JwtUtil.getTokenUser(request);
         supplier.setCompanyId(sysUser.getCompanyId()); // 所属公司
         supplier.setCreateId(sysUser.getUserId().intValue()); // 创建者ID
         supplier.setCreateName(sysUser.getUserName()); // 创建者名称
