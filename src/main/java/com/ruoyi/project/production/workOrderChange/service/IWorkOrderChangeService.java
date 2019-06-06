@@ -1,6 +1,8 @@
 package com.ruoyi.project.production.workOrderChange.service;
 
 import com.ruoyi.project.production.workOrderChange.domain.WorkOrderChange;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ public interface IWorkOrderChangeService
      * @param workOrderChange 工单变更信息
      * @return 工单变更集合
      */
-	public List<WorkOrderChange> selectWorkOrderChangeList(WorkOrderChange workOrderChange);
+	public List<WorkOrderChange> selectWorkOrderChangeList(WorkOrderChange workOrderChange, HttpServletRequest request);
 
 	
 }

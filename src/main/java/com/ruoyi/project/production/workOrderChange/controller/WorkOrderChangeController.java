@@ -17,6 +17,8 @@ import com.ruoyi.project.production.workOrderChange.service.IWorkOrderChangeServ
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * 工单变更 信息操作处理
@@ -49,10 +51,10 @@ public class WorkOrderChangeController extends BaseController
 	@RequiresPermissions("production:workOrderChange:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(WorkOrderChange workOrderChange)
+	public TableDataInfo list(WorkOrderChange workOrderChange, HttpServletRequest request)
 	{
 		startPage();
-        List<WorkOrderChange> list = workOrderChangeService.selectWorkOrderChangeList(workOrderChange);
+        List<WorkOrderChange> list = workOrderChangeService.selectWorkOrderChangeList(workOrderChange,request);
 		return getDataTable(list);
 	}
 

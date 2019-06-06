@@ -1,24 +1,14 @@
 package com.ruoyi.project.system.user.service;
 
-import java.util.*;
-
-import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
-import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
-import com.ruoyi.framework.jwt.JwtUtil;
-import com.ruoyi.project.device.devCompany.domain.DevCompany;
-import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
-import com.ruoyi.project.production.devWorkOrder.domain.DevWorkOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
-import com.ruoyi.framework.shiro.service.PasswordService;
+import com.ruoyi.framework.jwt.JwtUtil;
+import com.ruoyi.project.device.devCompany.domain.DevCompany;
+import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.post.domain.Post;
 import com.ruoyi.project.system.post.mapper.PostMapper;
@@ -30,9 +20,14 @@ import com.ruoyi.project.system.user.domain.UserRole;
 import com.ruoyi.project.system.user.mapper.UserMapper;
 import com.ruoyi.project.system.user.mapper.UserPostMapper;
 import com.ruoyi.project.system.user.mapper.UserRoleMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * 用户 业务层处理
@@ -214,8 +209,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public int updateUser(User user,HttpServletRequest request) {
         Long userId = user.getUserId();
-
-        user.setUpdateBy(JwtUtil.getTokenUser(request).getLoginName());
+        User tokenUser = JwtUtil.getTokenUser(request);
+        user.setUpdateBy(tokenUser.getLoginName());
         // 删除用户与角色关联
         userRoleMapper.deleteUserRoleByUserId(userId);
         // 新增用户与角色管理
@@ -225,7 +220,7 @@ public class UserServiceImpl implements IUserService {
         // 新增用户与岗位管理
         insertUserPost(user);
         if (null == userId) {
-            user.setCompanyId(ShiroUtils.getSysUser().getCompanyId());
+            user.setCompanyId(tokenUser.getCompanyId());
             userMapper.updateUserByLoginName(user);
         }
         return userMapper.updateUser(user);
@@ -448,11 +443,11 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int changeStatus(User user) {
+    public int changeStatus(User user,HttpServletRequest request) {
         if (User.isAdmin(user.getUserId())) {
             throw new BusinessException("不允许修改超级管理员用户");
         }
-        if (ShiroUtils.getSysUser().getUserId() == user.getUserId()) { // 不能自己停用自己
+        if (JwtUtil.getTokenUser(request).getUserId() == user.getUserId()) { // 不能自己停用自己
             throw new BusinessException("不允许停用本人");
         }
         return userMapper.updateUser(user);

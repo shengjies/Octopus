@@ -160,14 +160,14 @@ public class MaterielSupplierServiceImpl implements IMaterielSupplierService {
      * @return 结果
      */
     @Override
-    public MaterielSupplier matOutStockByMatIdAndSupId(int mid, int sid) {
+    public MaterielSupplier matOutStockByMatIdAndSupId(int mid, int sid,HttpServletRequest request) {
         // 查询物料信息
         Materiel materiel = materielMapper.selectMaterielById(mid);
         MaterielSupplier materielSupplier = materielSupplierMapper.findSupplierCodeByMaterielId(mid, sid);
-
+        Integer companyId = JwtUtil.getTokenUser(request).getCompanyId();
         Purchase purchase = new Purchase();
         purchase.setSupplierId(sid);
-        purchase.setCompanyId(ShiroUtils.getCompanyId());
+        purchase.setCompanyId(companyId);
         /**
          * 先查询还没交付的订单
          */
@@ -177,13 +177,13 @@ public class MaterielSupplierServiceImpl implements IMaterielSupplierService {
         if (!StringUtils.isEmpty(purchaseList1)) {
             for (Purchase purchase1 : purchaseList1) {
                 // 查询对应供应商对应物料的所有采购单信息
-                purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(ShiroUtils.getCompanyId(),sid,purchase1.getId(),materiel.getMaterielCode());
+                purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(companyId,sid,purchase1.getId(),materiel.getMaterielCode());
                 materielSupplier.setPurchaseDetailsList(purchaseDetails);
             }
         } else { // 采购单全部都已经交付，则查询最近的一条已经交付的订单
-            Purchase purchase2 = purchaseMapper.selectPurchaseListByStatusInThree(ShiroUtils.getCompanyId(),sid,StockConstants.ORDER_STATUS_THREE);
+            Purchase purchase2 = purchaseMapper.selectPurchaseListByStatusInThree(companyId,sid,StockConstants.ORDER_STATUS_THREE);
             // 查询对应供应商对应物料的所有采购单信息
-            purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(ShiroUtils.getCompanyId(),sid,purchase2.getId(),materiel.getMaterielCode());
+            purchaseDetails = purchaseDetailsMapper.selectPurchaseDetailsListBySidAndMatCode(companyId,sid,purchase2.getId(),materiel.getMaterielCode());
             materielSupplier.setPurchaseDetailsList(purchaseDetails);
         }
         return materielSupplier;

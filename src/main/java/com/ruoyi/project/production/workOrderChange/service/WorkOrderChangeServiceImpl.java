@@ -6,11 +6,14 @@ import java.util.List;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
 import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.production.workOrderChange.mapper.WorkOrderChangeMapper;
 import com.ruoyi.project.production.workOrderChange.domain.WorkOrderChange;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -33,9 +36,9 @@ public class WorkOrderChangeServiceImpl implements IWorkOrderChangeService
      */
 	@Override
 	@DataSource(DataSourceType.SLAVE)
-	public List<WorkOrderChange> selectWorkOrderChangeList(WorkOrderChange workOrderChange)
+	public List<WorkOrderChange> selectWorkOrderChangeList(WorkOrderChange workOrderChange, HttpServletRequest request)
 	{
-		User u = ShiroUtils.getSysUser();
+		User u = JwtUtil.getTokenUser(request);
 		if(u == null)return Collections.emptyList();
 		workOrderChange.setCompanyId(u.getCompanyId());
 	    return workOrderChangeMapper.selectWorkOrderChangeList(workOrderChange);

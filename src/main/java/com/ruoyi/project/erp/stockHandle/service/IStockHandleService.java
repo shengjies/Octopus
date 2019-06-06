@@ -27,7 +27,7 @@ public interface IStockHandleService
      * @param stockHandle 库存内部处理主信息
      * @return 库存内部处理主集合
      */
-	public List<StockHandle> selectStockHandleList(StockHandle stockHandle);
+	public List<StockHandle> selectStockHandleList(StockHandle stockHandle,HttpServletRequest request);
 	
 	/**
      * 新增库存内部处理主

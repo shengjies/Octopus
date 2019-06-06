@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,10 +140,10 @@ public class ProductIntoStockController extends BaseController {
      * 查看产品退货明细信息
      */
     @GetMapping("/details/{id}")
-    public String details(@PathVariable("id") Integer id, ModelMap mmap) {
+    public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request) {
         ProductIntoStock productIntoStock = productIntoStockService.selectProductIntoStockById(id);
         mmap.put("productIntoStock", productIntoStock);
-        mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+        mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
         return prefix + "/details";
     }
 }

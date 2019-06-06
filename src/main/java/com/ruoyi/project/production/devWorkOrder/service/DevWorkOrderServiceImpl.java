@@ -485,10 +485,10 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return 结果
      */
     @Override
-    public List<DevWorkOrder> selectWorkOrderFinishByLineId(int lineId) {
-        List<DevWorkOrder> workOrders = devWorkOrderMapper.selectWorkOrderFinishByLineIdOrWorkOrderId(ShiroUtils.getCompanyId(), lineId, null);
+    public List<DevWorkOrder> selectWorkOrderFinishByLineId(int lineId,HttpServletRequest request) {
+        List<DevWorkOrder> workOrders = devWorkOrderMapper.selectWorkOrderFinishByLineIdOrWorkOrderId(JwtUtil.getTokenUser(request).getCompanyId(), lineId, null);
         for (DevWorkOrder workOrder : workOrders) {
-            DevProductList productList = productListMapper.selectDevProductByCode(ShiroUtils.getCompanyId(), workOrder.getProductCode());
+            DevProductList productList = productListMapper.selectDevProductByCode(JwtUtil.getTokenUser(request).getCompanyId(), workOrder.getProductCode());
             workOrder.setProductId(productList.getId());
             workOrder.setProductModel(productList.getProductModel());
         }
@@ -502,8 +502,8 @@ public class DevWorkOrderServiceImpl implements IDevWorkOrderService {
      * @return 结果
      */
     @Override
-    public DevWorkOrder selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId, int workOrderId) {
-        return devWorkOrderMapper.selectWorkOrderFinishByLineIdOrWorkOrderId(ShiroUtils.getCompanyId(),lineId,workOrderId).get(0);
+    public DevWorkOrder selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId, int workOrderId,HttpServletRequest request) {
+        return devWorkOrderMapper.selectWorkOrderFinishByLineIdOrWorkOrderId(JwtUtil.getTokenUser(request).getCompanyId(),lineId,workOrderId).get(0);
     }
 
     /**

@@ -481,13 +481,15 @@ public class PurchaseServiceImpl implements IPurchaseService {
         i++;
         // 合同明细
         Row rowDetail2 = null;
-        List<ContractContent> contractContents = contract.getContractContents();
-        for (ContractContent contractContent : contractContents) {
-            rowDetail2 = sheet.createRow(i);
-            Cell cellDetail2 = rowDetail2.createCell(0);
-            cellDetail2.setCellValue(contractContent.getContent());
-            sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 6));
-            i++;
+        if (!StringUtils.isNull(contract)) {
+            List<ContractContent> contractContents = contract.getContractContents();
+            for (ContractContent contractContent : contractContents) {
+                rowDetail2 = sheet.createRow(i);
+                Cell cellDetail2 = rowDetail2.createCell(0);
+                cellDetail2.setCellValue(contractContent.getContent());
+                sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 6));
+                i++;
+            }
         }
 
         Row row15 = sheet.createRow(i);

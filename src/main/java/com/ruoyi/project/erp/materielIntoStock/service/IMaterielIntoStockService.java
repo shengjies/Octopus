@@ -59,5 +59,5 @@ public interface IMaterielIntoStockService {
      * @param id 需要删除的数据ID
      * @return 结果
      */
-    int nullifyMaterielIntoStockByIds(Integer id);
+    int nullifyMaterielIntoStockByIds(Integer id,HttpServletRequest request);
 }

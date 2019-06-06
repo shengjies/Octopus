@@ -227,9 +227,9 @@ public class UserController extends BaseController {
     @RequiresPermissions("system:user:edit")
     @PostMapping("/changeStatus")
     @ResponseBody
-    public AjaxResult changeStatus(User user) {
+    public AjaxResult changeStatus(User user,HttpServletRequest request) {
         try {
-            return toAjax(userService.changeStatus(user));
+            return toAjax(userService.changeStatus(user,request));
         } catch (BusinessException e) {
             return error(e.getMessage());
         }

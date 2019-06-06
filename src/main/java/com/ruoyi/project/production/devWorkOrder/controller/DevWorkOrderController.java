@@ -300,9 +300,8 @@ public class DevWorkOrderController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/selectWorkOrderFinishByLineId")
-    public TableDataInfo selectWorkOrderFinishByLineId(int lineId){
-        List<DevWorkOrder> workOrders = devWorkOrderService.selectWorkOrderFinishByLineId(lineId);
-        return getDataTable(devWorkOrderService.selectWorkOrderFinishByLineId(lineId));
+    public TableDataInfo selectWorkOrderFinishByLineId(int lineId,HttpServletRequest request){
+        return getDataTable(devWorkOrderService.selectWorkOrderFinishByLineId(lineId,request));
     }
 
     /**
@@ -313,8 +312,8 @@ public class DevWorkOrderController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/selectWorkOrderFinishByLineIdAndWorkOrderId")
-    public AjaxResult selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId,int workOrderId){
-        return AjaxResult.success("sucess",devWorkOrderService.selectWorkOrderFinishByLineIdAndWorkOrderId(lineId,workOrderId));
+    public AjaxResult selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId,int workOrderId,HttpServletRequest request){
+        return AjaxResult.success("sucess",devWorkOrderService.selectWorkOrderFinishByLineIdAndWorkOrderId(lineId,workOrderId,request));
     }
 
     /**

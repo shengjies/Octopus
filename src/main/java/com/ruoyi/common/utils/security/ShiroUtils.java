@@ -82,8 +82,4 @@ public class ShiroUtils
         return String.valueOf(getSubject().getSession().getId());
     }
 
-    public static Integer getCompanyId()
-    {
-        return getSysUser().getCompanyId();
-    }
 }

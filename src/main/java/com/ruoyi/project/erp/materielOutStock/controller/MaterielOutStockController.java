@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,9 +132,9 @@ public class MaterielOutStockController extends BaseController {
      */
     @RequiresPermissions("erp:materielOutStock:list")
     @GetMapping("/details/{id}")
-    public String details(@PathVariable("id") Integer id, ModelMap mmap) {
+    public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request) {
         MaterielOutStock materielOutStock = materielOutStockService.selectMaterielOutStockById(id);
-        mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+        mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
         mmap.put("materielOutStock", materielOutStock);
         return prefix + "/details";
     }
@@ -145,8 +146,8 @@ public class MaterielOutStockController extends BaseController {
     @Log(title = "物料出库", businessType = BusinessType.DELETE)
     @PostMapping("/nullify")
     @ResponseBody
-    public AjaxResult nullify(Integer id) {
-        return toAjax(materielOutStockService.nullifyMaterielOutStockByIds(id));
+    public AjaxResult nullify(Integer id,HttpServletRequest request) {
+        return toAjax(materielOutStockService.nullifyMaterielOutStockByIds(id,request));
     }
 
 }

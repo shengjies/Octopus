@@ -106,7 +106,7 @@ public interface IDevWorkOrderService {
      * @param lineId 产线
      * @return
      */
-    List<DevWorkOrder> selectWorkOrderFinishByLineId(int lineId);
+    List<DevWorkOrder> selectWorkOrderFinishByLineId(int lineId,HttpServletRequest request);
 
     /**
      * 根据产线id或工单id查询工单信息
@@ -114,7 +114,7 @@ public interface IDevWorkOrderService {
      * @param workOrderId
      * @return 结果
      */
-    DevWorkOrder selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId, int workOrderId);
+    DevWorkOrder selectWorkOrderFinishByLineIdAndWorkOrderId(int lineId, int workOrderId,HttpServletRequest request);
 
     /**
      * 工单变更

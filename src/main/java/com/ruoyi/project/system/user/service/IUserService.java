@@ -157,7 +157,7 @@ public interface IUserService
      * @param user 用户信息
      * @return 结果
      */
-    public int changeStatus(User user);
+    public int changeStatus(User user,HttpServletRequest request);
 
     /**
      * 用户注册业务逻辑接口

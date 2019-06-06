@@ -73,5 +73,5 @@ public interface IMaterielSupplierService {
      * @param sid 供应商id
      * @return 结果
      */
-    MaterielSupplier matOutStockByMatIdAndSupId(int mid, int sid);
+    MaterielSupplier matOutStockByMatIdAndSupId(int mid, int sid,HttpServletRequest request);
 }

@@ -1,26 +1,25 @@
 package com.ruoyi.project.erp.materielFeed.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import com.ruoyi.common.exception.BusinessException;
-import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.framework.aspectj.lang.annotation.Log;
+import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
+import com.ruoyi.framework.jwt.JwtUtil;
+import com.ruoyi.framework.web.controller.BaseController;
+import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
+import com.ruoyi.project.erp.materielFeed.domain.MaterielFeed;
+import com.ruoyi.project.erp.materielFeed.service.IMaterielFeedService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.framework.aspectj.lang.annotation.Log;
-import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
-import com.ruoyi.project.erp.materielFeed.domain.MaterielFeed;
-import com.ruoyi.project.erp.materielFeed.service.IMaterielFeedService;
-import com.ruoyi.framework.web.controller.BaseController;
-import com.ruoyi.framework.web.page.TableDataInfo;
-import com.ruoyi.framework.web.domain.AjaxResult;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 物料发料 信息操作处理
@@ -141,8 +140,8 @@ public class MaterielFeedController extends BaseController
 	 */
 	@PostMapping("/addDetail")
 	@ResponseBody
-	public AjaxResult addDetail(String feedType){
-		Map map = materielFeedService.selectAllMaterielOrParts(feedType);
+	public AjaxResult addDetail(String feedType,HttpServletRequest request){
+		Map map = materielFeedService.selectAllMaterielOrParts(feedType,request);
 		return AjaxResult.success("success",map);
 	}
 
@@ -163,9 +162,9 @@ public class MaterielFeedController extends BaseController
 	 */
 	@RequiresPermissions("erp:materielFeed:list")
 	@GetMapping("/details/{id}")
-	public String details(@PathVariable("id") Integer id, ModelMap mmap)
+	public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request)
 	{
-		mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+		mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
 		MaterielFeed materielFeed = materielFeedService.selectMaterielFeedById(id);
 		mmap.put("materielFeed", materielFeed);
 		return prefix + "/details";

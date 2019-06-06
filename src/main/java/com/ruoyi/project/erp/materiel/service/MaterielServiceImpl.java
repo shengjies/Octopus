@@ -138,22 +138,14 @@ public class MaterielServiceImpl implements IMaterielService {
      */
     @Override
     public int updateMateriel(Materiel materiel) {
+        if (materiel.getPriceImport() != 0.00f) {
+            materiel.setPrice(new BigDecimal(materiel.getPriceImport()));
+        }
         // 更新物料库存的物料信息
         updateMatlStockInfo(materiel);
         return materielMapper.updateMateriel(materiel);
     }
 
-    public int updateMaterielByMaterielCode(Materiel materiel) {
-        Materiel materiel1 = materielMapper.selectMaterielByMaterielCode(materiel.getMaterielCode(), ShiroUtils.getCompanyId());
-        materiel.setId(materiel1.getId());
-        // 更新物料库存的物料信息
-        updateMatlStockInfo(materiel);
-        if (materiel.getPriceImport() != 0.00f) {
-            materiel.setPrice(new BigDecimal(materiel.getPriceImport()));
-        }
-        materiel.setCompanyId(ShiroUtils.getCompanyId());
-        return materielMapper.updateMaterielByMaterielCode(materiel);
-    }
 
     /**
      * 更新物料库存信息
@@ -235,7 +227,9 @@ public class MaterielServiceImpl implements IMaterielService {
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、物料 " + materiel.getMaterielCode() + " 导入成功");
                 } else if (isUpdateSupport) {
-                    this.updateMaterielByMaterielCode(materiel); // 通过编码更新物料信息
+                    materiel.setId(m.getId());
+                    materiel.setCompanyId(currentUser.getCompanyId());
+                    this.updateMateriel(materiel); // 通过编码更新物料信息
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、物料 " + materiel.getMaterielCode() + " 更新成功");
                 } else {

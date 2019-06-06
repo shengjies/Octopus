@@ -131,7 +131,7 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
                 /**
                  * 物料库存操作
                  */
-                MaterielStock materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(outStockDetails.getMaterielCode(),ShiroUtils.getCompanyId());
+                MaterielStock materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(outStockDetails.getMaterielCode(),user.getCompanyId());
                 if (StringUtils.isNull(materielStock)) { // 库存中没有改物料信息
                     throw new BusinessException("库存中没有"+outStockDetails.getMaterielCode()+"物料信息");
                 } else {
@@ -173,7 +173,7 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
                     /**
                      * 采购单操作
                      */
-                    Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(ShiroUtils.getCompanyId(), materielOutStock.getSupplierId(), outStockDetails.getPurchaseCode());
+                    Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(user.getCompanyId(), materielOutStock.getSupplierId(), outStockDetails.getPurchaseCode());
                     purchase.setDeliverTotalNum(purchase.getDeliverTotalNum() - outStockDetails.getOutNumber());
                     purchase.setPurchaseStatut(StockConstants.ORDER_STATUS_TWO); // 采购单总数减少，交付状态变成未交付
                     purchaseMapper.updatePurchase(purchase);
@@ -219,7 +219,11 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
      * @return 结果
      */
     @Override
-    public int nullifyMaterielOutStockByIds(Integer id) {
+    public int nullifyMaterielOutStockByIds(Integer id,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
+        if (user == null ) {
+            return 0;
+        }
         // 物料退货单
         MaterielOutStock materielOutStock = materielOutStockMapper.selectMaterielOutStockById(id);
         MaterielOutStockDetails materielOutStockDetails = new MaterielOutStockDetails();
@@ -230,7 +234,7 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
             /**
              * 库存数量回滚
              */
-            MaterielStock materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(outStockDetails.getMaterielCode(),ShiroUtils.getCompanyId());
+            MaterielStock materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(outStockDetails.getMaterielCode(),user.getCompanyId());
             materielStock.setTotalNumber(materielStock.getTotalNumber() + outStockDetails.getOutNumber());
             materielStock.setBadNumber(materielStock.getBadNumber() + outStockDetails.getOutNumber());
             materielStock.setLastUpdate(new Date());
@@ -243,7 +247,7 @@ public class MaterielOutStockServiceImpl implements IMaterielOutStockService {
                 /**
                  * 采购单操作
                  */
-                Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(ShiroUtils.getCompanyId(), materielOutStock.getSupplierId(), outStockDetails.getPurchaseCode());
+                Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(user.getCompanyId(), materielOutStock.getSupplierId(), outStockDetails.getPurchaseCode());
                 purchase.setDeliverTotalNum(purchase.getDeliverTotalNum() + outStockDetails.getOutNumber());
                 purchaseMapper.updatePurchase(purchase);
                 /**

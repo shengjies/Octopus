@@ -59,7 +59,7 @@ public interface IMaterielFeedService
 	 * @param feedType 发料类型
 	 * @return 结果
 	 */
-    Map selectAllMaterielOrParts(String feedType);
+    Map selectAllMaterielOrParts(String feedType,HttpServletRequest request);
 
 	/**
 	 * 作废生产发料单

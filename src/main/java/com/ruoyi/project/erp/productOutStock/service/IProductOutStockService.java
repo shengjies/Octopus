@@ -19,7 +19,7 @@ public interface IProductOutStockService {
      * @param id 产品出库ID
      * @return 产品出库信息
      */
-    public ProductOutStock selectProductOutStockById(Integer id);
+    public ProductOutStock selectProductOutStockById(Integer id,HttpServletRequest request);
 
     /**
      * 查询产品出库列表
@@ -59,5 +59,5 @@ public interface IProductOutStockService {
      * @param id 需要删除的数据ID
      * @return 结果
      */
-    int nullifyProductOutStockById(Integer id);
+    int nullifyProductOutStockById(Integer id,HttpServletRequest request);
 }

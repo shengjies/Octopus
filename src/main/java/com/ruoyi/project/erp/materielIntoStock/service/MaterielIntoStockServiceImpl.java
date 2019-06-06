@@ -1,13 +1,10 @@
 package com.ruoyi.project.erp.materielIntoStock.service;
 
-import com.mchange.lang.ShortUtils;
 import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.CodeUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.jwt.JwtUtil;
-import com.ruoyi.project.erp.materiel.mapper.MaterielMapper;
 import com.ruoyi.project.erp.materielIntoStock.domain.MaterielIntoStock;
 import com.ruoyi.project.erp.materielIntoStock.mapper.MaterielIntoStockMapper;
 import com.ruoyi.project.erp.materielIntoStockDetails.domain.MaterielIntoStockDetails;
@@ -19,11 +16,9 @@ import com.ruoyi.project.erp.materielStockIqc.mapper.MaterielStockIqcMapper;
 import com.ruoyi.project.erp.materielSupplier.domain.MaterielSupplier;
 import com.ruoyi.project.erp.materielSupplier.mapper.MaterielSupplierMapper;
 import com.ruoyi.project.erp.purchase.domain.Purchase;
-import com.ruoyi.project.erp.purchase.domain.PurchaseResult;
 import com.ruoyi.project.erp.purchase.mapper.PurchaseMapper;
 import com.ruoyi.project.erp.purchaseDetails.domain.PurchaseDetails;
 import com.ruoyi.project.erp.purchaseDetails.mapper.PurchaseDetailsMapper;
-import com.ruoyi.project.erp.supplier.mapper.SupplierMapper;
 import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -160,7 +155,7 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
                      */
                     if (StringUtils.isNull(materielStock)) { // 库存不存在，新增库存记录
                         materielStock = new MaterielStock();
-                        materielStock.setCompanyId(ShiroUtils.getCompanyId()); // 公司id
+                        materielStock.setCompanyId(user.getCompanyId()); // 公司id
                         materielStock.setCreateTime(new Date()); // 创建时间
                         materielStock.setLastUpdate(new Date()); // 最后一次更新时间
                         materielStock.setMaterielId(materielIntoStockDetail.getMaterielId());
@@ -189,7 +184,7 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
                 } else {   // 没有开启IQC，物料直接录入到良品仓库
                     if (StringUtils.isNull(materielStock)) { // 库存不存在，新增库存记录
                         materielStock = new MaterielStock();
-                        materielStock.setCompanyId(ShiroUtils.getCompanyId()); // 公司id
+                        materielStock.setCompanyId(user.getCompanyId()); // 公司id
                         materielStock.setCreateTime(new Date()); // 创建时间
                         materielStock.setLastUpdate(new Date()); // 最后一次更新时间
                         materielStock.setMaterielId(materielIntoStockDetail.getMaterielId());
@@ -261,7 +256,11 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
      * @return 结果
      */
     @Override
-    public int nullifyMaterielIntoStockByIds(Integer id) {
+    public int nullifyMaterielIntoStockByIds(Integer id,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
+        if (user == null ) {
+            return 0;
+        }
         MaterielIntoStock materielIntoStock = materielIntoStockMapper.selectMaterielIntoStockById(id);
         // 采购单数据回滚
         // 查询作废入库单详情信息
@@ -269,11 +268,11 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
         materielIntoStockDetails.setIntoId(id);
         List<MaterielIntoStockDetails> materielIntoStockDetailsList = materielIntoStockDetailsMapper.selectMaterielIntoStockDetailsList(materielIntoStockDetails);
         // 物料iqc状态
-        MaterielStockIqc materielStockIqc = materielStockIqcMapper.selectMaterielStockIqcByComId(ShiroUtils.getCompanyId());
+        MaterielStockIqc materielStockIqc = materielStockIqcMapper.selectMaterielStockIqcByComId(user.getCompanyId());
         MaterielStock materielStock = null;
         for (MaterielIntoStockDetails intoStockDetails : materielIntoStockDetailsList) {
             // 库存数据回滚
-            materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(intoStockDetails.getMaterielCode(),ShiroUtils.getCompanyId());
+            materielStock = materielStockMapper.selectMaterielStockByMatCodeAndComId(intoStockDetails.getMaterielCode(),user.getCompanyId());
             /**
              * 开启iqc的情况，库存回滚临时仓库数量
              */
@@ -299,7 +298,7 @@ public class MaterielIntoStockServiceImpl implements IMaterielIntoStockService {
                 // 物料入库关联的采购单详情信息
                 if (!StringUtils.isEmpty(intoStockDetails.getPurchaseCode()) && !"-1".equals(intoStockDetails.getPurchaseCode())) {
                     // 采购单数据回滚
-                    Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(ShiroUtils.getCompanyId(), materielIntoStock.getSupplierId(), intoStockDetails.getPurchaseCode());
+                    Purchase purchase = purchaseMapper.selectPurchaseBySupIdAndPuraseCode(user.getCompanyId(), materielIntoStock.getSupplierId(), intoStockDetails.getPurchaseCode());
                     purchase.setDeliverTotalNum(purchase.getDeliverTotalNum() - intoStockDetails.getIntoNumber());
                     purchaseMapper.updatePurchase(purchase);
 

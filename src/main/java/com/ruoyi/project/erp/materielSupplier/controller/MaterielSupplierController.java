@@ -167,7 +167,7 @@ public class MaterielSupplierController extends BaseController {
      */
     @RequestMapping("/matOutStockByMatIdAndSupId")
     @ResponseBody
-    public AjaxResult matOutStockByMatIdAndSupId(int mid,int sid){
-        return AjaxResult.success("success",materielSupplierService.matOutStockByMatIdAndSupId(mid,sid));
+    public AjaxResult matOutStockByMatIdAndSupId(int mid,int sid,HttpServletRequest request){
+        return AjaxResult.success("success",materielSupplierService.matOutStockByMatIdAndSupId(mid,sid,request));
     }
 }

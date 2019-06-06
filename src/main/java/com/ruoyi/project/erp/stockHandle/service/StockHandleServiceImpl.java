@@ -75,9 +75,9 @@ public class StockHandleServiceImpl implements IStockHandleService
      * @return 库存内部处理主集合
      */
 	@Override
-	public List<StockHandle> selectStockHandleList(StockHandle stockHandle)
+	public List<StockHandle> selectStockHandleList(StockHandle stockHandle,HttpServletRequest request)
 	{
-        User user = ShiroUtils.getSysUser();
+        User user =JwtUtil.getTokenUser(request);
         if (user == null ) {
             return Collections.emptyList();
         }

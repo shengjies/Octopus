@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,8 +99,8 @@ public class ProductOutStockController extends BaseController {
      * 修改产品出库
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
-        ProductOutStock productOutStock = productOutStockService.selectProductOutStockById(id);
+    public String edit(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request) {
+        ProductOutStock productOutStock = productOutStockService.selectProductOutStockById(id,request);
         mmap.put("productOutStock", productOutStock);
         return prefix + "/edit";
     }
@@ -137,8 +138,8 @@ public class ProductOutStockController extends BaseController {
     @RequiresPermissions("erp:productOutStock:remove")
     @PostMapping("/nullify")
     @ResponseBody
-    public AjaxResult nullify(Integer id) {
-        return toAjax(productOutStockService.nullifyProductOutStockById(id));
+    public AjaxResult nullify(Integer id,HttpServletRequest request) {
+        return toAjax(productOutStockService.nullifyProductOutStockById(id,request));
     }
 
     /**
@@ -146,9 +147,9 @@ public class ProductOutStockController extends BaseController {
      */
     @RequiresPermissions("erp:productOutStock:list")
     @GetMapping("/details/{id}")
-    public String details(@PathVariable("id") Integer id, ModelMap mmap) {
-        ProductOutStock productOutStock = productOutStockService.selectProductOutStockById(id);
-        mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+    public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request) {
+        ProductOutStock productOutStock = productOutStockService.selectProductOutStockById(id,request);
+        mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
         mmap.put("productOutStock", productOutStock);
         return prefix + "/details";
     }

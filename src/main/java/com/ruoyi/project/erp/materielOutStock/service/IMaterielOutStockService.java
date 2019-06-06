@@ -4,6 +4,7 @@ import com.ruoyi.project.erp.materielOutStock.domain.MaterielOutStock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,5 +60,5 @@ public interface IMaterielOutStockService {
      * @param id 需要作废的物料退货id
      * @return 结果
      */
-    int nullifyMaterielOutStockByIds(Integer id);
+    int nullifyMaterielOutStockByIds(Integer id,HttpServletRequest request);
 }

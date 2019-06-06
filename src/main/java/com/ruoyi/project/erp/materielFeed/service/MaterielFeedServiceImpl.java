@@ -184,17 +184,18 @@ public class MaterielFeedServiceImpl implements IMaterielFeedService
 	 * @return 结果
 	 */
 	@Override
-	public Map selectAllMaterielOrParts(String feedType) {
+	public Map selectAllMaterielOrParts(String feedType,HttpServletRequest request) {
+		User user = JwtUtil.getTokenUser(request);
 		Map<String,Object> mmap = new HashMap<String,Object>(16);
 		if (StockConstants.DETAILS_TYPE_MATERIEL.equals(Integer.parseInt(feedType))) { // 物料类型
 		    // 查询该公司所有的物料
 			MaterielStock materielStock = new MaterielStock();
-			materielStock.setCompanyId(ShiroUtils.getCompanyId());
+			materielStock.setCompanyId(user.getCompanyId());
 			List<MaterielStock> materielStocks = materielStockMapper.selectMaterielStockList(materielStock);
 			mmap.put("materielStock",materielStocks);
 		}else {
 			PartsStock partsStock = new PartsStock();
-			partsStock.setCompanyId(ShiroUtils.getCompanyId());
+			partsStock.setCompanyId(user.getCompanyId());
 			List<PartsStock> partsStocks = partsStockMapper.selectPartsStockList(partsStock);
 			mmap.put("partsStock",partsStocks);
 		}

@@ -245,10 +245,14 @@ public class LineIntoStockServiceImpl implements ILineIntoStockService {
      * @return 结果
      */
     @Override
-    public int nullifyLineIntoStockByIds(Integer id) {
+    public int nullifyLineIntoStockByIds(Integer id,HttpServletRequest request) {
         /**
          * 查询出所有工单，更新实际入库数量以及产品库存信息
          */
+        User user = JwtUtil.getTokenUser(request);
+        if (user == null ) {
+            return 0;
+        }
         LineIntoStock lineIntoStock = lineIntoStockMapper.selectLineIntoStockById(id);
 
         List<LineIntoStockDetails> lineIntoStockDetails = lineIntoStockDetailsMapper.selectLineIntoStockDetailsByLineIntoId(id);
@@ -265,13 +269,13 @@ public class LineIntoStockServiceImpl implements ILineIntoStockService {
                 // 入库类型为成品更新成品库存
                 if (intoType.equals(StockConstants.DETAILS_TYPE_PRODUCT)) {
                     // 更新产品实际库存 回滚
-                    productStock = productStockMapper.selectProductStockByProCode(ShiroUtils.getCompanyId(), lineIntoStockDetail.getDetIntoCode());
+                    productStock = productStockMapper.selectProductStockByProCode(user.getCompanyId(), lineIntoStockDetail.getDetIntoCode());
                     productStock.setTotalNumber(productStock.getTotalNumber() - lineIntoStockDetail.getDetIntoNum());
                     productStock.setGoodNumber(productStock.getGoodNumber() - lineIntoStockDetail.getDetIntoNum());
                     productStock.setLastUpdate(new Date());
                     productStockMapper.updateProductStock(productStock); // 更新产品库存
                 } else { // 入库类型为半成品
-                    partsStock = partsStockMapper.selectPartsStockByProCode(ShiroUtils.getCompanyId(), lineIntoStockDetail.getDetIntoCode());
+                    partsStock = partsStockMapper.selectPartsStockByProCode(user.getCompanyId(), lineIntoStockDetail.getDetIntoCode());
                     partsStock.setTotalNumber(partsStock.getTotalNumber() - lineIntoStockDetail.getDetIntoNum());
                     partsStock.setGoodNumber(partsStock.getGoodNumber() - lineIntoStockDetail.getDetIntoNum());
                     partsStock.setLastUpdate(new Date());

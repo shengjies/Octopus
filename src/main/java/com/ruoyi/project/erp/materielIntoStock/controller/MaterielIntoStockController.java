@@ -145,9 +145,9 @@ public class MaterielIntoStockController extends BaseController {
      */
     @GetMapping("/details/{id}")
     @RequiresPermissions("erp:materielIntoStock:list")
-    public String details(@PathVariable("id") Integer id, ModelMap mmap) {
+    public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request) {
         MaterielIntoStock materielIntoStock = materielIntoStockService.selectMaterielIntoStockById(id);
-        mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+        mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
         mmap.put("materielIntoStock", materielIntoStock);
         return prefix + "/details";
     }
@@ -159,7 +159,7 @@ public class MaterielIntoStockController extends BaseController {
     @Log(title = "物料入库", businessType = BusinessType.DELETE)
     @PostMapping("/nullify")
     @ResponseBody
-    public AjaxResult nullify(Integer id) {
-        return toAjax(materielIntoStockService.nullifyMaterielIntoStockByIds(id));
+    public AjaxResult nullify(Integer id,HttpServletRequest request) {
+        return toAjax(materielIntoStockService.nullifyMaterielIntoStockByIds(id,request));
     }
 }

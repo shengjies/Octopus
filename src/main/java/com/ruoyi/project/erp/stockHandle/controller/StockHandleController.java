@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.constant.StockConstants;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.erp.materielStock.service.IMaterielStockService;
 import com.ruoyi.project.erp.partsStock.service.IPartsStockService;
@@ -66,10 +67,10 @@ public class StockHandleController extends BaseController
 	@RequiresPermissions("erp:stockHandle:list")
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(StockHandle stockHandle)
+	public TableDataInfo list(StockHandle stockHandle,HttpServletRequest request)
 	{
 		startPage();
-        List<StockHandle> list = stockHandleService.selectStockHandleList(stockHandle);
+        List<StockHandle> list = stockHandleService.selectStockHandleList(stockHandle,request);
 		return getDataTable(list);
 	}
 	
@@ -80,9 +81,9 @@ public class StockHandleController extends BaseController
 	@RequiresPermissions("erp:stockHandle:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(StockHandle stockHandle)
+    public AjaxResult export(StockHandle stockHandle,HttpServletRequest request)
     {
-    	List<StockHandle> list = stockHandleService.selectStockHandleList(stockHandle);
+    	List<StockHandle> list = stockHandleService.selectStockHandleList(stockHandle,request);
         ExcelUtil<StockHandle> util = new ExcelUtil<StockHandle>(StockHandle.class);
         return util.exportExcel(list, "stockHandle");
     }
@@ -158,11 +159,11 @@ public class StockHandleController extends BaseController
 	 */
 	@RequiresPermissions("erp:stockHandle:list")
 	@GetMapping("/details/{id}")
-	public String details(@PathVariable("id") Integer id, ModelMap mmap)
+	public String details(@PathVariable("id") Integer id, ModelMap mmap,HttpServletRequest request)
 	{
 		StockHandle stockHandle = stockHandleService.selectStockHandleById(id);
 		mmap.put("stockHandle", stockHandle);
-		mmap.put("company",companyService.selectDevCompanyById(ShiroUtils.getCompanyId()));
+		mmap.put("company",companyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId()));
 		return prefix + "/details";
 	}
 
