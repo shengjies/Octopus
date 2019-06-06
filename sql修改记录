@@ -1,0 +1,68 @@
+#2019-05-22
+ALTER TABLE `erpstock`.`tab_materiel_into_stock_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `price`;
+ALTER TABLE `erpstock`.`tab_materiel_out_stock_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `price`;
+ALTER TABLE `erpstock`.`tab_product_out_stock_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `price`;
+ALTER TABLE `erpstock`.`tab_product_into_stock_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `price`;
+ALTER TABLE `erpstock`.`tab_materiel_feed_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `out_number`;
+ALTER TABLE `erpstock`.`tab_line_into_stock_details`
+ADD COLUMN `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、作废)' AFTER `into_type`;
+#2019-5-27
+CREATE TABLE `erpstock`.`tab_stock_handle` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '库存内部处理主键',
+  `company_id` INT(11) NULL COMMENT '公司主键id',
+  `handle_code` VARCHAR(60) NULL COMMENT '库存处理编号',
+  `handle_type` CHAR(1) NULL COMMENT '处理类型(0、成品，1、物料，2、半成品)',
+  `create_id` INT(11) NULL COMMENT '创建者id',
+  `create_name` VARCHAR(45) NULL COMMENT '创建者姓名',
+  `create_time` DATETIME NULL COMMENT '创建时间',
+  `actual_time` DATETIME NULL COMMENT '实际处理时间',
+  `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、已作废)',
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = '库存内部处理主表';
+
+ALTER TABLE `erpstock`.`tab_stock_handle`
+ADD COLUMN `remark` TEXT NULL COMMENT '备注信息' AFTER `del_flag`;
+
+CREATE TABLE `erpstock`.`tab_stock_handle_details` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `company_id` INT(11) NULL COMMENT '公司主键id',
+  `handle_id` INT(11) NULL COMMENT '内部调整主键id',
+  `handle_code` VARCHAR(45) NULL COMMENT '处理单号',
+  `handle_type` CHAR(1) NULL COMMENT '处理类型(0、成品，1、物料，2、半成品)',
+  `create_id` INT(11) NULL COMMENT '创建者',
+  `create_name` VARCHAR(45) NULL COMMENT '创建者姓名',
+  `create_time` DATETIME NULL COMMENT '创建时间',
+  `actual_time` DATETIME NULL COMMENT '实际处理时间',
+  `attr_id` INT(11) NULL COMMENT '产品/物料/半成品id',
+  `attr_code` VARCHAR(45) NULL COMMENT '产品/物料/半成品编码',
+  `attr_model` VARCHAR(45) NULL COMMENT '产品/物料/半成品型号\n',
+  `attr_name` VARCHAR(45) NULL COMMENT '产品/物料/半成品名称',
+  `handle_status` CHAR(1) NULL COMMENT '处理状态(0、不良=>良品 1、不良=>报废 2、良品=>不良 3、良品=>报废 4、报废品清库)',
+  `handle_number` INT(11) NULL DEFAULT 0 COMMENT '处理数量',
+  `del_flag` CHAR(1) NULL DEFAULT 0 COMMENT '作废状态(0、默认值未作废，1、已作废)',
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = '内部调整明细表';
+
+
+
+# 2019-05-29  未执行
+INSERT INTO `devicemanage2`.`dev_page_layout` (`layout_type`, `layout_name`, `layout_status`, `create_date`, `layout_num`) VALUES ('4', '图纸看板', '1', now(), '0');
+
+#2019-05-30
+ALTER TABLE `devicemanage2`.`dev_product_list`
+ADD INDEX `code_company` (`company_id` ASC, `product_code` ASC) VISIBLE;
+;
+
+
+#2019-06-03
+ALTER TABLE `devicemanage2`.`dev_work_order`
+ADD COLUMN `sign` INT NULL DEFAULT 1 AFTER `ecn_text`;

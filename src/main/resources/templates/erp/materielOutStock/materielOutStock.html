@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								出库单号：<input type="text" name="outCode"/>
+							</li>
+
+							<li>
+								选择供应商：
+								<select style="width: 150px" id="supplierId" name="supplierId"
+										th:with="supplierList = ${@supplier.selectSupplierAllByCompanyId(#httpServletRequest.getCookies())}">
+									<option value="">请选择</option>
+									<option th:each="supplier : ${supplierList}" th:text="${supplier.supplierName}"
+											th:value="${supplier.id}"></option>
+								</select>
+							</li>
+
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间"
+									   name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间"
+									   name="params[endTime]"/>
+							</li>
+
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="add()" shiro:hasPermission="erp:materielOutStock:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var list = [[${@permission.hasPermi('erp:materielIntoStock:list')}]];
+        var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:materielOutStock:remove')}]];
+        var prefix = ctx + "erp/materielOutStock";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "物料出库",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '物料出库主键ID',
+					visible: false
+				},
+				{
+					field : 'outCode', 
+					title : '出库单号',
+					sortable: true
+				},
+				{
+					field : 'supplierName', 
+					title : '供应商名称',
+					sortable: true
+				},
+				{
+					field : 'actualTime', 
+					title : '实际时间',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '备注信息',
+					sortable: true
+				},
+				{
+					field : 'createName', 
+					title : '操作者名称',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '操作时间',
+					sortable: true
+				},
+
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-primary btn-xs ' + list + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>详情</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-arrow-up"></i>回签上传</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>作废</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+        /**
+         * 跳转添加物料退货单
+         */
+        function add() {
+            createMenuItem(prefix + "/add", "添加物料退货单")
+        }
+
+
+        /** 查看物料退货明细*/
+        function details(id) {
+            var url = prefix+"/details/" + id;
+            $.modal.open("查看物料退货明细",url,1000,580);
+        }
+
+        /**
+         * 作废物料退货单
+         */
+        function remove(id) {
+            $.modal.confirm("确认作废该物料退货吗？", function () {
+                $.ajax({
+                    type: 'POST',
+                    url: prefix + '/nullify',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json', // 要什么类型的数据
+                    async: false,  //同步请求，
+                    cache: false, // 不使用缓存
+                    success: function (result) {
+                        $.operate.ajaxSuccess(result);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 查询文件
+         */
+        function viewFile(id) {
+            $.modal.open("文件查看","/erp/fileSourceInfo?save_type=10&save_id="+id,900)
+        }
+    </script>
+</body>
+</html>

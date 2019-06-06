@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-supplier-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">供应商名称：</label>
+				<div class="col-sm-8">
+					<input id="supplierName" name="supplierName" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">联系方式：</label>
+				<div class="col-sm-8">
+					<input id="contactInformation" name="contactInformation" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">邮箱：</label>
+				<div class="col-sm-8">
+					<input id="email" name="email" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">性别：</label>
+				<div class="col-sm-8">
+					<div class="radio-box">
+						<input type="radio" id="radio1" name="sex" value="1" checked="checked">
+						<label for="radio1">男</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="radio2" name="sex" value="0">
+						<label for="radio2">女</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">职位：</label>
+				<div class="col-sm-8">
+					<input id="position" name="position" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司名称：</label>
+				<div class="col-sm-8">
+					<input id="companyName" name="companyName" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">纳税识别号：</label>
+				<div class="col-sm-8">
+					<input id="taxpayerNumber" name="taxpayerNumber" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司注册地址：</label>
+				<div class="col-sm-8">
+					<input id="companyAddress" name="companyAddress" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">供应商发货地址：</label>
+				<div class="col-sm-8">
+					<input id="sendAddress" name="sendAddress" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">开户银行：</label>
+				<div class="col-sm-8">
+					<input id="bankDeposit" name="bankDeposit" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">开户账号：</label>
+				<div class="col-sm-8">
+					<input id="openingAccount" name="openingAccount" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">账期时间：</label>
+				<div class="col-sm-8">
+					<input id="paymentTime" name="paymentTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注信息：</label>
+				<div class="col-sm-8">
+					<textarea id="remark" name="remark" rows="4" class="form-control" type="text"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/supplier"
+		$("#form-supplier-add").validate({
+            rules:{
+                supplierName:{
+                    required:true,
+                },
+                contactInformation:{
+                    required:true,
+                },
+                email:{
+                    email:true,
+                },
+                companyName:{
+                    required:true,
+                },
+                taxpayerNumber:{
+                    required:true,
+                },
+                bankDeposit:{
+                    required:true,
+                },
+                openingAccount:{
+                    required:true,
+                },
+                sendAddress:{
+                    required:true,
+				}
+            }
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-supplier-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

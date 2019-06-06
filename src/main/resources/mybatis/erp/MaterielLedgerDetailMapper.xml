@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielLedgerDetail.mapper.MaterielLedgerDetailMapper">
+    
+    <resultMap type="MaterielLedgerDetail" id="MaterielLedgerDetailResult">
+        <result property="id"    column="id"    />
+        <result property="ledgerId"    column="ledger_id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="ledgerType"    column="ledger_type"    />
+        <result property="deliveryTime"    column="delivery_time"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="materielCode"    column="materiel_code"    />
+        <result property="materielModel"    column="materiel_model"    />
+        <result property="materielName"    column="materiel_name"    />
+        <result property="ledgerNumber"    column="ledger_number"    />
+        <result property="ledgerPrice"    column="ledger_price"    />
+        <result property="ledgerMoney"    column="ledger_money"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectMaterielLedgerDetailVo">
+        select id, ledger_id, company_id, supplier_id, ledger_type, delivery_time, purchase_code, supplier_code, materiel_code, materiel_model, materiel_name, ledger_number, ledger_price, ledger_money, create_time from tab_materiel_ledger_detail
+    </sql>
+
+    <insert id="insertMaterielLedgerDetail" parameterType="MaterielLedgerDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_ledger_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="ledgerId != null  ">ledger_id,</if>
+			<if test="companyId != null  ">company_id,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="ledgerType != null  ">ledger_type,</if>
+			<if test="deliveryTime != null  ">delivery_time,</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">supplier_code,</if>
+			<if test="materielCode != null  and materielCode != ''  ">materiel_code,</if>
+			<if test="materielModel != null  and materielModel != ''  ">materiel_model,</if>
+			<if test="materielName != null  and materielName != ''  ">materiel_name,</if>
+			<if test="ledgerNumber != null  ">ledger_number,</if>
+			<if test="ledgerPrice != null  ">ledger_price,</if>
+			<if test="ledgerMoney != null  ">ledger_money,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="ledgerId != null  ">#{ledgerId},</if>
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="ledgerType != null  ">#{ledgerType},</if>
+			<if test="deliveryTime != null  ">#{deliveryTime},</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">#{supplierCode},</if>
+			<if test="materielCode != null  and materielCode != ''  ">#{materielCode},</if>
+			<if test="materielModel != null  and materielModel != ''  ">#{materielModel},</if>
+			<if test="materielName != null  and materielName != ''  ">#{materielName},</if>
+			<if test="ledgerNumber != null  ">#{ledgerNumber},</if>
+			<if test="ledgerPrice != null  ">#{ledgerPrice},</if>
+			<if test="ledgerMoney != null  ">#{ledgerMoney},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+
+	<select id="selectDetailsByLedgerId" resultMap="MaterielLedgerDetailResult">
+		<include refid="selectMaterielLedgerDetailVo"/>
+		where ledger_id = #{ledger_id} ;
+	</select>
+
+</mapper>

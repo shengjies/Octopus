@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productIntoStockDetails.mapper.ProductIntoStockDetailsMapper">
+    
+    <resultMap type="ProductIntoStockDetails" id="ProductIntoStockDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="productName"    column="product_name"    />
+        <result property="customerCode"    column="customer_code"    />
+        <result property="intoNumber"    column="into_number"    />
+        <result property="intoId"    column="into_id"    />
+        <result property="intoCode"    column="into_code"    />
+        <result property="backCode"    column="back_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="price"    column="price"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectProductIntoStockDetailsVo">
+        select id, product_id, product_code, product_model, product_name, customer_code, into_number, into_id, into_code, back_code, create_time, payment_status,total_price,price,del_flag from tab_product_into_stock_details
+    </sql>
+	
+    <select id="selectProductIntoStockDetailsList" parameterType="ProductIntoStockDetails" resultMap="ProductIntoStockDetailsResult">
+        <include refid="selectProductIntoStockDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="productId != null "> and product_id = #{productId}</if>
+             <if test="productCode != null  and productCode != '' "> and product_code = #{productCode}</if>
+             <if test="productModel != null  and productModel != '' "> and product_model = #{productModel}</if>
+             <if test="productName != null  and productName != '' "> and product_name = #{productName}</if>
+             <if test="customerCode != null  and customerCode != '' "> and customer_code = #{customerCode}</if>
+             <if test="intoNumber != null "> and into_number = #{intoNumber}</if>
+             <if test="intoId != null "> and into_id = #{intoId}</if>
+             <if test="intoCode != null  and intoCode != '' "> and into_code = #{intoCode}</if>
+             <if test="backCode != null  and backCode != '' "> and back_code = #{backCode}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="paymentStatus != null  and paymentStatus != '' "> and payment_status = #{paymentStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectProductIntoStockDetailsById" parameterType="Integer" resultMap="ProductIntoStockDetailsResult">
+        <include refid="selectProductIntoStockDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductIntoStockDetails" parameterType="ProductIntoStockDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_product_into_stock_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null  ">product_id,</if>
+			<if test="productCode != null  and productCode != ''  ">product_code,</if>
+			<if test="productModel != null  and productModel != ''  ">product_model,</if>
+			<if test="productName != null  and productName != ''  ">product_name,</if>
+			<if test="customerCode != null  and customerCode != ''  ">customer_code,</if>
+			<if test="intoNumber != null  ">into_number,</if>
+			<if test="intoId != null  ">into_id,</if>
+			<if test="intoCode != null  and intoCode != ''  ">into_code,</if>
+			<if test="backCode != null  and backCode != ''  ">back_code,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="paymentStatus != null  and paymentStatus != ''  ">payment_status,</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price,</if>
+            <if test="price != null  ">price,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null  ">#{productId},</if>
+			<if test="productCode != null  and productCode != ''  ">#{productCode},</if>
+			<if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+			<if test="productName != null  and productName != ''  ">#{productName},</if>
+			<if test="customerCode != null  and customerCode != ''  ">#{customerCode},</if>
+			<if test="intoNumber != null  ">#{intoNumber},</if>
+			<if test="intoId != null  ">#{intoId},</if>
+			<if test="intoCode != null  and intoCode != ''  ">#{intoCode},</if>
+			<if test="backCode != null  and backCode != ''  ">#{backCode},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="paymentStatus != null  and paymentStatus != ''  ">#{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">#{totalPrice},</if>
+            <if test="price != null  ">#{price},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductIntoStockDetails" parameterType="ProductIntoStockDetails">
+        update tab_product_into_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">product_code = #{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code = #{customerCode},</if>
+            <if test="intoNumber != null  ">into_number = #{intoNumber},</if>
+            <if test="intoId != null  ">into_id = #{intoId},</if>
+            <if test="intoCode != null  and intoCode != ''  ">into_code = #{intoCode},</if>
+            <if test="backCode != null  and backCode != ''  ">back_code = #{backCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">payment_status = #{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price = #{totalPrice},</if>
+            <if test="price != null and price != '' ">price = #{price},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废产品退货明细-->
+	<delete id="deleteProductIntoStockDetailsById" parameterType="Integer">
+        update tab_product_into_stock_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductIntoStockDetailsByIds" parameterType="String">
+        delete from tab_product_into_stock_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过产品退货单id查询产品退货单详情-->
+    <select id="selectProductIntoStockDetailsByIntoId" parameterType="Integer" resultMap="ProductIntoStockDetailsResult">
+        <include refid="selectProductIntoStockDetailsVo"/>
+        where into_id = #{intoId}
+    </select>
+
+    <select id="selectProductIntoStockDetailsByCompanyIdAndCid" resultMap="ProductIntoStockDetailsResult">
+        SELECT a.* FROM tab_product_into_stock_details as a,tab_product_into_stock as b
+        where a.into_id = b.id and b.company_id = #{company_id} and customer_id = #{cid} and a.del_flag = '0'
+        AND date_format(b.create_time,'%y%m%d') &gt;= date_format(#{bTime},'%y%m%d')
+         AND date_format(b.create_time,'%y%m%d') &lt;= date_format(#{eTime},'%y%m%d')
+    </select>
+    
+</mapper>

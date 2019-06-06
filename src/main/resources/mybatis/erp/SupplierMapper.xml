@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.supplier.mapper.SupplierMapper">
+    
+    <resultMap type="Supplier" id="SupplierResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="contactInformation"    column="contact_information"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="position"    column="position"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="taxpayerNumber"    column="taxpayer_number"    />
+        <result property="companyAddress"    column="company_address"    />
+        <result property="bankDeposit"    column="bank_deposit"    />
+        <result property="openingAccount"    column="opening_account"    />
+        <result property="remark"    column="remark"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentTime"    column="payment_time"    />
+        <result property="sendAddress"    column="send_address"    />
+    </resultMap>
+	
+	<sql id="selectSupplierVo">
+        select id, company_id, supplier_name, contact_information, email, sex, position, company_name, taxpayer_number, company_address, bank_deposit, opening_account, remark, create_id, create_name, create_time,payment_time,send_address from tab_supplier
+    </sql>
+	
+    <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="supplierName != null  and supplierName != '' ">
+                 and supplier_name like concat ('%',#{supplierName},'%')
+             </if>
+             <if test="contactInformation != null  and contactInformation != '' "> and contact_information = #{contactInformation}</if>
+             <if test="email != null  and email != '' "> and email = #{email}</if>
+             <if test="sex != null "> and sex = #{sex}</if>
+             <if test="position != null  and position != '' "> and position = #{position}</if>
+             <if test="companyName != null  and companyName != '' "> and company_name = #{companyName}</if>
+             <if test="taxpayerNumber != null  and taxpayerNumber != '' "> and taxpayer_number = #{taxpayerNumber}</if>
+             <if test="companyAddress != null  and companyAddress != '' "> and company_address = #{companyAddress}</if>
+             <if test="bankDeposit != null  and bankDeposit != '' "> and bank_deposit = #{bankDeposit}</if>
+             <if test="openingAccount != null  and openingAccount != '' "> and opening_account = #{openingAccount}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createName != null  and createName != '' "> and create_name = #{createName}</if>
+             <if test="paymentTime != null  and paymentTime != '' "> and payment_time = #{paymentTime}</if>
+             <if test="sendAddress != null  and sendAddress != '' "> and send_address = #{sendAddress}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+             </if>
+             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+             </if>
+         </where>
+    </select>
+    
+    <select id="selectSupplierById" parameterType="Integer" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSupplier" parameterType="Supplier">
+        insert into tab_supplier
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="companyId != null  ">company_id,</if>
+			<if test="supplierName != null  and supplierName != ''  ">supplier_name,</if>
+			<if test="contactInformation != null  and contactInformation != ''  ">contact_information,</if>
+			<if test="email != null  and email != ''  ">email,</if>
+			<if test="sex != null  ">sex,</if>
+			<if test="position != null  and position != ''  ">position,</if>
+			<if test="companyName != null  and companyName != ''  ">company_name,</if>
+			<if test="taxpayerNumber != null  and taxpayerNumber != ''  ">taxpayer_number,</if>
+			<if test="companyAddress != null  and companyAddress != ''  ">company_address,</if>
+			<if test="bankDeposit != null  and bankDeposit != ''  ">bank_deposit,</if>
+			<if test="openingAccount != null  and openingAccount != ''  ">opening_account,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="paymentTime != null  ">payment_time,</if>
+            <if test="sendAddress != null  ">send_address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="supplierName != null  and supplierName != ''  ">#{supplierName},</if>
+			<if test="contactInformation != null  and contactInformation != ''  ">#{contactInformation},</if>
+			<if test="email != null  and email != ''  ">#{email},</if>
+			<if test="sex != null  ">#{sex},</if>
+			<if test="position != null  and position != ''  ">#{position},</if>
+			<if test="companyName != null  and companyName != ''  ">#{companyName},</if>
+			<if test="taxpayerNumber != null  and taxpayerNumber != ''  ">#{taxpayerNumber},</if>
+			<if test="companyAddress != null  and companyAddress != ''  ">#{companyAddress},</if>
+			<if test="bankDeposit != null  and bankDeposit != ''  ">#{bankDeposit},</if>
+			<if test="openingAccount != null  and openingAccount != ''  ">#{openingAccount},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="paymentTime != null  ">#{paymentTime},</if>
+            <if test="sendAddress != null  ">#{sendAddress},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateSupplier" parameterType="Supplier">
+        update tab_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="supplierName != null  and supplierName != ''  ">supplier_name = #{supplierName},</if>
+            <if test="contactInformation != null  and contactInformation != ''  ">contact_information = #{contactInformation},</if>
+            <if test="email != null  and email != ''  ">email = #{email},</if>
+            <if test="sex != null  ">sex = #{sex},</if>
+            <if test="position != null  and position != ''  ">position = #{position},</if>
+            <if test="companyName != null  and companyName != ''  ">company_name = #{companyName},</if>
+            <if test="taxpayerNumber != null  and taxpayerNumber != ''  ">taxpayer_number = #{taxpayerNumber},</if>
+            <if test="companyAddress != null  and companyAddress != ''  ">company_address = #{companyAddress},</if>
+            <if test="bankDeposit != null  and bankDeposit != ''  ">bank_deposit = #{bankDeposit},</if>
+            <if test="openingAccount != null  and openingAccount != ''  ">opening_account = #{openingAccount},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentTime != null  ">payment_time = #{paymentTime},</if>
+            <if test="sendAddress != null  ">send_address = #{sendAddress},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteSupplierById" parameterType="Integer">
+        delete from tab_supplier where id = #{id}
+    </delete>
+	
+    <delete id="deleteSupplierByIds" parameterType="String">
+        delete from tab_supplier where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

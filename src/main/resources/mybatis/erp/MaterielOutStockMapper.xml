@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielOutStock.mapper.MaterielOutStockMapper">
+    
+    <resultMap type="MaterielOutStock" id="MaterielOutStockResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="outCode"    column="out_code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="actualTime"    column="actual_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="returnCode"    column="return_code"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielOutStockVo">
+        select id, company_id, out_code, supplier_id, supplier_name, actual_time, remark, create_id, create_name, create_time, return_code,payment_status,del_flag from tab_materiel_out_stock
+    </sql>
+	
+    <select id="selectMaterielOutStockList" parameterType="MaterielOutStock" resultMap="MaterielOutStockResult">
+        <include refid="selectMaterielOutStockVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="outCode != null  and outCode != '' ">
+                 and out_code like concat('%',#{outCode},'%')
+             </if>
+             <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+             <if test="supplierName != null  and supplierName != '' "> and supplier_name = #{supplierName}</if>
+             <if test="actualTime != null "> and actual_time = #{actualTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createName != null  and createName != '' "> and create_name = #{createName}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+             </if>
+             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+             </if>
+             <if test="returnCode != null  and returnCode != '' ">
+                 and return_code like concat ('%',#{returnCode},'%')
+             </if>
+             <if test="paymentStatus != null  and paymentStatus != '' "> and payment_status = #{paymentStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielOutStockById" parameterType="Integer" resultMap="MaterielOutStockResult">
+        <include refid="selectMaterielOutStockVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielOutStock" parameterType="MaterielOutStock" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_out_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="outCode != null  and outCode != ''  ">out_code,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="supplierName != null  and supplierName != ''  ">supplier_name,</if>
+			<if test="actualTime != null  ">actual_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="returnCode != null  and returnCode != ''  ">return_code,</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">payment_status,</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="outCode != null  and outCode != ''  ">#{outCode},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="supplierName != null  and supplierName != ''  ">#{supplierName},</if>
+			<if test="actualTime != null  ">#{actualTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="returnCode != null  and returnCode != ''  ">#{returnCode},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">#{paymentStatus},</if>
+            <if test="delFlag != null  and delFlag != ''  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielOutStock" parameterType="MaterielOutStock">
+        update tab_materiel_out_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="outCode != null  and outCode != ''  ">out_code = #{outCode},</if>
+            <if test="supplierId != null  ">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null  and supplierName != ''  ">supplier_name = #{supplierName},</if>
+            <if test="actualTime != null  ">actual_time = #{actualTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="returnCode != null  and returnCode != ''  ">return_code = #{returnCode},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">payment_status = #{paymentStatus},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废物料入库-->
+	<delete id="deleteMaterielOutStockById" parameterType="Integer">
+        update tab_materiel_out_stock set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielOutStockByIds" parameterType="String">
+        delete from tab_materiel_out_stock where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectMaterielOutStockByOutCode" parameterType="String" resultMap="MaterielOutStockResult">
+        <include refid="selectMaterielOutStockVo"/>
+        where out_code = #{outCode}
+    </select>
+</mapper>

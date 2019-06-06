@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.orderDetails.mapper.OrderDetailsMapper">
+
+    <resultMap type="OrderDetails" id="OrderDetailsResult">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderCode" column="order_code"/>
+        <result property="prodectCode" column="prodect_code"/>
+        <result property="productModel" column="product_model"/>
+        <result property="customerCode" column="customer_code"/>
+        <result property="productName" column="product_name"/>
+        <result property="productPrict" column="product_prict"/>
+        <result property="number" column="number"/>
+        <result property="totalPrict" column="total_prict"/>
+        <result property="deliverNum" column="deliver_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="remark" column="remark"/>
+        <result property="productId" column="product_id"/>
+    </resultMap>
+
+    <sql id="selectOrderDetailsVo">
+        select id, order_id, order_code, prodect_code,product_id, product_model, customer_code, product_name, product_prict,remark, number, total_prict, deliver_num, create_time,customer_id,company_id from tab_order_details
+    </sql>
+
+    <select id="selectOrderDetailsList" parameterType="OrderDetails" resultMap="OrderDetailsResult">
+        <include refid="selectOrderDetailsVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+            <if test="orderCode != null  and orderCode != '' ">and order_code = #{orderCode}</if>
+            <if test="prodectCode != null  and prodectCode != '' ">and prodect_code = #{prodectCode}</if>
+            <if test="productModel != null  and productModel != '' ">and product_model = #{productModel}</if>
+            <if test="customerCode != null  and customerCode != '' ">and customer_code = #{customerCode}</if>
+            <if test="productName != null  and productName != '' ">and product_name = #{productName}</if>
+            <if test="productPrict != null ">and product_prict = #{productPrict}</if>
+            <if test="number != null ">and number = #{number}</if>
+            <if test="totalPrict != null ">and total_prict = #{totalPrict}</if>
+            <if test="deliverNum != null ">and deliver_num = #{deliverNum}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+        </where>
+    </select>
+
+    <select id="selectOrderDetailsById" parameterType="Integer" resultMap="OrderDetailsResult">
+        <include refid="selectOrderDetailsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOrderDetails" parameterType="OrderDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_order_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null  ">order_id,</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code,</if>
+            <if test="prodectCode != null  and prodectCode != ''  ">prodect_code,</if>
+            <if test="productModel != null  and productModel != ''  ">product_model,</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code,</if>
+            <if test="productName != null  and productName != ''  ">product_name,</if>
+            <if test="productPrict != null  ">product_prict,</if>
+            <if test="number != null  ">number,</if>
+            <if test="totalPrict != null  ">total_prict,</if>
+            <if test="deliverNum != null  ">deliver_num,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="customerId != null  ">customer_id,</if>
+            <if test="companyId != null  ">company_id,</if>
+            <if test="remark != null  ">remark,</if>
+            <if test="productId != null  ">product_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null  ">#{orderId},</if>
+            <if test="orderCode != null  and orderCode != ''  ">#{orderCode},</if>
+            <if test="prodectCode != null  and prodectCode != ''  ">#{prodectCode},</if>
+            <if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+            <if test="customerCode != null  and customerCode != ''  ">#{customerCode},</if>
+            <if test="productName != null  and productName != ''  ">#{productName},</if>
+            <if test="productPrict != null  ">#{productPrict},</if>
+            <if test="number != null  ">#{number},</if>
+            <if test="totalPrict != null  ">#{totalPrict},</if>
+            <if test="deliverNum != null  ">#{deliverNum},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="customerId != null  ">#{customerId},</if>
+            <if test="companyId != null  ">#{companyId},</if>
+            <if test="remark != null  ">#{remark},</if>
+            <if test="productId != null  ">#{productId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOrderDetails" parameterType="OrderDetails">
+        update tab_order_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null  ">order_id = #{orderId},</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code = #{orderCode},</if>
+            <if test="prodectCode != null  and prodectCode != ''  ">prodect_code = #{prodectCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code = #{customerCode},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="productPrict != null  ">product_prict = #{productPrict},</if>
+            <if test="number != null  ">number = #{number},</if>
+            <if test="totalPrict != null  ">total_prict = #{totalPrict},</if>
+            <if test="deliverNum != null  ">deliver_num = #{deliverNum},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="customerId != null  ">customer_id = #{customerId},</if>
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="sign >= 0">sign = #{sign},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderDetailsById" parameterType="Integer">
+        delete from tab_order_details where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderDetailsByIds" parameterType="String">
+        delete from tab_order_details where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--根据订单编号删除对应标记为1的详情信息-->
+    <delete id="deleteOrderDetailsByOrderId">
+        delete from tab_order_details where order_id =#{orderId} and sign  = 1
+    </delete>
+
+    <!--标记对应的订单详情数据-->
+    <update id="editOrderDetailsSign">
+       update tab_order_details set sign = #{sign} where order_id = #{oid}
+    </update>
+
+    <!--根据订单id和产品编码查询对应的详情是否存在-->
+    <select id="findOrderDetailsByOidAndPCode" resultMap="OrderDetailsResult">
+        SELECT * FROM tab_order_details where order_id  = #{oid} and prodect_code = #{pcode} limit 1;
+    </select>
+
+    <!--通过订单号产品编码公司查询订单详细信息-->
+    <select id="selectOrderDetailByCodeAndCusId" resultMap="OrderDetailsResult">
+        <include refid="selectOrderDetailsVo"/>
+        where company_id = #{companyId} and order_code = #{orderCode} and customer_id = #{customerId} and prodect_code = #{productCode} limit 1;
+    </select>
+
+    <select id="findByOrderCodeAndProductCode" resultMap="OrderDetailsResult">
+      SELECT * FROM erpstock.tab_order_details where company_id = #{companyId}
+       and order_code =#{orderCode} and prodect_code=#{productCode} limit 1;
+    </select>
+
+    <!--查询未交付完的订单明细信息-->
+    <select id="selectOrderDetailsListByProIdAndCusId" resultType="com.ruoyi.project.erp.orderDetails.domain.OrderDetails">
+        SELECT a.id as id, a.order_id as orderId,a.order_code as orderCode,a.number as number,a.deliver_num as deliverNum,a.prodect_code as productCode
+            FROM tab_order_details as a,erpstock.tab_order_info as b where a.order_id = b.id
+            and b.company_id =#{companyId} and b.customer_id = #{customerId} and a.product_id = #{productId} and b.order_status = #{orderStatus};
+    </select>
+
+    <!--通过产品id客户id订单状态查询最新的一条记录-->
+    <select id="selectOrderDetailsListByProIdAndCusIdOne" resultType="com.ruoyi.project.erp.orderDetails.domain.OrderDetails">
+         SELECT a.id as id, a.order_id as orderId,a.order_code as orderCode,a.number as number,a.deliver_num as deliverNum,a.prodect_code as productCode,
+         b.order_status as orderStatus FROM tab_order_details as a,erpstock.tab_order_info as b
+         where a.order_id = b.id and b.company_id =#{companyId} and b.customer_id = #{customerId}
+         and a.product_id = #{productId} and b.order_status = #{orderStatus} and
+         a.deliver_num > 0 order by b.create_time desc limit 1;
+    </select>
+
+    <select id="selectOrderDetailsListByNullProInStock" resultType="com.ruoyi.project.erp.orderDetails.domain.OrderDetails">
+         SELECT a.id as id, a.order_id as orderId,a.order_code as orderCode,a.number as number,a.deliver_num as deliverNum,a.prodect_code as productCode,
+         b.order_status as orderStatus FROM tab_order_details as a,erpstock.tab_order_info as b
+         where a.order_id = b.id and b.company_id =#{companyId} and b.customer_id = #{customerId}
+         and a.product_id = #{productId} and b.order_status = #{orderStatus} and
+         a.deliver_num &lt; a.number order by b.create_time desc limit 1;
+    </select>
+</mapper>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-partStockHandleDetails-edit" th:object="${partStockHandleDetails}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司主键ID：</label>
+				<div class="col-sm-8">
+					<input id="companyId" name="companyId" th:field="*{companyId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品主键ID：</label>
+				<div class="col-sm-8">
+					<input id="partId" name="partId" th:field="*{partId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品编码：</label>
+				<div class="col-sm-8">
+					<input id="partCode" name="partCode" th:field="*{partCode}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品名称：</label>
+				<div class="col-sm-8">
+					<input id="partName" name="partName" th:field="*{partName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作类型：</label>
+				<div class="col-sm-8">
+					<input id="handleType" name="handleType" th:field="*{handleType}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作状态：</label>
+				<div class="col-sm-8">
+					<input id="handleStatus" name="handleStatus" th:field="*{handleStatus}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="handleNumber" name="handleNumber" th:field="*{handleNumber}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作人：</label>
+				<div class="col-sm-8">
+					<input id="handleBy" name="handleBy" th:field="*{handleBy}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作者名称：</label>
+				<div class="col-sm-8">
+					<input id="handleName" name="handleName" th:field="*{handleName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">实际时间：</label>
+				<div class="col-sm-8">
+					<input id="actualTime" name="actualTime" th:field="*{actualTime}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作时间：</label>
+				<div class="col-sm-8">
+					<input id="handleTime" name="handleTime" th:field="*{handleTime}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/partStockHandleDetails";
+		$("#form-partStockHandleDetails-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-partStockHandleDetails-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

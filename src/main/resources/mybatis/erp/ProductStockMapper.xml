@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productStock.mapper.ProductStockMapper">
+
+    <resultMap type="ProductStock" id="ProductStockResult">
+        <result property="id" column="id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productCode" column="product_code"/>
+        <result property="productModel" column="product_model"/>
+        <result property="productName" column="product_name"/>
+        <result property="totalNumber" column="total_number"/>
+        <result property="goodNumber" column="good_number"/>
+        <result property="badNumber" column="bad_number"/>
+        <result property="scrapNumber" column="scrap_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdate" column="last_update"/>
+    </resultMap>
+
+    <sql id="selectProductStockVo">
+        select id, company_id, product_id, product_code, product_model, product_name, total_number, good_number, bad_number, scrap_number, create_time, last_update from tab_product_stock
+    </sql>
+
+    <select id="selectProductStockList" parameterType="ProductStock" resultMap="ProductStockResult">
+        <include refid="selectProductStockVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="companyId != null ">and company_id = #{companyId}</if>
+            <if test="productId != null ">and product_id = #{productId}</if>
+            <if test="productCode != null  and productCode != '' ">and product_code = #{productCode}</if>
+            <if test="productModel != null  and productModel != '' ">and product_model = #{productModel}</if>
+            <if test="productName != null  and productName != '' ">and product_name = #{productName}</if>
+            <if test="totalNumber != null ">and total_number = #{totalNumber}</if>
+            <if test="goodNumber != null ">and good_number = #{goodNumber}</if>
+            <if test="badNumber != null ">and bad_number = #{badNumber}</if>
+            <if test="scrapNumber != null ">and scrap_number = #{scrapNumber}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="lastUpdate != null ">and last_update = #{lastUpdate}</if>
+        </where>
+    </select>
+
+    <select id="selectProductStockById" parameterType="Integer" resultMap="ProductStockResult">
+        <include refid="selectProductStockVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertProductStock" parameterType="ProductStock">
+        insert into tab_product_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="companyId != null  ">company_id,</if>
+            <if test="productId != null  ">product_id,</if>
+            <if test="productCode != null  and productCode != ''  ">product_code,</if>
+            <if test="productModel != null  and productModel != ''  ">product_model,</if>
+            <if test="productName != null  and productName != ''  ">product_name,</if>
+            <if test="totalNumber != null  ">total_number,</if>
+            <if test="goodNumber != null  ">good_number,</if>
+            <if test="badNumber != null  ">bad_number,</if>
+            <if test="scrapNumber != null  ">scrap_number,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="lastUpdate != null  ">last_update,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="companyId != null  ">#{companyId},</if>
+            <if test="productId != null  ">#{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">#{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+            <if test="productName != null  and productName != ''  ">#{productName},</if>
+            <if test="totalNumber != null  ">#{totalNumber},</if>
+            <if test="goodNumber != null  ">#{goodNumber},</if>
+            <if test="badNumber != null  ">#{badNumber},</if>
+            <if test="scrapNumber != null  ">#{scrapNumber},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="lastUpdate != null  ">#{lastUpdate},</if>
+        </trim>
+    </insert>
+
+    <update id="updateProductStock" parameterType="ProductStock">
+        update tab_product_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">product_code = #{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="totalNumber != null  ">total_number = #{totalNumber},</if>
+            <if test="goodNumber != null  ">good_number = #{goodNumber},</if>
+            <if test="badNumber != null  ">bad_number = #{badNumber},</if>
+            <if test="scrapNumber != null  ">scrap_number = #{scrapNumber},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="lastUpdate != null  ">last_update = #{lastUpdate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductStockById" parameterType="Integer">
+        delete from tab_product_stock where id = #{id}
+    </delete>
+
+    <delete id="deleteProductStockByIds" parameterType="String">
+        delete from tab_product_stock where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过编码查询产品库存信息-->
+    <select id="selectProductStockByProCode" resultMap="ProductStockResult">
+        <include refid="selectProductStockVo"/>
+        where company_id = #{companyId} and product_code = #{productCode}
+    </select>
+
+    <select id="selectProductStockByProId" resultMap="ProductStockResult">
+        <include refid="selectProductStockVo"/>
+        where product_id = #{productId}
+    </select>
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.partsStock.mapper.PartsStockMapper">
+
+    <resultMap type="PartsStock" id="PartsStockResult">
+        <result property="id" column="id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="partId" column="part_id"/>
+        <result property="partCode" column="part_code"/>
+        <result property="partName" column="part_name"/>
+        <result property="totalNumber" column="total_number"/>
+        <result property="goodNumber" column="good_number"/>
+        <result property="badNumber" column="bad_number"/>
+        <result property="scrapNumber" column="scrap_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdate" column="last_update"/>
+    </resultMap>
+
+    <sql id="selectPartsStockVo">
+        select id, company_id, part_id, part_code, part_name, total_number, good_number, bad_number, scrap_number, create_time, last_update from tab_parts_stock
+    </sql>
+
+    <select id="selectPartsStockList" parameterType="PartsStock" resultMap="PartsStockResult">
+        <include refid="selectPartsStockVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="companyId != null ">and company_id = #{companyId}</if>
+            <if test="partId != null ">and part_id = #{partId}</if>
+            <if test="partCode != null  and partCode != '' ">and part_code = #{partCode}</if>
+            <if test="partName != null  and partName != '' ">and part_name = #{partName}</if>
+            <if test="totalNumber != null ">and total_number = #{totalNumber}</if>
+            <if test="goodNumber != null ">and good_number = #{goodNumber}</if>
+            <if test="badNumber != null ">and bad_number = #{badNumber}</if>
+            <if test="scrapNumber != null ">and scrap_number = #{scrapNumber}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="lastUpdate != null ">and last_update = #{lastUpdate}</if>
+        </where>
+    </select>
+
+    <select id="selectPartsStockById" parameterType="Integer" resultMap="PartsStockResult">
+        <include refid="selectPartsStockVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPartsStock" parameterType="PartsStock">
+        insert into tab_parts_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="companyId != null  ">company_id,</if>
+            <if test="partId != null  ">part_id,</if>
+            <if test="partCode != null  and partCode != ''  ">part_code,</if>
+            <if test="partName != null  and partName != ''  ">part_name,</if>
+            <if test="totalNumber != null  ">total_number,</if>
+            <if test="goodNumber != null  ">good_number,</if>
+            <if test="badNumber != null  ">bad_number,</if>
+            <if test="scrapNumber != null  ">scrap_number,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="lastUpdate != null  ">last_update,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="companyId != null  ">#{companyId},</if>
+            <if test="partId != null  ">#{partId},</if>
+            <if test="partCode != null  and partCode != ''  ">#{partCode},</if>
+            <if test="partName != null  and partName != ''  ">#{partName},</if>
+            <if test="totalNumber != null  ">#{totalNumber},</if>
+            <if test="goodNumber != null  ">#{goodNumber},</if>
+            <if test="badNumber != null  ">#{badNumber},</if>
+            <if test="scrapNumber != null  ">#{scrapNumber},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="lastUpdate != null  ">#{lastUpdate},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePartsStock" parameterType="PartsStock">
+        update tab_parts_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="partId != null  ">part_id = #{partId},</if>
+            <if test="partCode != null  and partCode != ''  ">part_code = #{partCode},</if>
+            <if test="partName != null  and partName != ''  ">part_name = #{partName},</if>
+            <if test="totalNumber != null  ">total_number = #{totalNumber},</if>
+            <if test="goodNumber != null  ">good_number = #{goodNumber},</if>
+            <if test="badNumber != null  ">bad_number = #{badNumber},</if>
+            <if test="scrapNumber != null  ">scrap_number = #{scrapNumber},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="lastUpdate != null  ">last_update = #{lastUpdate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePartsStockById" parameterType="Integer">
+        delete from tab_parts_stock where id = #{id}
+    </delete>
+
+    <delete id="deletePartsStockByIds" parameterType="String">
+        delete from tab_parts_stock where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过半成品编码查询库存信息-->
+    <select id="selectPartsStockByProCode" resultMap="PartsStockResult">
+        <include refid="selectPartsStockVo"/>
+        where company_id = #{companyId} and part_code = #{detIntoCode}
+    </select>
+
+    <!--通过半成品id查询库存信息-->
+    <select id="selectPartsStockByPartsId" resultMap="PartsStockResult">
+        <include refid="selectPartsStockVo"/>
+        where part_id = #{partId}
+    </select>
+
+</mapper>

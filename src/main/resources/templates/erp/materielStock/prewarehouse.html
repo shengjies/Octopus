@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/layer/laydate/laydate.css}" rel="stylesheet"/>
+<body class="white-bg">
+<style type="text/css">
+</style>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <div class="col-sm-12 select-table">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>预收仓库管理</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form role="form" id="form-page-add">
+                            <div class="form-group">
+                                <input type="hidden" id="supplierId" name="supplierId">
+                                <label class="col-sm-12 control-label" style="margin-top: 10px;">供应商：</label>
+                                <div class="col-sm-12">
+                                    <select style="width: 100%" id="supplierName" class="form-control" name="supplierName"
+                                            onchange="supplierChange(this)"
+                                            th:with="supplierList = ${@supplier.selectSupplierAllByCompanyId(#httpServletRequest.getCookies())}">
+                                        <option value="-1">请选择</option>
+                                        <option th:each="item : ${supplierList}" th:data-id="${item.id}"
+                                                th:text="${item.supplierName}" th:value="${item.supplierName}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div style="width: 100%;text-align: center;">
+                                    <a class="btn btn-primary btn-rounded btn-sm" style="margin-top: 15px"
+                                       onclick="addMateriel()"><i class="fa fa-plus"></i>&nbsp;添加物料详情</a>
+                                    <a class="btn btn-primary btn-rounded btn-sm" style="margin-top: 15px"
+                                       onclick="submitHandler()"><i class="fa fa-save"></i>&nbsp;转入良品仓库</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>预收仓详情</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover " id="add-order-table">
+                            <thead>
+                            <tr>
+                                <th style="width: 200px">采购单</th>
+                                <th>采购总数</th>
+                                <th>物料编码</th>
+                                <th>已交数量</th>
+                                <th>预收仓数</th>
+                                <th>供应商编码</th>
+                                <th>本次转库数量</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="add-order-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/layer/laydate/laydate.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $("select").select2({
+            width: "100%",
+            placeholder: '请选择'
+        });
+    })
+
+    function supplierChange(e) {
+        var item = $(e).val();
+        $("#add-order-table-body").find("tr").remove();
+        if (item != -1) {
+            $("#supplierId").val($(e).find("option:selected").attr("data-id"))
+        } else {
+            $("#supplierId").val("")
+        }
+    }
+
+    /**
+     * 添加采购单
+     */
+    function addMateriel() {
+        var supplierId = $("#supplierId").val();
+        if (supplierId == "" || supplierId <= 0) {
+            $.modal.alertWarning("请选择供应商");
+            return;
+        }
+
+        var item = [];
+        $.post("/erp/purchase/purchaseHavePreNumberBySupId", {supplierId: supplierId}, function (res) {
+            if (res && res.code == 0) {
+                var data = res.data;
+                item.push("<option value='-1' >请选择</option>")
+                for (var i = 0; i < data.length; i++) {
+                    item.push("<option value='" + data[i].id + "' data-purchase-totalNumber='" + data[i].totalNumber + "'>" + data[i].purchaseCode + "</option>")
+                };
+                var textDetail = '<tr>' +
+                    '<td><select name="purchaseCode" class="selectpicker show-tick form-control"  data-live-search="true" ' +
+                    'style="width: 200px;" onchange="purchaseChange(this)" >' + item +
+                    '</select></td>' +
+                    '<td><input name="totalNumber" class="form-control" type="text" readonly="true"></td>' +
+                    '<td><select name="materielCode" class="selectpicker show-tick form-control"  data-live-search="true" ' +
+                    'style="min-width: 150px;" onchange="materielChange(this)" >' +
+                    '</select></td>' +
+                    '<td><input name="deliverNum" class="form-control" type="text" readonly="true"></td>' +
+                    '<td><input name="prereceiveNumber" class="form-control" type="text" readonly="true"></td>' +
+                    '<td><input name="supplierCode" class="form-control" type="text" readonly="true"></td>' +
+                    '<td><input name="intoNumber" class="form-control" type="number" value="0"></td>' +
+                    '<td><a  class="btn btn-primary btn-rounded btn-sm" onclick="removeRow(this)"><i></i>&nbsp;删除</a></td>' +
+                    '</tr>';
+                $("#add-order-table-body").append(textDetail);
+                $("#add-order-table-body select").select2({
+                    width: "150px",
+                });
+            } else {
+                $.modal.alertWarning("操作异常");
+            }
+        });
+    }
+
+    /**
+     * 移除采购单
+     * @param val
+     */
+    function removeRow(val) {
+        $(val).parent("td").parent("tr").remove();
+    }
+
+    /**
+     * 采购单选择改变
+     * @param val
+     */
+    function purchaseChange(val) {
+        // 清空之前数据
+        $(val).parent("td").siblings("td").find("select[name='materielCode']").find("option").remove(); // 添加
+        $(val).parent("td").siblings("td").find("input[name='deliverNum']").val("");
+        $(val).parent("td").siblings("td").find("input[name='prereceiveNumber']").val("");
+        $(val).parent("td").siblings("td").find("input[name='supplierCode']").val("");
+        $(val).parent("td").siblings("td").find("input[name='intoNumber']").val("0");
+        var item2 = [];
+        $(val).parent("td").siblings("td").find("input[name='totalNumber']").val($(val).find("option:selected").attr("data-purchase-totalNumber"));
+        // 通过id查询采购单明细信息
+        if ($("#supplierId").val() != -1 && (val.value) != -1) {
+            $.post("/erp/purchaseDetails/detailsByPurId",{purchaseId:val.value},function (result) {
+                if (result && result.code == web_status.SUCCESS) { // 请求成功
+                    if ($(val).val() != -1) {
+                        var purchaseDetails = result.data;
+                        item2.push("<option value='-1' >请选择</option>")
+                        for (var i = 0; i < purchaseDetails.length; i++) {
+                            item2.push("<option value='" + purchaseDetails[i].purchaseCode + "' data-purchase-id='" + purchaseDetails[i].purchaseId + "' " +
+                                "data-purchase-suppliercode='" + purchaseDetails[i].supplierCode + "'" +
+                                "data-purchase-prereceiveNumber='" + purchaseDetails[i].prereceiveNumber + "'" +
+                                " data-purchase-deliverNum='" + purchaseDetails[i].deliverNum + "'>" + purchaseDetails[i].materielCode + "</option>")
+                        }
+                        $(val).parent("td").siblings("td").find("select[name='materielCode']").append(item2); // 添加
+                    } else {
+                        $(val).parent("td").siblings("td").find("input[name='totalNumber']").val("");
+                        $(val).parent("td").siblings("td").find("input[name='deliverNum']").val("");
+                        $(val).parent("td").siblings("td").find("input[name='intoNumber']").val("0");
+                    }
+                } else {
+                    $.modal.alertWarning("操作异常")
+                }
+            })
+        } else {
+            $(val).parent("td").siblings("td").find("input[name='totalNumber']").val("");
+            $(val).parent("td").siblings("td").find("select[name='materielCode']").find("option").remove(); // 添加
+            $(val).parent("td").siblings("td").find("input[name='deliverNum']").val("");
+            $(val).parent("td").siblings("td").find("input[name='prereceiveNumber']").val("");
+            $(val).parent("td").siblings("td").find("input[name='supplierCode']").val("");
+            $(val).parent("td").siblings("td").find("input[name='intoNumber']").val("0");
+        }
+    }
+
+    /**
+     * 物料选择改变
+     */
+    function materielChange(val) {
+        $(val).parent("td").siblings("td").find("input[name='deliverNum']").val($(val).find("option:selected").attr("data-purchase-deliverNum"));
+        $(val).parent("td").siblings("td").find("input[name='prereceiveNumber']").val($(val).find("option:selected").attr("data-purchase-prereceiveNumber"));
+        $(val).parent("td").siblings("td").find("input[name='supplierCode']").val($(val).find("option:selected").attr("data-purchase-suppliercode"));
+    }
+
+
+    /**
+     * 保存产品出库单
+     */
+    function submitHandler() {
+        var supplierId = $("#supplierId").val();
+        if (supplierId == "" || supplierId <= 0) {
+            $.modal.alertWarning("请选择供应商")
+            return;
+        }
+
+        //封装保存信息
+        var supplierName = $("#supplierName").val();//供应商名称
+        var data = {
+            supplierId: supplierId,
+            supplierName: supplierName,
+        }
+        //封装下单详情
+        var detail = [];
+        $("#add-order-table-body").find("tr").each(function () {
+            var item = {};
+            var materielCode = $(this).find("td").find("select").val();
+            if (materielCode && materielCode != -1) {
+                item.materielCode = materielCode;//物料编码
+                item.purchaseCode = $(this).find("td").find("select[name='purchaseCode']").val();//采购单号
+                item.materielModel = $(this).find("td").find("input[name='materielModel']").val();//物料型号
+                item.supplierCode = $(this).find("td").find("input[name='supplierCode']").val();//供应商物料编码
+                item.materielId = $(this).find("td").find("select").find("option:selected").attr("data-materiel-id");//物料id
+                item.materielName = $(this).find("td").find("select").find("option:selected").attr("data-materiel-name");//物料名称
+                item.intoNumber = $(this).find("td").find("input[name='intoNumber']").val();//入库数量
+                detail.push(item);
+            }
+        })
+        if (detail.length <= 0) {
+            $.modal.alertWarning("请添加详情")
+            return;
+        }
+
+        data.materielIntoStockDetails = detail;
+        var config = {
+            url: "/erp/materielIntoStock/add",
+            type: "post",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            beforeSend: function () {
+                $.modal.loading("正在处理中，请稍后...");
+                $.modal.disable();
+            },
+            success: function (result) {
+                if (result.code == web_status.SUCCESS) {
+                    $.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            }
+        };
+        $.ajax(config)
+    }
+</script>
+</body>
+</html>

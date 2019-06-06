@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielFeed.mapper.MaterielFeedMapper">
+    
+    <resultMap type="MaterielFeed" id="MaterielFeedResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="feedCode"    column="feed_code"    />
+        <result property="feedLine"    column="feed_line"    />
+        <result property="feedBomId"    column="feed_bom_id"    />
+        <result property="feedBomCode"    column="feed_bom_code"    />
+        <result property="feedBomVersion"    column="feed_bom_version"    />
+        <result property="feedType"    column="feed_type"    />
+        <result property="feedNumber"    column="feed_number"    />
+        <result property="actualTime"    column="actual_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="lineId"    column="line_id"    />
+        <result property="lineReceive"    column="line_receive"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielFeedVo">
+        select id, company_id, feed_code, feed_line, feed_bom_id, feed_bom_code, feed_bom_version, feed_type, feed_number, actual_time, remark, create_id, create_name, create_time, line_id, line_receive,del_flag from tab_materiel_feed
+    </sql>
+	
+    <select id="selectMaterielFeedList" parameterType="MaterielFeed" resultMap="MaterielFeedResult">
+        <include refid="selectMaterielFeedVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="feedCode != null  and feedCode != '' "> and feed_code = #{feedCode}</if>
+             <if test="feedLine != null  and feedLine != '' "> and feed_line = #{feedLine}</if>
+             <if test="feedBomId != null "> and feed_bom_id = #{feedBomId}</if>
+             <if test="feedBomCode != null  and feedBomCode != '' "> and feed_bom_code = #{feedBomCode}</if>
+             <if test="feedBomVersion != null  and feedBomVersion != '' "> and feed_bom_version = #{feedBomVersion}</if>
+             <if test="feedType != null "> and feed_type = #{feedType}</if>
+             <if test="feedNumber != null "> and feed_number = #{feedNumber}</if>
+             <if test="actualTime != null "> and actual_time = #{actualTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createName != null  and createName != '' "> and create_name = #{createName}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+             <if test="lineId != null "> and line_id = #{lineId}</if>
+             <if test="lineReceive != null  and lineReceive != '' "> and line_receive = #{lineReceive}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielFeedById" parameterType="Integer" resultMap="MaterielFeedResult">
+        <include refid="selectMaterielFeedVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielFeed" parameterType="MaterielFeed" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_feed
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="feedCode != null  and feedCode != ''  ">feed_code,</if>
+			<if test="feedLine != null  and feedLine != ''  ">feed_line,</if>
+			<if test="feedBomId != null  ">feed_bom_id,</if>
+			<if test="feedBomCode != null  and feedBomCode != ''  ">feed_bom_code,</if>
+			<if test="feedBomVersion != null  and feedBomVersion != ''  ">feed_bom_version,</if>
+			<if test="feedType != null  ">feed_type,</if>
+			<if test="feedNumber != null  ">feed_number,</if>
+			<if test="actualTime != null  ">actual_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="lineId != null  ">line_id,</if>
+			<if test="lineReceive != null  and lineReceive != ''  ">line_receive,</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="feedCode != null  and feedCode != ''  ">#{feedCode},</if>
+			<if test="feedLine != null  and feedLine != ''  ">#{feedLine},</if>
+			<if test="feedBomId != null  ">#{feedBomId},</if>
+			<if test="feedBomCode != null  and feedBomCode != ''  ">#{feedBomCode},</if>
+			<if test="feedBomVersion != null  and feedBomVersion != ''  ">#{feedBomVersion},</if>
+			<if test="feedType != null  ">#{feedType},</if>
+			<if test="feedNumber != null  ">#{feedNumber},</if>
+			<if test="actualTime != null  ">#{actualTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="lineId != null  ">#{lineId},</if>
+			<if test="lineReceive != null  and lineReceive != ''  ">#{lineReceive},</if>
+            <if test="delFlag != null  and delFlag != ''  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielFeed" parameterType="MaterielFeed">
+        update tab_materiel_feed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="feedCode != null  and feedCode != ''  ">feed_code = #{feedCode},</if>
+            <if test="feedLine != null  and feedLine != ''  ">feed_line = #{feedLine},</if>
+            <if test="feedBomId != null  ">feed_bom_id = #{feedBomId},</if>
+            <if test="feedBomCode != null  and feedBomCode != ''  ">feed_bom_code = #{feedBomCode},</if>
+            <if test="feedBomVersion != null  and feedBomVersion != ''  ">feed_bom_version = #{feedBomVersion},</if>
+            <if test="feedType != null  ">feed_type = #{feedType},</if>
+            <if test="feedNumber != null  ">feed_number = #{feedNumber},</if>
+            <if test="actualTime != null  ">actual_time = #{actualTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="lineId != null  ">line_id = #{lineId},</if>
+            <if test="lineReceive != null  and lineReceive != ''  ">line_receive = #{lineReceive},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废生产发料单信息-->
+	<delete id="deleteMaterielFeedById" parameterType="Integer">
+        update tab_materiel_feed set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielFeedByIds" parameterType="String">
+        delete from tab_materiel_feed where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

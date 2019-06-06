@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.production.workExceptionList.mapper.WorkExceptionListMapper">
+    
+    <resultMap type="WorkExceptionList" id="WorkExceptionListResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="workId"    column="work_id"    />
+        <result property="exceType"    column="exce_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="exceStatut"    column="exce_statut"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="handleUser"    column="handle_user"    />
+        <result property="handleTime"    column="handle_time"    />
+        <result property="handleContent"    column="handle_content"    />
+    </resultMap>
+	
+	<sql id="selectWorkExceptionListVo">
+        select wel.id, wel.company_id, wel.work_id, wel.exce_type, wel.remark, wel.exce_statut, wel.create_time, wel.handle_user, wel.handle_time, wel.handle_content from dev_work_exception_list wel
+    </sql>
+	
+    <select id="selectWorkExceptionListList" parameterType="WorkExceptionList" resultMap="WorkExceptionListResult">
+        <include refid="selectWorkExceptionListVo"/>
+        left join dev_work_order wo on wel.work_id = wo.id
+        <where>  
+            <if test="id != null "> and wel.id = #{id}</if>
+             <if test="companyId != null "> and wel.company_id = #{companyId}</if>
+             <if test="workId != null "> and work_id = #{workId}</if>
+             <if test="devWorkOrder != null and devWorkOrder.workorderNumber != null and devWorkOrder.workorderNumber != ''">
+              and wo.workorder_number like concat('%', #{devWorkOrder.workorderNumber}, '%')
+             </if>
+             <if test="exceType != null "> and wel.exce_type = #{exceType}</if>
+             <if test="remark != null  and remark != '' "> and wel.remark = #{remark}</if>
+             <if test="exceStatut != null "> and wel.exce_statut = #{exceStatut}</if>
+             <if test="createTime != null "> and wel.create_time = #{createTime}</if>
+             <if test="handleUser != null  and handleUser != '' "> and wel.handle_user = #{handleUser}</if>
+             <if test="handleTime != null "> and wel.handle_time = #{handleTime}</if>
+             <if test="handleContent != null "> and wel.handle_content = #{handleContent}</if>
+         </where>
+    </select>
+    
+    <select id="selectWorkExceptionListById" parameterType="Integer" resultMap="WorkExceptionListResult">
+        <include refid="selectWorkExceptionListVo"/>
+        where wel.id = #{id}
+    </select>
+        
+    <insert id="insertWorkExceptionList" parameterType="WorkExceptionList" useGeneratedKeys="true" keyProperty="id">
+        insert into dev_work_exception_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="workId != null  ">work_id,</if>
+			<if test="exceType != null  ">exce_type,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="exceStatut != null  ">exce_statut,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="handleUser != null  and handleUser != ''  ">handle_user,</if>
+			<if test="handleTime != null  ">handle_time,</if>
+            <if test="handleContent != null  ">handle_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="workId != null  ">#{workId},</if>
+			<if test="exceType != null  ">#{exceType},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="exceStatut != null  ">#{exceStatut},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="handleUser != null  and handleUser != ''  ">#{handleUser},</if>
+			<if test="handleTime != null  ">#{handleTime},</if>
+            <if test="handleContent != null  ">#{handleContent},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWorkExceptionList" parameterType="WorkExceptionList">
+        update dev_work_exception_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="workId != null  ">work_id = #{workId},</if>
+            <if test="exceType != null  ">exce_type = #{exceType},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="exceStatut != null  ">exce_statut = #{exceStatut},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="handleUser != null  and handleUser != ''  ">handle_user = #{handleUser},</if>
+            <if test="handleTime != null  ">handle_time = #{handleTime},</if>
+            <if test="handleContent != null  ">handle_content = #{handleContent},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteWorkExceptionListById" parameterType="Integer">
+        delete from dev_work_exception_list where id = #{id}
+    </delete>
+	
+    <delete id="deleteWorkExceptionListByIds" parameterType="String">
+        delete from dev_work_exception_list where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--各公司当天的异常记录-->
+    <select id="selectWorkExcToday" parameterType="Integer" resultMap="WorkExceptionListResult">
+        <include refid="selectWorkExceptionListVo"/>
+        where wel.company_id= #{companyId} and wel.create_time BETWEEN DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')  AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59');
+    </select>
+
+
+    <!--查询工单组的异常事件-->
+    <resultMap type="WorkExceptionList" id="WorkExceptionListResult2">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="workId"    column="work_id"    />
+        <result property="exceType"    column="exce_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="exceStatut"    column="exce_statut"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="handleUser"    column="handle_user"    />
+        <result property="handleTime"    column="handle_time"    />
+        <result property="handleContent"    column="handle_content"    />
+        <result property="exce"    column="exce"    />
+        <result property="workorderNumber"    column="workorder_number"    />
+        <result property="typeName"    column="type_name"    />
+    </resultMap>
+    <select id="selectWorkExceByWorkId" resultMap="WorkExceptionListResult2">
+       SELECT a.work_id,c.workorder_number,a.exce_type,b.type_name,a.remark,
+     case a.exce_statut
+     when '0' then '未处理'
+     when '1' then '处理中'
+      when '2' then '已处理'
+        end as exce
+     ,a.create_time,a.handle_user,a.handle_time,a.handle_content
+     FROM dev_work_exception_list as a,dev_work_exception_type as b,dev_work_order as c
+     where a.exce_type = b.id and  a.work_id = c.id and work_id in (${workIds})
+    </select>
+</mapper>

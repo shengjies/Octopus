@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.page.layout.mapper.LayoutMapper">
+        <select id="selectLayoutList" resultType="com.ruoyi.project.page.layout.domain.Layout">
+          SELECT `id`,`layout_type`,`layout_name`,`layout_status`,`create_date`,`layout_num` FROM `dev_page_layout`
+          where 1=1
+          <if test="layout_name != null and layout_name != ''">
+              and layout_name like concat(#{layout_name}, '%')
+          </if>
+          <if test="layout_type >  0">
+              and layout_type = #{layout_type}
+          </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            ${params.dataScope}
+        </select>
+
+        <select id="selectLayoutAll" resultType="com.ruoyi.project.page.layout.domain.Layout">
+            SELECT `id`,`layout_type`,`layout_name`,`layout_status`,`create_date`,`layout_num` FROM `dev_page_layout`
+          where 1=1
+           <if test="a == 0">
+               and layout_status = 1
+           </if>
+           order by id asc;
+        </select>
+
+        <insert id="addLayoutInfo" keyProperty="id" useGeneratedKeys="true">
+            INSERT INTO `dev_page_layout`(`layout_type`,`layout_name`,`layout_status`,`create_date`,`layout_num`)
+            VALUES(#{layout_type},#{layout_name},#{layout_status},now(),#{layout_num});
+        </insert>
+
+        <!--改变状态-->
+    <update id="changeStatus">
+        update dev_page_layout set  layout_status =#{layout_status} where id =#{id}
+    </update>
+
+    <!--根据编号查询页面布局类型-->
+    <select id="selectLayoutById" resultType="com.ruoyi.project.page.layout.domain.Layout">
+        SELECT * FROM dev_page_layout where id =#{id} limit 1;
+    </select>
+
+    <!--修改类型数据-->
+    <update id="updateUser" >
+        update dev_page_layout set layout_type=#{layout_type},layout_num=#{layout_num},layout_name=#{layout_name},layout_status=#{layout_status} where id =#{id}
+    </update>
+
+    <!--删除页面类型-->
+    <delete id="delLayoutById">
+        delete from dev_page_layout where id = #{id}
+    </delete>
+</mapper>

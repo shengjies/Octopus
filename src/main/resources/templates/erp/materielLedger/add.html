@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-materielLedger-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">供应商：</label>
+				<div class="col-sm-8">
+					<select id="supplierId" name="supplierId" class="form-control"
+							th:with="supplier = ${@supplier.selectSupplierAllByCompanyId(#httpServletRequest.getCookies())}">
+						<option th:each="item : ${supplier}" th:value="${item.id}" th:utext="${item.supplierName}"></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">开始时间：</label>
+				<div class="col-sm-8">
+					<input type="text" class="time-input form-control"  placeholder="开始时间" name="bTime"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">结束时间：</label>
+				<div class="col-sm-8">
+					<input type="text" class="time-input form-control"  placeholder="结束时间" name="eTime"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注信息</label>
+				<div class="col-sm-8">
+					<textarea id="remark" name="remark" rows="4" class="form-control" type="text"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/materielLedger"
+		$("#form-materielLedger-add").validate({
+			rules:{
+				supplierId:{
+					required:true,
+				},
+				bTime:{
+					required:true,
+				},
+				eTime:{
+					required:true,
+				}
+			},
+			messages:{
+				supplierId:{
+					required:"请选择供应商",
+				},
+				bTime:{
+					required:"请选择开始时间",
+				},
+				eTime:{
+					required:"请选择结束时间",
+				}
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-materielLedger-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

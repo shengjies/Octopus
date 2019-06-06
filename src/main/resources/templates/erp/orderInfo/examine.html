@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/layer/laydate/laydate.css}" rel="stylesheet"/>
+<body class="white-bg">
+<style type="text/css">
+</style>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <div class="col-sm-12 ">
+        <div class="row">
+            <form id="erp-order-edit" th:object="${orderInfo}">
+                <div class="form-group">
+                    <input type="hidden" id="order_id" name="id" th:field="*{id}">
+                    <input type="hidden"  name="orderStatus" value="2">
+                    <label class="col-sm-4 control-label" style="margin-top: 10px;" >审核备注：</label>
+                    <div class="col-sm-8">
+						<textarea class="form-control" name="examineContent" rows="4"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/layer/laydate/laydate.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "erp/orderInfo";
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/cancel", $('#erp-order-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

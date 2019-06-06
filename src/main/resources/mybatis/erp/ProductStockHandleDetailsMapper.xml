@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productStockHandleDetails.mapper.ProductStockHandleDetailsMapper">
+    
+    <resultMap type="ProductStockHandleDetails" id="ProductStockHandleDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="productName"    column="product_name"    />
+        <result property="handleType"    column="handle_type"    />
+        <result property="handleStatus"    column="handle_status"    />
+        <result property="handleNumber"    column="handle_number"    />
+        <result property="handleBy"    column="handle_by"    />
+        <result property="handleName"    column="handle_name"    />
+        <result property="actionTime"    column="action_time"    />
+        <result property="handleTime"    column="handle_time"    />
+    </resultMap>
+	
+	<sql id="selectProductStockHandleDetailsVo">
+        select id, company_id, product_id, product_code, product_model, product_name, handle_type, handle_status, handle_number, handle_by, handle_name, action_time, handle_time from tab_product_stock_handle_details
+    </sql>
+	
+    <select id="selectProductStockHandleDetailsList" parameterType="ProductStockHandleDetails" resultMap="ProductStockHandleDetailsResult">
+        <include refid="selectProductStockHandleDetailsVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="productId != null "> and product_id = #{productId}</if>
+             <if test="productCode != null  and productCode != '' "> and product_code = #{productCode}</if>
+             <if test="productModel != null  and productModel != '' "> and product_model = #{productModel}</if>
+             <if test="productName != null  and productName != '' "> and product_name = #{productName}</if>
+             <if test="handleType != null "> and handle_type = #{handleType}</if>
+             <if test="handleStatus != null "> and handle_status = #{handleStatus}</if>
+             <if test="handleNumber != null "> and handle_number = #{handleNumber}</if>
+             <if test="handleBy != null "> and handle_by = #{handleBy}</if>
+             <if test="handleName != null  and handleName != '' "> and handle_name = #{handleName}</if>
+             <if test="actionTime != null "> and action_time = #{actionTime}</if>
+             <if test="handleTime != null "> and handle_time = #{handleTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectProductStockHandleDetailsById" parameterType="Integer" resultMap="ProductStockHandleDetailsResult">
+        <include refid="selectProductStockHandleDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductStockHandleDetails" parameterType="ProductStockHandleDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_product_stock_handle_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="productId != null  ">product_id,</if>
+			<if test="productCode != null  and productCode != ''  ">product_code,</if>
+			<if test="productModel != null  and productModel != ''  ">product_model,</if>
+			<if test="productName != null  and productName != ''  ">product_name,</if>
+			<if test="handleType != null  ">handle_type,</if>
+			<if test="handleStatus != null  ">handle_status,</if>
+			<if test="handleNumber != null  ">handle_number,</if>
+			<if test="handleBy != null  ">handle_by,</if>
+			<if test="handleName != null  and handleName != ''  ">handle_name,</if>
+			<if test="actionTime != null  ">action_time,</if>
+			<if test="handleTime != null  ">handle_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="productId != null  ">#{productId},</if>
+			<if test="productCode != null  and productCode != ''  ">#{productCode},</if>
+			<if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+			<if test="productName != null  and productName != ''  ">#{productName},</if>
+			<if test="handleType != null  ">#{handleType},</if>
+			<if test="handleStatus != null  ">#{handleStatus},</if>
+			<if test="handleNumber != null  ">#{handleNumber},</if>
+			<if test="handleBy != null  ">#{handleBy},</if>
+			<if test="handleName != null  and handleName != ''  ">#{handleName},</if>
+			<if test="actionTime != null  ">#{actionTime},</if>
+			<if test="handleTime != null  ">#{handleTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductStockHandleDetails" parameterType="ProductStockHandleDetails">
+        update tab_product_stock_handle_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">product_code = #{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="handleType != null  ">handle_type = #{handleType},</if>
+            <if test="handleStatus != null  ">handle_status = #{handleStatus},</if>
+            <if test="handleNumber != null  ">handle_number = #{handleNumber},</if>
+            <if test="handleBy != null  ">handle_by = #{handleBy},</if>
+            <if test="handleName != null  and handleName != ''  ">handle_name = #{handleName},</if>
+            <if test="actionTime != null  ">action_time = #{actionTime},</if>
+            <if test="handleTime != null  ">handle_time = #{handleTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteProductStockHandleDetailsById" parameterType="Integer">
+        delete from tab_product_stock_handle_details where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductStockHandleDetailsByIds" parameterType="String">
+        delete from tab_product_stock_handle_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

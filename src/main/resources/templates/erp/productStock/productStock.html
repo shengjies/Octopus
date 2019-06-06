@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								产品编码：
+								<select id="productCode" style="width:100px" name="productCode" th:with="allProductCode=${@product.selectProductAllByCompanyId()}">
+									<option value="">请选择</option>
+									<option th:each="pro:${allProductCode}" th:text="${pro.productCode}" th:value="${pro.productCode}"></option>
+								</select>
+							</li>
+
+							<li>
+								产品型号：
+								<select id="productModel" style="width: 100px" name="productModel" th:with="allProductCode=${@product.selectProductAllByCompanyId()}">
+									<option value="">请选择</option>
+									<option th:each="pro:${allProductCode}" th:text="${pro.productModel}" th:value="${pro.productModel}"></option>
+								</select>
+							</li>
+
+							<li>
+								产品名称：
+								<select id="productName" style="width: 100px" name="productName" th:with="allProName=${@product.selectProNameAllByComId()}">
+									<option value="">请选择</option>
+									<option th:each="pro:${allProName}" th:text="${pro.productName}" th:value="${pro.productName}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间"
+									   name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间"
+									   name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="formReset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-primary" onclick="$.table.exportExcel()" shiro:hasPermission="erp:productStock:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+				<a class="btn btn-default" onclick="handlePro()" shiro:hasPermission="erp:stockHandle:list">
+					<i class="fa fa-hand-rock-o"></i> 库存内部管理
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        $(function () {
+            $("select").select2({
+                width:"100px",
+                placeholder:'请选择'
+            });
+        })
+        // 重置搜索表单信息
+        function formReset(params) {
+            $('#formId')[0].reset();//input标签重置
+            $("#productCode").val(null).trigger("change"); // select2标签重置
+            $("#productModel").val(null).trigger("change");
+            $("#productName").val(null).trigger("change");
+        }
+        var listFlag = [[${@permission.hasPermi('erp:stockHandleDetails:list')}]];
+        var proOutFlag = [[${@permission.hasPermi('erp:productOutStockDetails:list')}]];
+        var proIntoFlag = [[${@permission.hasPermi('erp:productIntoStockDetails:list')}]];
+        var editFlag = [[${@permission.hasPermi('erp:productStock:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:productStock:remove')}]];
+        var prefix = ctx + "erp/productStock";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "产品库存",
+                search: false,
+                showExport: false,
+                showSearch: false,
+                showRefresh: false,
+                showColumns: false,
+                showToggle: false,
+                columns: [
+				{
+					field : 'id', 
+					title : '',
+                    visible: false
+				},
+				{
+					field : 'productCode', 
+					title : '产品编码',
+					sortable: true
+				},
+				{
+					field : 'productModel', 
+					title : '产品型号',
+					sortable: true
+				},
+				{
+					field : 'productName', 
+					title : '产品名称',
+					sortable: true
+				},
+				{
+					field : 'goodNumber', 
+					title : '良品库存',
+					sortable: true,
+                    formatter: function (value, row, index) {
+						return '<a class="btn btn-primary btn-xs" href="javascript:void(0)" onclick="handleProStock(\'' + row.productId + '\')"><i></i>'+ row.goodNumber +'</a> '
+                    }
+				},
+				{
+					field : 'badNumber', 
+					title : '不良品库存',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="handleProStock(\'' + row.productId + '\')"><i></i>'+ row.badNumber +'</a> '
+                    }
+				},
+				{
+					field : 'scrapNumber', 
+					title : '报废品库存',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="handleProStock(\'' + row.productId + '\')"><i></i>'+ row.scrapNumber +'</a> '
+                    }
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+				{
+					field : 'lastUpdate', 
+					title : '最后一次修改时间',
+					sortable: true
+				},
+		        {
+		            title: '查看详情',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + proOutFlag + '" href="javascript:void(0)" onclick="productOutStockDetail(\'' + row.productId + '\')"><i></i>出库</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="javascript:void(0)" onclick="productHandleDetail(\'' + row.productId + '\')"><i></i>内部调整</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + proIntoFlag + '" href="javascript:void(0)" onclick="productInToStockDetail(\'' + row.productId + '\')"><i></i>入库</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+
+        });
+
+        /**
+         * 打开产品内部处理页面
+         */
+        function handlePro() {
+            createMenuItem("/erp/stockHandle/handleStock?handleType=0","查看产品库存内部调整列表")
+        }
+
+        /**
+         * 查看产品出库详情
+         * @param id
+         */
+        function productOutStockDetail(productId) {
+            var url = '/erp/productOutStockDetails/productOutStockDetail/'+productId;
+            $.modal.open("查看产品出库详情",url,1000,600)
+        }
+
+        /**
+         * 查看产品内部调整明细
+         * @param id
+         */
+        function productHandleDetail(productId) {
+            var url = '/erp/stockHandleDetails/stockHandleDetails?handleType=0&attrId='+productId;
+            $.modal.open("查看产品内部调整详情",url,1000,600)
+        }
+
+        /**
+         * 产品入库详情查看
+         * @param id
+         */
+        function productInToStockDetail(productId) {
+            var url = '/erp/productIntoStockDetails/productInToStockDetail/'+productId;
+            // $.modal.open("查看产品入库详情",url,1000,600)
+            createMenuItem(url,"查看产品入库详情")
+        }
+
+        /**
+         * 跳转产品内部库存管理页面
+         * @param id
+         */
+        function handleProStock(productId) {
+			var url = '/erp/stockHandle/add?handleType=0&attrId='+ productId;
+            createMenuItem(url,"新增库存管理");
+        }
+
+    </script>
+</body>
+</html>

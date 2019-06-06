@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productOutStock.mapper.ProductOutStockMapper">
+    
+    <resultMap type="ProductOutStock" id="ProductOutStockResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="outCode"    column="out_code"    />
+        <result property="orderCode"    column="order_code"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="actualTime"    column="actual_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectProductOutStockVo">
+        select id, company_id, out_code, order_code, customer_id, customer_name, actual_time, remark, create_id, create_name, create_time,payment_status,del_flag from tab_product_out_stock
+    </sql>
+	
+    <select id="selectProductOutStockList" parameterType="ProductOutStock" resultMap="ProductOutStockResult">
+        <include refid="selectProductOutStockVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="outCode != null  and outCode != '' ">
+              and out_code like concat('%',#{outCode},'%')
+             </if>
+             <if test="orderCode != null  and orderCode != '' ">
+              and order_code like concat('%',#{orderCode},'%')
+             </if>
+             <if test="customerId != null "> and customer_id = #{customerId}</if>
+             <if test="customerName != null  and customerName != '' "> and customer_name = #{customerName}</if>
+             <if test="actualTime != null "> and actual_time = #{actualTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createName != null  and createName != '' "> and create_name = #{createName}</if>
+             <if test="paymentStatus != null  and paymentStatus != '' "> and payment_status = #{paymentStatus}</if>
+             <if test="delFlag != null  and delFlag != '' "> and del_flag = #{delFlag}</if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+             </if>
+             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+             </if>
+         </where>
+    </select>
+    
+    <select id="selectProductOutStockById" parameterType="Integer" resultMap="ProductOutStockResult">
+        <include refid="selectProductOutStockVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductOutStock" parameterType="ProductOutStock" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_product_out_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="outCode != null  and outCode != ''  ">out_code,</if>
+			<if test="orderCode != null  and orderCode != ''  ">order_code,</if>
+			<if test="customerId != null  ">customer_id,</if>
+			<if test="customerName != null  and customerName != ''  ">customer_name,</if>
+			<if test="actualTime != null  ">actual_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="paymentStatus != null  ">payment_status,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="outCode != null  and outCode != ''  ">#{outCode},</if>
+			<if test="orderCode != null  and orderCode != ''  ">#{orderCode},</if>
+			<if test="customerId != null  ">#{customerId},</if>
+			<if test="customerName != null  and customerName != ''  ">#{customerName},</if>
+			<if test="actualTime != null  ">#{actualTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="paymentStatus != null  ">#{paymentStatus},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductOutStock" parameterType="ProductOutStock">
+        update tab_product_out_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="outCode != null  and outCode != ''  ">out_code = #{outCode},</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code = #{orderCode},</if>
+            <if test="customerId != null  ">customer_id = #{customerId},</if>
+            <if test="customerName != null  and customerName != ''  ">customer_name = #{customerName},</if>
+            <if test="actualTime != null  ">actual_time = #{actualTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  ">payment_status = #{paymentStatus},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废产品出库单-->
+	<delete id="deleteProductOutStockById" parameterType="Integer">
+        update tab_product_out_stock set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductOutStockByIds" parameterType="String">
+        delete from tab_product_out_stock where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过产品出库单号查询产品出库单信息-->
+    <select id="selectProductOutStockByOutCodeAndCusId" resultMap="ProductOutStockResult">
+        <include refid="selectProductOutStockVo"/>
+        where out_code = #{outCode} and customer_id = #{customerId};
+    </select>
+
+    <!--校验公司产品出库单的唯一性-->
+    <select id="checkProductOutCodeUnique" resultMap="ProductOutStockResult">
+        <include refid="selectProductOutStockVo"/>
+        where out_code = #{outCode} and company_id = #{companyId}
+    </select>
+
+</mapper>

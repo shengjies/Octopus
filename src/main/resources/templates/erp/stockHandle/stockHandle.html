@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<input type="hidden" name="handleType" id="handleType" th:value="${handleType}">
+					<div class="select-list">
+						<ul>
+							<li>
+								库存处理编号：<input type="text" name="handleCode"/>
+							</li>
+							<li>
+								创建者：
+								<select style="width: 240px"  name="createId" id="createId"
+										th:with="user = ${@user.selectComAllUser()}">
+									<option value="">请选择</option>
+									<option th:each="u : ${user}" th:value="${u.userId}" th:utext="${u.userName}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间"
+									   name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间"
+									   name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="addHandleStock()" shiro:hasPermission="erp:stockHandle:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var listFlag = [[${@permission.hasPermi('erp:stockHandle:list')}]];
+        var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:stockHandle:remove')}]];
+        var prefix = ctx + "erp/stockHandle";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "库存内部处理",
+				search: false,
+		        showExport: true,
+                columns: [
+				{
+					field : 'id', 
+					title : '库存内部处理主键',
+					visible: false
+				},
+				{
+					field : 'handleCode', 
+					title : '库存处理编号',
+					sortable: true
+				},
+				{
+					field : 'createName', 
+					title : '创建者姓名',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+				{
+					field : 'actualTime', 
+					title : '实际处理时间',
+					sortable: true
+				},
+				{
+					field : 'remark',
+					title : '备注',
+					sortable: true
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + listFlag + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>明细</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-arrow-up"></i>文件上传</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>作废</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+            $.table.search();
+        });
+
+        /**
+		 * 跳转添加内存内部处理页面
+         */
+        function addHandleStock() {
+			var handleType = $("#handleType").val();
+            createMenuItem(prefix + "/add?handleType=" + handleType,"新增库存管理");
+        }
+
+        /** 库存管理明细 */
+        function details(id) {
+            var url = prefix+"/details/" + id;
+            $.modal.open("查看明细",url,1000,580);
+            // createMenuItem(prefix + "/details/" + id, "查看产品出库单详情")
+        }
+
+        /**
+		 * 作废库存处理清单
+         */
+        function remove(id) {
+            $.modal.confirm("确认作废该库存处理单吗？", function () {
+                $.ajax({
+                    type: 'POST',
+                    url: prefix + '/nullify',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json', // 要什么类型的数据
+                    async: false,  //同步请求，
+                    cache: false, // 不使用缓存
+                    success: function (result) {
+                        $.operate.ajaxSuccess(result);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 查看文件
+         */
+        function viewFile(id) {
+            $.modal.open("文件查看","/erp/fileSourceInfo?save_type=13&save_id="+id,900)
+        }
+	</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-materielFeed-edit" th:object="${materielFeed}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司主键ID：</label>
+				<div class="col-sm-8">
+					<input id="companyId" name="companyId" th:field="*{companyId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料单号：</label>
+				<div class="col-sm-8">
+					<input id="feedCode" name="feedCode" th:field="*{feedCode}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料产线：</label>
+				<div class="col-sm-8">
+					<input id="feedLine" name="feedLine" th:field="*{feedLine}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料bom单编号：</label>
+				<div class="col-sm-8">
+					<input id="feedBomId" name="feedBomId" th:field="*{feedBomId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料bom单编码：</label>
+				<div class="col-sm-8">
+					<input id="feedBomCode" name="feedBomCode" th:field="*{feedBomCode}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料bom单版本号：</label>
+				<div class="col-sm-8">
+					<input id="feedBomVersion" name="feedBomVersion" th:field="*{feedBomVersion}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发料类型(0、默认值物料发料，1、半成品发料)：</label>
+				<div class="col-sm-8">
+					<input id="feedType" name="feedType" th:field="*{feedType}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="feedNumber" name="feedNumber" th:field="*{feedNumber}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">实际时间：</label>
+				<div class="col-sm-8">
+					<input id="actualTime" name="actualTime" th:field="*{actualTime}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注信息：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建者：</label>
+				<div class="col-sm-8">
+					<input id="createId" name="createId" th:field="*{createId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建名称：</label>
+				<div class="col-sm-8">
+					<input id="createName" name="createName" th:field="*{createName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建时间：</label>
+				<div class="col-sm-8">
+					<input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产线id：</label>
+				<div class="col-sm-8">
+					<input id="lineId" name="lineId" th:field="*{lineId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">收料人姓名：</label>
+				<div class="col-sm-8">
+					<input id="lineReceive" name="lineReceive" th:field="*{lineReceive}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/materielFeed";
+		$("#form-materielFeed-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-materielFeed-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

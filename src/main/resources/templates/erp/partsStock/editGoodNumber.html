@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-partsStockHandle-add" th:object="${partsStock}">
+        <input id="partId" name="partId" th:field="*{partId}"  type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">半成品编码：</label>
+            <div class="col-sm-8">
+                <input id="partCode" name="partCode" th:field="*{partCode}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">半成品名称：</label>
+            <div class="col-sm-8">
+                <input id="partName" name="partName" th:field="*{partName}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">良品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{goodNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">不良品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{badNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">报废品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{scrapNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" style="color: red">操作类型：</label>
+            <div class="col-sm-8">
+                <div class="radio-box">
+                    <input type="radio" id="radio1" name="handleStatus" value="2">
+                    <label for="radio1">良品转不良品</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="radio2" name="handleStatus" value="3">
+                    <label for="radio2">良品转报废品</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" style="color: red">操作数量：</label>
+            <div class="col-sm-8">
+                <input id="handleNumber" name="handleNumber" class="form-control" type="number">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "erp/partStockHandleDetails";
+
+    $("#form-partsStockHandle-add").validate({
+        rules: {
+            handleStatus:{
+                required: true,
+            },
+            handleNumber: {
+                required: true,
+            },
+        }
+    });
+
+    /**
+     * 添加内部调整记录
+     */
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-partsStockHandle-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

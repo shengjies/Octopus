@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 select-table table-striped">
+				<input type="hidden" name="partId" id="partId" th:value="${partId}">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('erp:lineIntoStockDetails:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:lineIntoStockDetails:remove')}]];
+        var prefix = ctx + "erp/lineIntoStockDetails";
+        var partId = $("#partId").val();
+        $(function() {
+            var options = {
+                // url: prefix + "/list",
+                url: prefix + "/listByDetId?intoType=2&detId="+partId,
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "产线入库明细",
+                search: false,
+                showExport: false,
+                showSearch: false,
+                showRefresh: false,
+                showColumns: false,
+                showToggle: false,
+                columns: [
+				{
+					field : 'id', 
+					title : '产线入库明细主键ID',
+					visible: false
+				},
+				{
+					field : 'lineName',
+					title : '产线',
+				},
+				{
+					field : 'detIntoCode',
+					title : '半成品编码',
+					sortable: true
+				},
+				{
+					field : 'detIntoName',
+					title : '半成品名称',
+					sortable: true
+				},
+				{
+					field : 'detIntoNum',
+					title : '入库数量',
+					sortable: true
+				},
+				{
+					field : 'intoCode',
+					title : '入库编码',
+					sortable: true
+				},
+				{
+					field : 'intoName',
+					title : '入库姓名',
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				}]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

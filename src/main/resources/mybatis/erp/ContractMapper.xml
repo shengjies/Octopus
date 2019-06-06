@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.contract.mapper.ContractMapper">
+    
+    <resultMap type="Contract" id="ContractResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="liaisonMan"    column="liaison_man"    />
+        <result property="phone"    column="phone"    />
+        <result property="manEmail"    column="man_email"    />
+        <result property="authorizedPerson"    column="authorized_person"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectContractVo">
+        select id, company_id, liaison_man, phone, man_email, authorized_person, create_time,remark from tab_contract
+    </sql>
+
+    <select id="selectContractList" parameterType="Contract" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="liaisonMan != null  and liaisonMan != '' "> and liaison_man = #{liaisonMan}</if>
+             <if test="phone != null  and phone != '' "> and phone = #{phone}</if>
+             <if test="manEmail != null  and manEmail != '' "> and man_email = #{manEmail}</if>
+             <if test="authorizedPerson != null  and authorizedPerson != '' "> and authorized_person = #{authorizedPerson}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectContractById" parameterType="Integer" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectContractByCompanyId" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        where  company_id = #{cid} limit 1;
+    </select>
+        
+    <insert id="insertContract" parameterType="Contract" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_contract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="liaisonMan != null  and liaisonMan != ''  ">liaison_man,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="manEmail != null  and manEmail != ''  ">man_email,</if>
+			<if test="authorizedPerson != null  and authorizedPerson != ''  ">authorized_person,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="remark != null  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="liaisonMan != null  and liaisonMan != ''  ">#{liaisonMan},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="manEmail != null  and manEmail != ''  ">#{manEmail},</if>
+			<if test="authorizedPerson != null  and authorizedPerson != ''  ">#{authorizedPerson},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="remark != null  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateContract" parameterType="Contract">
+        update tab_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="liaisonMan != null  and liaisonMan != ''  ">liaison_man = #{liaisonMan},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="manEmail != null  and manEmail != ''  ">man_email = #{manEmail},</if>
+            <if test="authorizedPerson != null  and authorizedPerson != ''  ">authorized_person = #{authorizedPerson},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.page.pageInfo.mapper.PageInfoMapper">
+    
+    <resultMap type="PageInfo" id="PageInfoResult">
+        <result property="id"    column="id"    />
+        <result property="pageId"    column="page_id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="pageName"    column="page_name"    />
+        <result property="pageUrl"    column="page_url"    />
+        <result property="pageType"    column="page_type"    />
+        <result property="pageLayoutType"    column="page_layout_type"    />
+        <result property="pageBackImg"    column="page_back_img"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="pagePwd"    column="page_pwd"    />
+        <association property="layoutTypeName" column="page_layout_type" select="selectPageLayoutName">
+            <result property="layoutTypeName" column="layout_name"/>
+        </association>
+    </resultMap>
+	
+	<sql id="selectPageInfoVo">
+        select id, page_id, company_id, page_name, page_url, page_type, page_layout_type, page_back_img, create_by, create_time,page_pwd from dev_page_list
+    </sql>
+
+
+	
+    <select id="selectPageInfoList" parameterType="PageInfo" resultMap="PageInfoResult">
+        <include refid="selectPageInfoVo"/>
+        <where>
+             <if test="pageId != null  and pageId != '' "> and page_id like concat(#{pageId}, '%') </if>
+             <if test="companyId != null and companyId > 0 "> and company_id = #{companyId}</if>
+             <if test="pageLayoutType != null and pageLayoutType > 0 "> and page_layout_type = #{pageLayoutType}</if>
+             <if test="pageName != null  and pageName != '' "> and page_name like concat(#{pageName}, '%') </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectPageInfoById" parameterType="Integer" resultMap="PageInfoResult">
+        <include refid="selectPageInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPageInfo" parameterType="PageInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into dev_page_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pageId != null  and pageId != ''  ">page_id,</if>
+			<if test="companyId != null  ">company_id,</if>
+			<if test="pageName != null  and pageName != ''  ">page_name,</if>
+			<if test="pageUrl != null  and pageUrl != ''  ">page_url,</if>
+			<if test="pageType != null  ">page_type,</if>
+			<if test="pageLayoutType != null  ">page_layout_type,</if>
+			<if test="pageBackImg != null  and pageBackImg != ''  ">page_back_img,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="pagePwd != null  ">page_pwd,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pageId != null  and pageId != ''  ">#{pageId},</if>
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="pageName != null  and pageName != ''  ">#{pageName},</if>
+			<if test="pageUrl != null  and pageUrl != ''  ">#{pageUrl},</if>
+			<if test="pageType != null  ">#{pageType},</if>
+			<if test="pageLayoutType != null  ">#{pageLayoutType},</if>
+			<if test="pageBackImg != null  and pageBackImg != ''  ">#{pageBackImg},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="pagePwd != null  ">#{pagePwd},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePageInfo" parameterType="PageInfo">
+        update dev_page_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pageId != null  and pageId != ''  ">page_id = #{pageId},</if>
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="pageName != null  and pageName != ''  ">page_name = #{pageName},</if>
+            <if test="pageUrl != null  and pageUrl != ''  ">page_url = #{pageUrl},</if>
+            <if test="pageType != null  ">page_type = #{pageType},</if>
+            <if test="pageLayoutType != null  ">page_layout_type = #{pageLayoutType},</if>
+            <if test="pageBackImg != null  and pageBackImg != ''  ">page_back_img = #{pageBackImg},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="pagePwd != null  ">page_pwd = #{pagePwd},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePageInfoById" parameterType="Integer">
+        delete from dev_page_list where id = #{id}
+    </delete>
+	
+    <delete id="deletePageInfoByIds" parameterType="String">
+        delete from dev_page_list where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询对应的页面编号编号是否存在-->
+    <resultMap type="PageInfo" id="PageInfoResultByCode">
+        <result property="id"    column="id"    />
+        <result property="pageId"    column="page_id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="pageName"    column="page_name"    />
+        <result property="pageUrl"    column="page_url"    />
+        <result property="pageType"    column="page_type"    />
+        <result property="pageLayoutType"    column="page_layout_type"    />
+        <result property="pageBackImg"    column="page_back_img"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="pagePwd"    column="page_pwd"    />
+        <association property="layout" column="page_layout_type" select="selectPageLayout">
+            <id property="id" column="id"/>
+            <result property="layout_type" column="layout_type"/>
+            <result property="layout_name" column="layout_name"/>
+            <result property="layout_status" column="layout_status"/>
+            <result property="layout_num" column="layout_num"/>
+        </association>
+    </resultMap>
+    <select id="selectPageInfoByCode" resultMap="PageInfoResultByCode">
+        SELECT * FROM dev_page_list where page_id = #{code} limit 1;
+    </select>
+
+    <!--查询对应公司所有非轮播页面-->
+    <select id="selectAllPage" resultMap="PageInfoResult">
+        SELECT * FROM dev_page_list where company_id= #{com_id} and  page_type != 2
+    </select>
+
+    <!--查询页面布局类型名称-->
+    <select id="selectPageLayoutName" resultType="java.lang.String">
+        SELECT layout_name FROM dev_page_layout where id = #{page_layout_type};
+    </select>
+
+    <!--查询页面布局类型-->
+    <select id="selectPageLayout" resultType="com.ruoyi.project.page.layout.domain.Layout">
+        SELECT * FROM dev_page_layout where id = #{page_layout_type};
+    </select>
+</mapper>

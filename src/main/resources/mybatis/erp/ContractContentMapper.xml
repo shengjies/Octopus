@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.contractContent.mapper.ContractContentMapper">
+    
+    <resultMap type="ContractContent" id="ContractContentResult">
+        <result property="id"    column="id"    />
+        <result property="cId"    column="c_id"    />
+        <result property="content"    column="content"    />
+        <result property="cOrder"    column="c_order"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectContractContentVo">
+        select id, c_id, content, c_order, create_time from tab_contract_content
+    </sql>
+	
+    <select id="selectContractContentList" parameterType="ContractContent" resultMap="ContractContentResult">
+        <include refid="selectContractContentVo"/>
+        <where>
+              c_id = #{cId}
+         </where>
+         order by c_order asc
+    </select>
+    
+    <select id="selectContractContentById" parameterType="Integer" resultMap="ContractContentResult">
+        <include refid="selectContractContentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertContractContent" parameterType="ContractContent" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_contract_content
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="cId != null  ">c_id,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="cOrder != null  ">c_order,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="cId != null  ">#{cId},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="cOrder != null  ">#{cOrder},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateContractContent" parameterType="ContractContent">
+        update tab_contract_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="cOrder != null  ">c_order = #{cOrder},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContractContentByIds" parameterType="String">
+        delete from tab_contract_content where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

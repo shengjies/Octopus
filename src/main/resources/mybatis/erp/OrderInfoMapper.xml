@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.orderInfo.mapper.OrderInfoMapper">
+
+    <resultMap type="OrderInfo" id="OrderInfoResult">
+        <result property="id" column="id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="orderCode" column="order_code"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="orderDeliverNum" column="order_deliver_num"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="customerConsignee" column="customer_consignee"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="receivingAddress" column="receiving_address"/>
+        <result property="contactInformation" column="contact_information"/>
+        <result property="deliverTime" column="deliver_time"/>
+        <result property="examineContent" column="examine_content"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="create_by" column="create_by"/>
+        <result property="totalPrice" column="total_price"/>
+    </resultMap>
+
+    <sql id="selectOrderInfoVo">
+        select id, company_id, order_code, order_number, order_deliver_num, customer_id, customer_consignee, customer_name, receiving_address,
+         contact_information, deliver_time, examine_content, order_status, remark, create_time, create_by,total_price from tab_order_info
+    </sql>
+
+    <select id="selectOrderInfoList" parameterType="OrderInfo" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        <where>
+            company_id = #{companyId}
+            <if test="orderCode != null  and orderCode != '' ">and order_code like concat(#{orderCode}, '%')</if>
+            <if test="customerId != null and customerId > 0 ">and customer_id = #{customerId}</if>
+            <if test="orderStatus != null and orderStatus > 0 ">and order_status = #{orderStatus}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrderInfoById" parameterType="Integer" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOrderInfo" parameterType="OrderInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyId != null  ">company_id,</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code,</if>
+            <if test="orderNumber != null  ">order_number,</if>
+            <if test="orderDeliverNum != null  ">order_deliver_num,</if>
+            <if test="customerId != null  ">customer_id,</if>
+            <if test="customerConsignee != null  and customerConsignee != ''  ">customer_consignee,</if>
+            <if test="customerName != null  and customerName != ''  ">customer_name,</if>
+            <if test="receivingAddress != null  and receivingAddress != ''  ">receiving_address,</if>
+            <if test="contactInformation != null  and contactInformation != ''  ">contact_information,</if>
+            <if test="deliverTime != null  ">deliver_time,</if>
+            <if test="examineContent != null  and examineContent != ''  ">examine_content,</if>
+            <if test="orderStatus != null  ">order_status,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="create_by != null  ">create_by,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyId != null  ">#{companyId},</if>
+            <if test="orderCode != null  and orderCode != ''  ">#{orderCode},</if>
+            <if test="orderNumber != null  ">#{orderNumber},</if>
+            <if test="orderDeliverNum != null  ">#{orderDeliverNum},</if>
+            <if test="customerId != null  ">#{customerId},</if>
+            <if test="customerConsignee != null  and customerConsignee != ''  ">#{customerConsignee},</if>
+            <if test="customerName != null  and customerName != ''  ">#{customerName},</if>
+            <if test="receivingAddress != null  and receivingAddress != ''  ">#{receivingAddress},</if>
+            <if test="contactInformation != null  and contactInformation != ''  ">#{contactInformation},</if>
+            <if test="deliverTime != null  ">#{deliverTime},</if>
+            <if test="examineContent != null  and examineContent != ''  ">#{examineContent},</if>
+            <if test="orderStatus != null  ">#{orderStatus},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="create_by != null  ">#{createBy},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOrderInfo" parameterType="OrderInfo">
+        update tab_order_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code = #{orderCode},</if>
+            <if test="orderNumber != null  ">order_number = #{orderNumber},</if>
+            <if test="orderDeliverNum != null  ">order_deliver_num = #{orderDeliverNum},</if>
+            <if test="customerId != null  ">customer_id = #{customerId},</if>
+            <if test="customerConsignee != null  and customerConsignee != ''  ">customer_consignee =
+                #{customerConsignee},
+            </if>
+            <if test="customerName != null  and customerName != ''  ">customer_name = #{customerName},</if>
+            <if test="receivingAddress != null  and receivingAddress != ''  ">receiving_address = #{receivingAddress},
+            </if>
+            <if test="contactInformation != null  and contactInformation != ''  ">contact_information =
+                #{contactInformation},
+            </if>
+            <if test="deliverTime != null  ">deliver_time = #{deliverTime},</if>
+            <if test="examineContent != null  and examineContent != ''  ">examine_content = #{examineContent},</if>
+            <if test="orderStatus != null  ">order_status = #{orderStatus},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="create_by != null  ">create_by = #{create_by},</if>
+            <if test="totalPrice != null ">total_price = #{totalPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderInfoById" parameterType="Integer">
+        delete from tab_order_info where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderInfoByIds" parameterType="String">
+        delete from tab_order_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询公司对应客户已审核未交付的订单-->
+    <select id="selectOrderInfoByCusId" parameterType="Integer" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        where company_id = #{companyId} and customer_id = #{customerId} and order_status in (2);
+    </select>
+
+    <select id="selectOrderInfoListByOrderCode" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        where company_id = #{companyId} and order_code = #{orderCode}
+    </select>
+
+    <!--产品退货查询订单以及订单明细-->
+    <select id="selectOrderInfoByCusIdAndCusCode" resultType="com.ruoyi.project.erp.orderInfo.domain.OrderInfoResult">
+        SELECT a.order_code as ordeCode,a.customer_id as customerId,a.order_deliver_num as orderDeliverNum,
+        a.order_status as orderStatus,a.create_time as createTime ,b.prodect_code as productCode,
+        b.customer_code as customerCode,b.deliver_num as deliverNum FROM tab_order_info as a,tab_order_details as b
+        where a.id = b.order_id
+        and a.company_id = #{companyId}
+        and a.customer_id  = #{customerId}
+        and b.customer_code = #{customerCode}
+        and a.order_status in(2,3) and b.deliver_num >0 and a.order_deliver_num>0 order by a.create_time desc limit 1 ;
+    </select>
+
+    <!--退货更新订单明细-->
+    <update id="updateOrderInfoByCusIdAndCusCode">
+        update tab_order_details set deliver_num = #{deliverNum}
+        where company_id = #{companyId}
+        and customer_id  = #{customerId}
+        and order_code = #{orderCode}
+        and customer_code = #{customerCode}
+        and prodect_code = #{productCode}
+        and create_time = #{createTime} limit 1;
+    </update>
+
+    <!--退货更新订单主表信息-->
+    <update id="updateOrderInfogOrderDeliverNum">
+        update tab_order_info set order_deliver_num = #{intoNumber},order_status = #{orderStatus}
+          where company_id = #{companyId}
+          and customer_id = #{customerId} and create_time = #{createTime}
+          and order_code = #{ordeCode} limit 1;
+    </update>
+
+    <!--查询对应公司所以未交付的订单信息-->
+    <select id="selectAllOrder" resultMap="OrderInfoResult">
+        SELECT * FROM tab_order_info where company_id = #{companyId} and order_status = 2;
+    </select>
+</mapper>

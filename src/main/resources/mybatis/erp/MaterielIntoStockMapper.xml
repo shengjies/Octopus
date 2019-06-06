@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielIntoStock.mapper.MaterielIntoStockMapper">
+    
+    <resultMap type="MaterielIntoStock" id="MaterielIntoStockResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="intoCode"    column="into_code"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="actualTime"    column="actual_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielIntoStockVo">
+        select id, company_id, into_code, purchase_code, supplier_id, supplier_name, actual_time, remark, create_id, create_name, create_time,payment_status,del_flag from tab_materiel_into_stock
+    </sql>
+	
+    <select id="selectMaterielIntoStockList" parameterType="MaterielIntoStock" resultMap="MaterielIntoStockResult">
+        <include refid="selectMaterielIntoStockVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="intoCode != null  and intoCode != '' ">
+                 and into_code like concat('%', #{intoCode},'%')
+             </if>
+             <if test="purchaseCode != null  and purchaseCode != '' ">
+                 and purchase_code like concat('%',#{purchaseCode},'%')
+             </if>
+             <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+             <if test="supplierName != null  and supplierName != '' "> and supplier_name = #{supplierName}</if>
+             <if test="actualTime != null "> and actual_time = #{actualTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="paymentStatus != null "> and payment_status = #{paymentStatus}</if>
+             <if test="createName != null  and createName != '' ">
+                 and create_name like concat('%',#{createName},'%')
+             </if>
+             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+             </if>
+             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+             </if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielIntoStockById" parameterType="Integer" resultMap="MaterielIntoStockResult">
+        <include refid="selectMaterielIntoStockVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielIntoStock" parameterType="MaterielIntoStock" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_into_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="intoCode != null  and intoCode != ''  ">into_code,</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="supplierName != null  and supplierName != ''  ">supplier_name,</if>
+			<if test="actualTime != null  ">actual_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="paymentStatus != null  ">payment_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="intoCode != null  and intoCode != ''  ">#{intoCode},</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="supplierName != null  and supplierName != ''  ">#{supplierName},</if>
+			<if test="actualTime != null  ">#{actualTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="paymentStatus != null  ">#{paymentStatus},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielIntoStock" parameterType="MaterielIntoStock">
+        update tab_materiel_into_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="intoCode != null  and intoCode != ''  ">into_code = #{intoCode},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code = #{purchaseCode},</if>
+            <if test="supplierId != null  ">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null  and supplierName != ''  ">supplier_name = #{supplierName},</if>
+            <if test="actualTime != null  ">actual_time = #{actualTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  ">payment_status = #{paymentStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废物料入库单-->
+	<delete id="deleteMaterielIntoStockById" parameterType="Integer">
+        update tab_materiel_into_stock set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielIntoStockByIds" parameterType="String">
+        delete from tab_materiel_into_stock where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过物料入库单号查询物料入库信息-->
+    <select id="selectMaterielIntoStockByIntoCode" parameterType="String" resultMap="MaterielIntoStockResult">
+        <include refid="selectMaterielIntoStockVo"/>
+        where into_code = #{intoCode}
+    </select>
+    
+</mapper>

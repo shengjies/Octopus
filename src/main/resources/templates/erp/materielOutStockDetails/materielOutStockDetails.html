@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="col-sm-12 select-table table-striped">
+                <div class="ibox-title">
+                    <h5>供应商退货记录</h5>
+                </div>
+                <input type="hidden" id="materielId" name="materielId" th:value="${materielId}">
+                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="col-sm-12 select-table table-striped">
+                <div class="ibox-title">
+                    <h5>生产发料记录</h5>
+                </div>
+                <table id="bootstrap-table1" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('erp:materielOutStockDetails:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('erp:materielOutStockDetails:remove')}]];
+    var prefix = ctx + "erp/materielOutStockDetails";
+    var materielId = $("#materielId").val(); // 物料id
+    $(function () {
+        var options = {
+            url: prefix + "/listByMatId?materielId=" + materielId,
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "物料出库清单",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'id',
+                    title: '材料出库清单主键ID',
+                    visible: false
+                },
+                {
+                    field: 'supplierName',
+                    title: '供应商',
+                },
+                {
+                    field: 'supplierCode',
+                    title: '供应商编码',
+                },
+                {
+                    field: 'materielCode',
+                    title: '物料编码',
+                },
+                {
+                    field: 'outNumber',
+                    title: '退货数量',
+                },
+                {
+                    field: 'outCode',
+                    title: '退货单号',
+                },
+                {
+                    field: 'purchaseCode',
+                    title: '采购单',
+                },
+                {
+                    field: 'outName',
+                    title: '出库姓名',
+                },
+                {
+                    field: 'createTime',
+                    title: '出库时间',
+                }]
+        };
+        $.table.init(options);
+
+        // 生产发料
+        var options1 = {
+            url: "/erp/materielFeedDetails/listByMatId?feedType=1&feedDetailId=" + materielId,
+            modalName: "物料出库清单",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'id',
+                    title: '材料出库清单主键ID',
+                    visible: false
+                },
+                {
+                    field: 'feedLine',
+                    title: '产线',
+                },
+                {
+                    field: 'lineReceive',
+                    title: '收料人',
+                },
+                {
+                    field: 'outNumber',
+                    title: '发货数量',
+                },
+                {
+                    field: 'feedCode',
+                    title: '发料单号',
+                },
+                {
+                    field: 'outName',
+                    title: '发料人',
+                },
+                {
+                    field: 'createTime',
+                    title: '发料时间',
+                }]
+        };
+        initTable1(options1);
+    });
+
+    // 加载物料供应商退货记录
+    function initTable1(options) {
+        $.table._option = options;
+        $.table._params = $.common.isEmpty(options.queryParams) ? $.table.queryParams : options.queryParams;
+        _sortOrder = $.common.isEmpty(options.sortOrder) ? "asc" : options.sortOrder;
+        _sortName = $.common.isEmpty(options.sortName) ? "" : options.sortName;
+        _pageSize = $.common.isEmpty(options.pageSize) ? 10 : options.pageSize;
+        _striped = $.common.isEmpty(options.striped) ? false : options.striped;
+        _escape = $.common.isEmpty(options.escape) ? false : options.escape;
+        _showFooter = $.common.isEmpty(options.showFooter) ? false : options.showFooter;
+        _fixedColumns = $.common.isEmpty(options.fixedColumns) ? false : options.fixedColumns;
+        _fixedNumber = $.common.isEmpty(options.fixedNumber) ? 0 : options.fixedNumber;
+        _rightFixedColumns = $.common.isEmpty(options.rightFixedColumns) ? false : options.rightFixedColumns;
+        _rightFixedNumber = $.common.isEmpty(options.rightFixedNumber) ? 0 : options.rightFixedNumber;
+        $('#bootstrap-table1').bootstrapTable({
+            url: options.url,                                   // 请求后台的URL（*）
+            contentType: "application/x-www-form-urlencoded",   // 编码类型
+            method: 'post',                                     // 请求方式（*）
+            cache: false,                                       // 是否使用缓存
+            striped: _striped,                                  // 是否显示行间隔色
+            sortable: true,                                     // 是否启用排序
+            sortStable: true,                                   // 设置为 true 将获得稳定的排序
+            sortName: _sortName,                                // 排序列名称
+            sortOrder: _sortOrder,                              // 排序方式  asc 或者 desc
+            pagination: $.common.visible(options.pagination),   // 是否显示分页（*）
+            pageNumber: 1,                                      // 初始化加载第一页，默认第一页
+            pageSize: _pageSize,                                // 每页的记录行数（*）
+            pageList: [10, 25, 50],                             // 可供选择的每页的行数（*）
+            escape: _escape,                                    // 转义HTML字符串
+            showFooter: _showFooter,                            // 是否显示表尾
+            iconSize: 'outline',                                // 图标大小：undefined默认的按钮尺寸 xs超小按钮sm小按钮lg大按钮
+            toolbar: '#toolbar',                                // 指定工作栏
+            sidePagination: "server",                           // 启用服务端分页
+            search: $.common.visible(options.search),           // 是否显示搜索框功能
+            showSearch: $.common.visible(options.showSearch),   // 是否显示检索信息
+            showRefresh: $.common.visible(options.showRefresh), // 是否显示刷新按钮
+            showColumns: $.common.visible(options.showColumns), // 是否显示隐藏某列下拉框
+            showToggle: $.common.visible(options.showToggle),   // 是否显示详细视图和列表视图的切换按钮
+            showExport: $.common.visible(options.showExport),   // 是否支持导出文件
+            fixedColumns: _fixedColumns,                        // 是否启用冻结列（左侧）
+            fixedNumber: _fixedNumber,                          // 列冻结的个数（左侧）
+            rightFixedColumns: _rightFixedColumns,              // 是否启用冻结列（右侧）
+            rightFixedNumber: _rightFixedNumber,                // 列冻结的个数（右侧）
+            queryParams: $.table._params,                       // 传递参数（*）
+            columns: options.columns,                           // 显示列信息（*）
+            responseHandler: $.table.responseHandler,           // 在加载服务器发送来的数据之前处理函数
+            onLoadSuccess: $.table.onLoadSuccess,               // 当所有数据被加载时触发处理函数
+        });
+    }
+
+</script>
+</body>
+</html>

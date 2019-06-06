@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								订单号：<input type="text" name="orderCode"/>
+							</li>
+
+							<li>
+								客户：<select style="width: 240px"  name="customerId" id="customerId"
+										   th:with="customer = ${@customer.selectCustomerAllByCompanyId(#httpServletRequest.getCookies())}">
+								<option value="-1">请选择</option>
+								<option th:each="item : ${customer}" th:value="${item.id}" th:utext="${item.customerName}"></option>
+							</select>
+							</li>
+
+							<li>
+								状态：<select name="orderStatus" id="orderStatus">
+								<option value="-1">所有</option>
+								<option value="1">待审核</option>
+								<option value="2">待交付</option>
+								<option value="3">已交付</option>
+								<option value="4">已取消</option>
+							</select>
+							</li>
+							<li class="select-time">
+								<label>下单时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="formReset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="addOrder()" shiro:hasPermission="erp:orderInfo:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="erp:orderInfo:edit">-->
+					<!--<i class="fa fa-edit"></i> 修改-->
+				<!--</a>-->
+				<!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="erp:orderInfo:export">-->
+						<!--<i class="fa fa-download"></i> 导出-->
+				 <!--</a>-->
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+		$(function () {
+			$("select").select2({
+				width:"200px",
+				placeholder:'请选择'
+			});
+		})
+        // 重置搜索表单信息
+        function formReset(params) {
+            $('#formId')[0].reset();//input标签重置
+            $("#customerId").val(null).trigger("change"); // select2标签重置
+            $("#orderStatus").val(null).trigger("change");
+        }
+        var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+        var detailsFlag = [[${@permission.hasPermi('erp:orderInfo:details')}]];
+        var editFlag = [[${@permission.hasPermi('erp:orderInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:orderInfo:remove')}]];
+        var closeFlag = [[${@permission.hasPermi('erp:orderInfo:close')}]];
+        var prefix = ctx + "erp/orderInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "订单数据",
+				search: false,
+		        showExport: true,
+				sortOrder:"desc",
+				sortName:"createTime",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '',
+					visible: false
+				},
+				{
+					field : 'companyId', 
+					title : '',
+					visible: false
+				},
+				{
+					field : 'orderCode', 
+					title : '订单号',
+					sortable: true,
+					width:160
+				},
+				{
+					field : 'orderNumber', 
+					title : '订单总数',
+					sortable: true,
+					width:100
+				},
+				{
+					field : 'orderDeliverNum', 
+					title : '已交付总数',
+					sortable: true,
+					width:100
+				},
+				{
+					field : 'totalPrice',
+					title : '订单总价',
+					sortable: true,
+					width:100
+				},
+				{
+					field : 'customerName', 
+					title : '客户',
+					sortable: true
+				},
+				{
+					field : 'deliverTime', 
+					title : '交付时间',
+					sortable: true,
+					width:145
+				},
+				{
+					field : 'orderStatus', 
+					title : '状态',
+					sortable: true,
+					width:70,
+					formatter:function (value, row, index) {
+						if(value == 1){
+							return "<span style='color: blue;'>待审核</span>"
+						}else if(value == 2){
+							return "<span style='color: #0d8ddb'>待交付</span>"
+						}else if(value == 3){
+							return "<span style='color: green;'>已交付</span>"
+						}else if(value == 4){
+							return "<span style='color: red;'>已取消</span>"
+						}else{
+							return"未知";
+						}
+					}
+				},
+				{
+					field : 'remark', 
+					title : '备注信息',
+					sortable: true,
+					width:300
+				},
+				{
+					field : 'createTime', 
+					title : '下单时间',
+					sortable: true,
+					width:145
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+						var actions = [];
+						actions.push('<a class="btn btn-warning btn-xs ' + detailsFlag + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>详情</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-eye"></i>文件</a> ');
+		            	if(row.orderStatus == 4 ){
+							// actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#"  disabled="true" ><i class="fa fa-edit"></i>审核</a> ');
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#"  disabled="true" ><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" disabled="true"><i class="fa fa-remove"></i>取消</a> ');
+
+						}else{
+							// actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#"  onclick="examine(\'' + row.id + '\')"><i class="fa fa-edit"></i>审核</a> ');
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#"  onclick="editOrder('+row.id+','+row.orderStatus+')"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="cancelOrder(\''+row.id+'\')"><i class="fa fa-remove"></i>取消</a> ');
+		            	}
+                        actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closeOrderInfo(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+		/**
+		 * 添加订单
+		 */
+		function addOrder() {
+			createMenuItem(prefix+"/add","订单下单")
+		}
+
+		/**
+		 * 订单取消
+		 */
+		function cancelOrder(id) {
+			$.modal.confirm("确定取消改订单吗?",function (callBack) {
+				if(callBack){
+					var data ={
+						id:id,
+						orderStatus:4
+					}
+					var config = {
+						url: "/erp/orderInfo/cancel",
+						type: "post",
+						dataType: "json",
+						data: data,
+						beforeSend: function () {
+							$.modal.loading("正在处理中，请稍后...");
+							$.modal.disable();
+						},
+						success: function (result) {
+							if (result.code == web_status.SUCCESS) {
+								$.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+								$.table.refresh();
+							} else {
+								$.modal.alertError(result.msg);
+							}
+							$.modal.closeLoading();
+						}
+					};
+					$.ajax(config)
+				}
+			})
+		}
+
+		/**
+		 * 编辑订单
+		 * @param id
+		 * @param status
+		 */
+		function editOrder(id,status) {
+			createMenuItem(prefix+"/edit/"+id,"编辑订单");
+		}
+
+		/**
+		 * 审核订单
+		 * @param id
+		 */
+		function examine(id) {
+			$.modal.open("审核订单",prefix+"/examine/"+id,600,400);
+		}
+
+		/**
+		 * 订单详情
+		 * @param id
+		 */
+		function details(id) {
+			createMenuItem(prefix+"/details/"+id,"订单详情");
+		}
+
+		/**
+		 * 查询文件
+		 */
+		function viewFile(id) {
+			$.modal.open("文件查看","/erp/fileSourceInfo?save_type=1&save_id="+id,900)
+		}
+
+        /**
+		 * 关闭订单
+         */
+		function closeOrderInfo(id) {
+            $.modal.confirm("确定关闭订单吗?",function (callBack) {
+                if(callBack){
+                    var data ={
+                        id:id,
+                        orderStatus:3
+                    }
+                    var config = {
+                        url: "/erp/orderInfo/closeOrderInfo",
+                        type: "post",
+                        dataType: "json",
+                        data: data,
+                        beforeSend: function () {
+                            $.modal.loading("正在处理中，请稍后...");
+                            $.modal.disable();
+                        },
+                        success: function (result) {
+                            if (result.code == web_status.SUCCESS) {
+                                $.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+                                $.table.refresh();
+                            } else {
+                                $.modal.alertError(result.msg);
+                            }
+                            $.modal.closeLoading();
+                        }
+                    };
+                    $.ajax(config)
+                }
+            })
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productLedgerDetail.mapper.ProductLedgerDetailMapper">
+	<resultMap type="ProductLedgerDetail" id="ProductLedgerDetailResult">
+		<result property="id"    column="id"    />
+		<result property="ledgerId"    column="ledger_id"    />
+		<result property="companyId"    column="company_id"    />
+		<result property="customerId"    column="customer_id"    />
+		<result property="ledgerType"    column="ledger_type"    />
+		<result property="deliveryTime"    column="delivery_time"    />
+		<result property="orderCode"    column="order_code"    />
+		<result property="customerCode"    column="customer_code"    />
+		<result property="productCode"    column="product_code"    />
+		<result property="productModel"    column="product_model"    />
+		<result property="productName"    column="product_name"    />
+		<result property="ledgerNumber"    column="ledger_number"    />
+		<result property="ledgerPrice"    column="ledger_price"    />
+		<result property="ledgerMoney"    column="ledger_money"    />
+		<result property="createTime"    column="create_time"    />
+	</resultMap>
+
+	<sql id="selectProductLedgerDetailVo">
+        select id, ledger_id, company_id, customer_id, ledger_type, delivery_time, order_code,
+        customer_code, product_code, product_model, product_name, ledger_number, ledger_price, ledger_money,
+         create_time from tab_product_ledger_detail
+    </sql>
+
+	<select id="findDetailByLedgerId"  resultMap="ProductLedgerDetailResult">
+		<include refid="selectProductLedgerDetailVo"/>
+		<where>
+			ledger_id = #{legder_id}
+		</where>
+	</select>
+
+    <insert id="insertProductLedgerDetail" parameterType="ProductLedgerDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_product_ledger_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="ledgerId != null  ">ledger_id,</if>
+			<if test="companyId != null  ">company_id,</if>
+			<if test="customerId != null  ">customer_id,</if>
+			<if test="ledgerType != null  ">ledger_type,</if>
+			<if test="deliveryTime != null  ">delivery_time,</if>
+			<if test="orderCode != null  and orderCode != ''  ">order_code,</if>
+			<if test="customerCode != null  and customerCode != ''  ">customer_code,</if>
+			<if test="productCode != null  and productCode != ''  ">product_code,</if>
+			<if test="productModel != null  and productModel != ''  ">product_model,</if>
+			<if test="productName != null  and productName != ''  ">product_name,</if>
+			<if test="ledgerNumber != null  ">ledger_number,</if>
+			<if test="ledgerPrice != null  ">ledger_price,</if>
+			<if test="ledgerMoney != null  ">ledger_money,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="ledgerId != null  ">#{ledgerId},</if>
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="customerId != null  ">#{customerId},</if>
+			<if test="ledgerType != null  ">#{ledgerType},</if>
+			<if test="deliveryTime != null  ">#{deliveryTime},</if>
+			<if test="orderCode != null  and orderCode != ''  ">#{orderCode},</if>
+			<if test="customerCode != null  and customerCode != ''  ">#{customerCode},</if>
+			<if test="productCode != null  and productCode != ''  ">#{productCode},</if>
+			<if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+			<if test="productName != null  and productName != ''  ">#{productName},</if>
+			<if test="ledgerNumber != null  ">#{ledgerNumber},</if>
+			<if test="ledgerPrice != null  ">#{ledgerPrice},</if>
+			<if test="ledgerMoney != null  ">#{ledgerMoney},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+
+
+</mapper>

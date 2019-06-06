@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-productStockHandle-add" th:object="${productStock}">
+        <input id="productId" name="productId" th:field="*{productId}"  type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">产品编码：</label>
+            <div class="col-sm-8">
+                <input id="productCode" name="productCode" th:field="*{productCode}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">产品型号：</label>
+            <div class="col-sm-8">
+                <input id="productModel" name="productModel" th:field="*{productModel}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">产品名称：</label>
+            <div class="col-sm-8">
+                <input id="productName" name="productName" th:field="*{productName}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">良品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{goodNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">不良品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{badNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">报废品库存：</label>
+            <div class="col-sm-8">
+                <input th:field="*{scrapNumber}" class="form-control" type="text" readonly="true">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" style="color: red">操作类型：</label>
+            <div class="col-sm-8">
+                <div class="radio-box">
+                    <input type="radio" id="radio1" name="handleStatus" value="0">
+                    <label for="radio1">不良品转良品</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="radio2" name="handleStatus" value="1">
+                    <label for="radio2">不良品转报废品</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" style="color: red">操作数量：</label>
+            <div class="col-sm-8">
+                <input id="handleNumber" name="handleNumber" class="form-control" type="number">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "erp/productStockHandleDetails";
+
+    $("#form-productStockHandle-add").validate({
+        rules: {
+            handleStatus:{
+                required: true,
+            },
+            handleNumber: {
+                required: true,
+            },
+        }
+    });
+
+    /**
+     * 添加内部调整记录
+     */
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-productStockHandle-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

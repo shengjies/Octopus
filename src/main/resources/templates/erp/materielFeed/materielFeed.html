@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								发料单号：<input type="text" name="feedCode"/>
+							</li>
+							<li>
+								发料产线：
+								<select id="feedLine" name="feedLine" style="width: 150px" th:with="lineList = ${@productionLine.selectAllProductionLineByCompanyId()}">
+									<option value="">全部</option>
+									<option th:each="line:${lineList}" th:text="${line.lineName}" th:value="${line.lineName}"></option>
+								</select>
+							</li>
+							<li>
+								收料人姓名：
+								<select id="lineReceive" name="lineReceive" style="width: 150px" th:with="user=${@user.selectComAllUser()}">
+									<option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userName}"></option>
+								</select>
+							</li>
+
+							<li>
+								发料类型：
+								<select name="feedType" style="width: 150px">
+									<option value="">请选择</option>
+									<option value="0">物料发料</option>
+									<option value="1">半成品发料</option>
+								</select>
+							</li>
+							<li>
+								创建者：
+								<select id="createId" name="createId" style="width: 150px" th:with="user=${@user.selectComAllUser()}">
+									<option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userId}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间"
+									   name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间"
+									   name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="add()" shiro:hasPermission="erp:materielFeed:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var listFlag = [[${@permission.hasPermi('erp:materielFeed:list')}]];
+        var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:materielFeed:remove')}]];
+        var prefix = ctx + "erp/materielFeed";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "物料发料",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '物料发料主键ID',
+					visible: false
+				},
+				{
+					field : 'feedCode', 
+					title : '发料单号',
+					sortable: true
+				},
+				{
+					field : 'feedLine', 
+					title : '发料产线',
+					sortable: true
+				},
+				{
+					field : 'lineReceive',
+					title : '收料人姓名',
+					sortable: true
+				},
+				{
+					field : 'actualTime', 
+					title : '实际时间',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '备注信息',
+					sortable: true
+				},
+				{
+					field : 'createName', 
+					title : '创建名称',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>详情</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-arrow-up"></i>文件</a> ');
+		            	actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>作废</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+        /**
+         * 添加生产发料
+         */
+        function add() {
+            createMenuItem(prefix+"/add","生产发料")
+        }
+
+        /**
+         * 作废物料入库单
+         */
+        function remove(id) {
+            $.modal.confirm("确认作废该生产发料单吗？", function () {
+                $.ajax({
+                    type: 'POST',
+                    url: prefix + '/nullify',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json', // 要什么类型的数据
+                    async: false,  //同步请求，
+                    cache: false, // 不使用缓存
+                    success: function (result) {
+                        $.operate.ajaxSuccess(result);
+                    }
+                });
+            });
+        }
+
+        /** 查看生产发料明细 */
+        function details(id) {
+            var url = prefix+"/details/" + id;
+            $.modal.open("查看生产发料明细",url,1000,580);
+        }
+        /**
+         * 查看文件
+         */
+        function viewFile(id) {
+            $.modal.open("文件查看","/erp/fileSourceInfo?save_type=11&save_id="+id,900)
+        }
+    </script>
+</body>
+</html>

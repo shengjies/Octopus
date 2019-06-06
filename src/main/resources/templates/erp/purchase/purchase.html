@@ -1,0 +1,279 @@
+ <!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								采购单号：<input type="text" name="purchaseCode"/>
+							</li>
+
+							<li>
+								供应商：<select  name="supplierId" th:with="supplier = ${@supplier.selectSupplierAllByCompanyId(#httpServletRequest.getCookies())}">
+									<option value="-1">请选择</option>
+									<option th:each="item : ${supplier}" th:text="${item.supplierName}" th:value="${item.id}"></option>
+								</select>
+							</li>
+							<li>
+								联系人：<input type="text" name="liaisonMan"/>
+							</li>
+
+							<li>
+								联系电话：<input type="text" name="phone"/>
+							</li>
+							<li>
+								采购状态：<select name="purchaseStatut">
+								<option value="-1">所有</option>
+								<option value="1">待审核</option>
+								<option value="2">待交付</option>
+								<option value="3">已交付</option>
+								<option value="4">已取消</option>
+							</select>
+							</li>
+							<li class="select-time">
+								<label>下单时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="addPurchase()" shiro:hasPermission="erp:purchase:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="erp:purchase:edit">-->
+					<!--<i class="fa fa-edit"></i> 修改-->
+				<!--</a>-->
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('erp:purchase:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:purchase:remove')}]];
+		var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+		var detailsFlag = [[${@permission.hasPermi('erp:purchase:details')}]];
+        var closeFlag = [[${@permission.hasPermi('erp:purchase:close')}]];
+        var prefix = ctx + "erp/purchase";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "采购单",
+				search: false,
+		        showExport: true,
+				sortName:'createTime',
+				sortOrder:'desc',
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '主键，自增长',
+					visible: false
+				},
+				{
+					field : 'purchaseCode', 
+					title : '采购单号',
+					sortable: true
+				},
+				{
+					field : 'supplierName', 
+					title : '供应商',
+					sortable: true
+				},
+				{
+					field : 'totalNumber', 
+					title : '总数量',
+					sortable: true
+				},
+				{
+					field : 'deliverTotalNum', 
+					title : '交付总数量',
+					sortable: true
+				}, {
+						field : 'purchaseStatut',
+						title : '采购状态',
+						sortable: true,
+						width:80,
+						formatter:function (value, row, index) {
+							if(value == 1){
+								return "<span style='color: blue'>待审核</span>"
+							}else if(value == 2){
+								return "<span style='color: #0d8ddb'>待交付</span>"
+							}else if(value == 3){
+								return "<span style='color: green'>已交付</span>"
+							}else if(value == 4){
+								return "<span style='color: red'>已取消</span>"
+							}else {
+								return "未知"
+							}
+						}
+					},
+				{
+					field : 'deliverTime', 
+					title : '交付日期',
+					sortable: true,
+					width:145
+				},
+				{
+					field : 'paymentMethod', 
+					title : '付款方式',
+					sortable: true
+				},
+					{
+						field : 'remark',
+						title : '备注',
+						sortable: true,
+						width:180
+					},
+				{
+					field : 'createTime', 
+					title : '采购时间',
+					sortable: true,
+					width:145
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+						actions.push('<a class="btn btn-warning btn-xs ' + detailsFlag + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>详情</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-eye"></i>文件</a> ');
+		            	if(row.purchaseStatut  == 4){
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" disabled="true"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" disabled="true"><i class="fa fa-remove"></i>取消</a> ');
+						}else{
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="editPurchase(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="puCancel(\'' + row.id + '\')"><i class="fa fa-remove"></i>取消</a> ');
+						}
+                        actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closePurchase(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+		/**
+		 * 采购下单
+		 */
+		function addPurchase() {
+			createMenuItem(prefix+"/add","采购下单")
+		}
+		/**
+		 * 查询文件
+		 */
+		function viewFile(id) {
+			$.modal.open("文件查看","/erp/fileSourceInfo?save_type=2&save_id="+id,900)
+		}
+
+		/**
+		 * 取消采购单
+		 * @param id 采购单id
+		 */
+		function puCancel(id) {
+			$.modal.confirm("确认取消该采购单吗？",function (callBack) {
+				if(callBack){
+					var data ={
+						id:id,
+						purchaseStatut:4
+					}
+					var config = {
+						url: "/erp/purchase/status",
+						type: "post",
+						dataType: "json",
+						data: data,
+						beforeSend: function () {
+							$.modal.loading("正在处理中，请稍后...");
+							$.modal.disable();
+						},
+						success: function (result) {
+							if (result.code == web_status.SUCCESS) {
+								$.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+								$.table.refresh();
+							} else {
+								$.modal.alertError(result.msg);
+							}
+							$.modal.closeLoading();
+						}
+					};
+					$.ajax(config)
+				}
+			})
+		}
+
+		/**
+		 * 采购单详情
+		 * @param id 采购单id
+		 */
+		function details(id) {
+			createMenuItem(prefix+"/detail?id="+id,"采购单详情");
+		}
+
+		/**
+		 * 编辑采购单信息
+		 * @param id 采购单id
+		 */
+		function editPurchase(id) {
+			createMenuItem(prefix+"/edit/"+id,"编辑采购单")
+		}
+
+        /**
+		 * 关闭采购单
+         * @param id
+         */
+		function closePurchase(id) {
+            $.modal.confirm("确认关闭该采购单吗？",function (callBack) {
+                if(callBack){
+                    var data ={
+                        id:id,
+                        purchaseStatut:3
+                    }
+                    var config = {
+                        url: "/erp/purchase/closePurchase",
+                        type: "post",
+                        dataType: "json",
+                        data: data,
+                        beforeSend: function () {
+                            $.modal.loading("正在处理中，请稍后...");
+                            $.modal.disable();
+                        },
+                        success: function (result) {
+                            if (result.code == web_status.SUCCESS) {
+                                $.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+                                $.table.refresh();
+                            } else {
+                                $.modal.alertError(result.msg);
+                            }
+                            $.modal.closeLoading();
+                        }
+                    };
+                    $.ajax(config)
+                }
+            })
+        }
+    </script>
+</body>
+</html>

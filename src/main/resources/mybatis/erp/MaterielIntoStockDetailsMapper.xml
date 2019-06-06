@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielIntoStockDetails.mapper.MaterielIntoStockDetailsMapper">
+    
+    <resultMap type="MaterielIntoStockDetails" id="MaterielIntoStockDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="materielId"    column="materiel_id"    />
+        <result property="materielCode"    column="materiel_code"    />
+        <result property="materielModel"    column="materiel_model"    />
+        <result property="materielName"    column="materiel_name"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="intoNumber"    column="into_number"    />
+        <result property="intoId"    column="into_id"    />
+        <result property="intoCode"    column="into_code"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="price"    column="price"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielIntoStockDetailsVo">
+        select id, materiel_id, materiel_code, materiel_model, materiel_name, supplier_code, into_number, into_id, into_code, purchase_code, create_time,payment_status,total_price,price,del_flag from tab_materiel_into_stock_details
+    </sql>
+	
+    <select id="selectMaterielIntoStockDetailsList" parameterType="MaterielIntoStockDetails" resultMap="MaterielIntoStockDetailsResult">
+        <include refid="selectMaterielIntoStockDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="materielId != null "> and materiel_id = #{materielId}</if>
+             <if test="materielCode != null  and materielCode != '' "> and materiel_code = #{materielCode}</if>
+             <if test="materielModel != null  and materielModel != '' "> and materiel_model = #{materielModel}</if>
+             <if test="materielName != null  and materielName != '' "> and materiel_name = #{materielName}</if>
+             <if test="supplierCode != null  and supplierCode != '' "> and supplier_code = #{supplierCode}</if>
+             <if test="intoNumber != null "> and into_number = #{intoNumber}</if>
+             <if test="intoId != null "> and into_id = #{intoId}</if>
+             <if test="intoCode != null  and intoCode != '' "> and into_code = #{intoCode}</if>
+             <if test="purchaseCode != null  and purchaseCode != '' "> and purchase_code = #{purchaseCode}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+            <if test="paymentStatus != null "> and payment_status = #{paymentStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielIntoStockDetailsById" parameterType="Integer" resultMap="MaterielIntoStockDetailsResult">
+        <include refid="selectMaterielIntoStockDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielIntoStockDetails" parameterType="MaterielIntoStockDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_into_stock_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">materiel_id,</if>
+			<if test="materielCode != null  and materielCode != ''  ">materiel_code,</if>
+			<if test="materielModel != null  and materielModel != ''  ">materiel_model,</if>
+			<if test="materielName != null  and materielName != ''  ">materiel_name,</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">supplier_code,</if>
+			<if test="intoNumber != null  ">into_number,</if>
+			<if test="intoId != null  ">into_id,</if>
+			<if test="intoCode != null  and intoCode != ''  ">into_code,</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="paymentStatus != null  ">payment_status,</if>
+            <if test="totalPrice != null  ">total_price,</if>
+            <if test="price != null  ">price,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">#{materielId},</if>
+			<if test="materielCode != null  and materielCode != ''  ">#{materielCode},</if>
+			<if test="materielModel != null  and materielModel != ''  ">#{materielModel},</if>
+			<if test="materielName != null  and materielName != ''  ">#{materielName},</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">#{supplierCode},</if>
+			<if test="intoNumber != null  ">#{intoNumber},</if>
+			<if test="intoId != null  ">#{intoId},</if>
+			<if test="intoCode != null  and intoCode != ''  ">#{intoCode},</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="paymentStatus != null  ">#{paymentStatus},</if>
+            <if test="totalPrice != null  ">#{totalPrice},</if>
+            <if test="price != null  ">#{price},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielIntoStockDetails" parameterType="MaterielIntoStockDetails">
+        update tab_materiel_into_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materielId != null  ">materiel_id = #{materielId},</if>
+            <if test="materielCode != null  and materielCode != ''  ">materiel_code = #{materielCode},</if>
+            <if test="materielModel != null  and materielModel != ''  ">materiel_model = #{materielModel},</if>
+            <if test="materielName != null  and materielName != ''  ">materiel_name = #{materielName},</if>
+            <if test="supplierCode != null  and supplierCode != ''  ">supplier_code = #{supplierCode},</if>
+            <if test="intoNumber != null  ">into_number = #{intoNumber},</if>
+            <if test="intoId != null  ">into_id = #{intoId},</if>
+            <if test="intoCode != null  and intoCode != ''  ">into_code = #{intoCode},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code = #{purchaseCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  ">payment_status = #{paymentStatus},</if>
+            <if test="totalPrice != null  ">total_price = #{totalPrice},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--更新物料入库明细为删除状态-->
+	<delete id="deleteMaterielIntoStockDetailsById" parameterType="Integer">
+        update tab_materiel_into_stock_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielIntoStockDetailsByIds" parameterType="String">
+        delete from tab_materiel_into_stock_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectIntoStockDetailsByCompanyIdAndSid" resultMap="MaterielIntoStockDetailsResult">
+      SELECT a.* FROM tab_materiel_into_stock_details as a,tab_materiel_into_stock as b
+        where a.into_id = b.id and b.company_id = #{company_id}
+        and b.supplier_id = #{sid} and  b.payment_status = 0 and  b.del_flag = 0
+         AND date_format(b.create_time,'%y%m%d') &gt;= date_format(#{bTime},'%y%m%d')
+         AND date_format(b.create_time,'%y%m%d') &lt;= date_format(#{eTime},'%y%m%d')
+    </select>
+    
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielSupplier.mapper.MaterielSupplierMapper">
+    
+    <resultMap type="MaterielSupplier" id="MaterielSupplierResult">
+        <result property="id"    column="id"    />
+        <result property="materielId"    column="materiel_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="supplierPrice"    column="supplier_price"    />
+    </resultMap>
+	
+	<sql id="selectMaterielSupplierVo">
+        select id, materiel_id, supplier_id, supplier_code, create_id, create_time,supplier_price from tab_materiel_supplier
+    </sql>
+	
+    <select id="selectMaterielSupplierList" parameterType="MaterielSupplier" resultMap="MaterielSupplierResult">
+        <include refid="selectMaterielSupplierVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="materielId != null "> and materiel_id = #{materielId}</if>
+             <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+             <if test="supplierCode != null  and supplierCode != '' "> and supplier_code = #{supplierCode}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="supplierPrice != null "> and supplier_price = #{supplierPrice}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielSupplierById" parameterType="Integer" resultMap="MaterielSupplierResult">
+        <include refid="selectMaterielSupplierVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielSupplier" parameterType="MaterielSupplier" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_supplier
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">materiel_id,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">supplier_code,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="supplierPrice != null  ">supplier_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">#{materielId},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">#{supplierCode},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="supplierPrice != null  ">#{supplierPrice},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielSupplier" parameterType="MaterielSupplier">
+        update tab_materiel_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materielId != null  ">materiel_id = #{materielId},</if>
+            <if test="supplierId != null  ">supplier_id = #{supplierId},</if>
+            <if test="supplierCode != null  and supplierCode != ''  ">supplier_code = #{supplierCode},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="supplierPrice != null  ">supplier_price = #{supplierPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteMaterielSupplierById" parameterType="Integer">
+        delete from tab_materiel_supplier where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielSupplierByIds" parameterType="String">
+        delete from tab_materiel_supplier where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过物料id查询物料供应商关联列表-->
+    <select id="selectMaterielSupplierListByMaterielId" parameterType="Integer" resultMap="MaterielSupplierResult">
+        <include refid="selectMaterielSupplierVo"/>
+        where materiel_id = #{materielId}
+    </select>
+
+    <!--通过供应商id查询所有相关联的物料信息-->
+    <select id="selectMaterielSupplierListByMatIdAndSupId" parameterType="Integer" resultMap="MaterielSupplierResult">
+        <include refid="selectMaterielSupplierVo"/>
+        where 1=1
+        <if test="materielId != null "> and materiel_id = #{materielId}</if>
+        <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
+    </select>
+
+    <!--校验对应供应商编码的唯一性-->
+    <select id="checkSupplierCodeUnique" resultType="int">
+        SELECT count(1) FROM tab_materiel_supplier where supplier_id = #{supplierId} and supplier_code = #{supplierCode};
+    </select>
+
+    <!--校验物料是否关联过该供应商-->
+    <select id="checkMaterielUnique" resultType="int">
+         SELECT count(1) FROM tab_materiel_supplier where materiel_id = #{materielId} and supplier_id = #{supplierId} ;
+    </select>
+
+    <!--根据物料id和供应商id查询供应商编码-->
+    <select id="findSupplierCodeByMaterielId" resultMap="MaterielSupplierResult">
+        SELECT * FROM erpstock.tab_materiel_supplier where materiel_id = #{mid} and supplier_id = #{sid} limit 1;
+    </select>
+
+
+</mapper>

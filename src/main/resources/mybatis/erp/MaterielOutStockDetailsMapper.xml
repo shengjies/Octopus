@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielOutStockDetails.mapper.MaterielOutStockDetailsMapper">
+    
+    <resultMap type="MaterielOutStockDetails" id="MaterielOutStockDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="materielId"    column="materiel_id"    />
+        <result property="materielCode"    column="materiel_code"    />
+        <result property="materielModel"    column="materiel_model"    />
+        <result property="materielName"    column="materiel_name"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="outNumber"    column="out_number"    />
+        <result property="outId"    column="out_id"    />
+        <result property="outCode"    column="out_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="price"    column="price"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielOutStockDetailsVo">
+        select id, materiel_id, materiel_code, materiel_model, materiel_name, supplier_code, out_number, out_id, out_code, create_time, purchase_code,payment_status,total_price,price,del_flag from tab_materiel_out_stock_details
+    </sql>
+	
+    <select id="selectMaterielOutStockDetailsList" parameterType="MaterielOutStockDetails" resultMap="MaterielOutStockDetailsResult">
+        <include refid="selectMaterielOutStockDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="materielId != null "> and materiel_id = #{materielId}</if>
+             <if test="materielCode != null  and materielCode != '' "> and materiel_code = #{materielCode}</if>
+             <if test="materielModel != null  and materielModel != '' "> and materiel_model = #{materielModel}</if>
+             <if test="materielName != null  and materielName != '' "> and materiel_name = #{materielName}</if>
+             <if test="supplierCode != null  and supplierCode != '' "> and supplier_code = #{supplierCode}</if>
+             <if test="outNumber != null "> and out_number = #{outNumber}</if>
+             <if test="outId != null "> and out_id = #{outId}</if>
+             <if test="outCode != null  and outCode != '' "> and out_code = #{outCode}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="purchaseCode != null  and purchaseCode != '' "> and purchase_code = #{purchaseCode}</if>
+             <if test="paymentStatus != null  and paymentStatus != '' "> and payment_status = #{paymentStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielOutStockDetailsById" parameterType="Integer" resultMap="MaterielOutStockDetailsResult">
+        <include refid="selectMaterielOutStockDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielOutStockDetails" parameterType="MaterielOutStockDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_out_stock_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">materiel_id,</if>
+			<if test="materielCode != null  and materielCode != ''  ">materiel_code,</if>
+			<if test="materielModel != null  and materielModel != ''  ">materiel_model,</if>
+			<if test="materielName != null  and materielName != ''  ">materiel_name,</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">supplier_code,</if>
+			<if test="outNumber != null  ">out_number,</if>
+			<if test="outId != null  ">out_id,</if>
+			<if test="outCode != null  and outCode != ''  ">out_code,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">payment_status,</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price,</if>
+            <if test="price != null  ">price,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="materielId != null  ">#{materielId},</if>
+			<if test="materielCode != null  and materielCode != ''  ">#{materielCode},</if>
+			<if test="materielModel != null  and materielModel != ''  ">#{materielModel},</if>
+			<if test="materielName != null  and materielName != ''  ">#{materielName},</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">#{supplierCode},</if>
+			<if test="outNumber != null  ">#{outNumber},</if>
+			<if test="outId != null  ">#{outId},</if>
+			<if test="outCode != null  and outCode != ''  ">#{outCode},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">#{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">#{totalPrice},</if>
+            <if test="price != null  ">#{price},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielOutStockDetails" parameterType="MaterielOutStockDetails">
+        update tab_materiel_out_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materielId != null  ">materiel_id = #{materielId},</if>
+            <if test="materielCode != null  and materielCode != ''  ">materiel_code = #{materielCode},</if>
+            <if test="materielModel != null  and materielModel != ''  ">materiel_model = #{materielModel},</if>
+            <if test="materielName != null  and materielName != ''  ">materiel_name = #{materielName},</if>
+            <if test="supplierCode != null  and supplierCode != ''  ">supplier_code = #{supplierCode},</if>
+            <if test="outNumber != null  ">out_number = #{outNumber},</if>
+            <if test="outId != null  ">out_id = #{outId},</if>
+            <if test="outCode != null  and outCode != ''  ">out_code = #{outCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code = #{purchaseCode},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''  ">payment_status = #{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price = #{totalPrice},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--更新物料退货明细删除状态为已作废-->
+	<delete id="deleteMaterielOutStockDetailsById" parameterType="Integer">
+        update tab_materiel_out_stock_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielOutStockDetailsByIds" parameterType="String">
+        delete from tab_materiel_out_stock_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!--根据公司id和供应商id查询对应时间内未结款的物料出库详情数据-->
+    <select id="selectOutStockDetailsByCompanyIdAndSid" resultMap="MaterielOutStockDetailsResult">
+      SELECT a.* FROM tab_materiel_out_stock_details as a,tab_materiel_out_stock as b
+      where a.out_id = b.id and b.company_id = #{company_id} and b.supplier_id = #{sid} and b.payment_status = 0
+      and b.del_flag = 0
+      AND date_format(b.create_time,'%y%m%d') &gt;= date_format(#{bTime},'%y%m%d')
+         AND date_format(b.create_time,'%y%m%d') &lt;= date_format(#{eTime},'%y%m%d')
+    </select>
+</mapper>

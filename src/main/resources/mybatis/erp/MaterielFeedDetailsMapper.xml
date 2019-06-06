@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielFeedDetails.mapper.MaterielFeedDetailsMapper">
+    
+    <resultMap type="MaterielFeedDetails" id="MaterielFeedDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="feedId"    column="feed_id"    />
+        <result property="feedType"    column="feed_type"    />
+        <result property="feedDetailId"    column="feed_detail_id"    />
+        <result property="feedDetailCode"    column="feed_detail_code"    />
+        <result property="feedDetailModel"    column="feed_detail_model"    />
+        <result property="feedDetailName"    column="feed_detail_name"    />
+        <result property="oneNum"    column="one_num"    />
+        <result property="price"    column="price"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="outNumber"    column="out_number"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectMaterielFeedDetailsVo">
+        select id, feed_id, feed_type, feed_detail_id, feed_detail_code, feed_detail_model, feed_detail_name, one_num, price, total_price, create_id, create_time,out_number,del_flag from tab_materiel_feed_details
+    </sql>
+	
+    <select id="selectMaterielFeedDetailsList" parameterType="MaterielFeedDetails" resultMap="MaterielFeedDetailsResult">
+        <include refid="selectMaterielFeedDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="feedId != null "> and feed_id = #{feedId}</if>
+             <if test="feedType != null "> and feed_type = #{feedType}</if>
+             <if test="feedDetailId != null "> and feed_detail_id = #{feedDetailId}</if>
+             <if test="feedDetailCode != null  and feedDetailCode != '' "> and feed_detail_code = #{feedDetailCode}</if>
+             <if test="feedDetailModel != null  and feedDetailModel != '' "> and feed_detail_model = #{feedDetailModel}</if>
+             <if test="feedDetailName != null  and feedDetailName != '' "> and feed_detail_name = #{feedDetailName}</if>
+             <if test="oneNum != null "> and one_num = #{oneNum}</if>
+             <if test="price != null "> and price = #{price}</if>
+             <if test="totalPrice != null "> and total_price = #{totalPrice}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielFeedDetailsById" parameterType="Integer" resultMap="MaterielFeedDetailsResult">
+        <include refid="selectMaterielFeedDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielFeedDetails" parameterType="MaterielFeedDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_feed_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="feedId != null  ">feed_id,</if>
+			<if test="feedType != null  ">feed_type,</if>
+			<if test="feedDetailId != null  ">feed_detail_id,</if>
+			<if test="feedDetailCode != null  and feedDetailCode != ''  ">feed_detail_code,</if>
+			<if test="feedDetailModel != null  and feedDetailModel != ''  ">feed_detail_model,</if>
+			<if test="feedDetailName != null  and feedDetailName != ''  ">feed_detail_name,</if>
+			<if test="oneNum != null  ">one_num,</if>
+			<if test="price != null  ">price,</if>
+			<if test="totalPrice != null  ">total_price,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="outNumber != null  ">out_number,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="feedId != null  ">#{feedId},</if>
+			<if test="feedType != null  ">#{feedType},</if>
+			<if test="feedDetailId != null  ">#{feedDetailId},</if>
+			<if test="feedDetailCode != null  and feedDetailCode != ''  ">#{feedDetailCode},</if>
+			<if test="feedDetailModel != null  and feedDetailModel != ''  ">#{feedDetailModel},</if>
+			<if test="feedDetailName != null  and feedDetailName != ''  ">#{feedDetailName},</if>
+			<if test="oneNum != null  ">#{oneNum},</if>
+			<if test="price != null  ">#{price},</if>
+			<if test="totalPrice != null  ">#{totalPrice},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="outNumber != null  ">#{outNumber},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielFeedDetails" parameterType="MaterielFeedDetails">
+        update tab_materiel_feed_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feedId != null  ">feed_id = #{feedId},</if>
+            <if test="feedType != null  ">feed_type = #{feedType},</if>
+            <if test="feedDetailId != null  ">feed_detail_id = #{feedDetailId},</if>
+            <if test="feedDetailCode != null  and feedDetailCode != ''  ">feed_detail_code = #{feedDetailCode},</if>
+            <if test="feedDetailModel != null  and feedDetailModel != ''  ">feed_detail_model = #{feedDetailModel},</if>
+            <if test="feedDetailName != null  and feedDetailName != ''  ">feed_detail_name = #{feedDetailName},</if>
+            <if test="oneNum != null  ">one_num = #{oneNum},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="totalPrice != null  ">total_price = #{totalPrice},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="outNumber != null  ">out_number = #{outNumber},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废生产发料明细-->
+	<delete id="deleteMaterielFeedDetailsById" parameterType="Integer">
+        update tab_materiel_feed_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteMaterielFeedDetailsByIds" parameterType="String">
+        delete from tab_materiel_feed_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.parts.mapper.PartsMapper">
+
+    <resultMap type="Parts" id="PartsResult">
+        <result property="id" column="id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="partsCode" column="parts_code"/>
+        <result property="partsName" column="parts_name"/>
+        <result property="price" column="price"/>
+        <result property="unit" column="unit"/>
+        <result property="remark" column="remark"/>
+        <result property="createId" column="create_id"/>
+        <result property="createName" column="create_name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectPartsVo">
+        select id, company_id, parts_code, parts_name, price, unit, remark, create_id, create_name, create_time from tab_parts
+    </sql>
+
+    <select id="selectPartsList" parameterType="Parts" resultMap="PartsResult">
+        <include refid="selectPartsVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="companyId != null ">and company_id = #{companyId}</if>
+            <if test="partsCode != null  and partsCode != '' ">and parts_code = #{partsCode}</if>
+            <if test="partsName != null  and partsName != '' ">and parts_name = #{partsName}</if>
+            <if test="price != null ">and price = #{price}</if>
+            <if test="unit != null  and unit != '' ">and unit = #{unit}</if>
+            <if test="remark != null  and remark != '' ">and remark = #{remark}</if>
+            <if test="createId != null ">and create_id = #{createId}</if>
+            <if test="createName != null  and createName != '' ">and create_name = #{createName}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+        </where>
+    </select>
+
+    <select id="selectPartsById" parameterType="Integer" resultMap="PartsResult">
+        <include refid="selectPartsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertParts" parameterType="Parts" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_parts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="companyId != null  ">company_id,</if>
+            <if test="partsCode != null  and partsCode != ''  ">parts_code,</if>
+            <if test="partsName != null  and partsName != ''  ">parts_name,</if>
+            <if test="price != null  ">price,</if>
+            <if test="unit != null  and unit != ''  ">unit,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="createId != null  ">create_id,</if>
+            <if test="createName != null  and createName != ''  ">create_name,</if>
+            <if test="createTime != null  ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="companyId != null  ">#{companyId},</if>
+            <if test="partsCode != null  and partsCode != ''  ">#{partsCode},</if>
+            <if test="partsName != null  and partsName != ''  ">#{partsName},</if>
+            <if test="price != null  ">#{price},</if>
+            <if test="unit != null  and unit != ''  ">#{unit},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="createId != null  ">#{createId},</if>
+            <if test="createName != null  and createName != ''  ">#{createName},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateParts" parameterType="Parts">
+        update tab_parts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="partsCode != null  and partsCode != ''  ">parts_code = #{partsCode},</if>
+            <if test="partsName != null  and partsName != ''  ">parts_name = #{partsName},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="unit != null  and unit != ''  ">unit = #{unit},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePartsById" parameterType="Integer">
+        delete from tab_parts where id = #{id}
+    </delete>
+
+    <delete id="deletePartsByIds" parameterType="String">
+        delete from tab_parts where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过半成品编码查询半成品信息-->
+    <select id="selectPartsByCode" resultMap="PartsResult">
+        <include refid="selectPartsVo"/>
+        where company_id = #{companyId} and parts_code = #{detIntoCode}
+    </select>
+
+    <!--查询公司的半成品名称信息去重查询-->
+    <select id="selectAllPartsNameByComId" resultType="com.ruoyi.project.erp.parts.domain.Parts">
+        select distinct parts_name as partsName from tab_parts where company_id = #{companyId}
+    </select>
+</mapper>

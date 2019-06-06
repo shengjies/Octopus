@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 select-table table-striped">
+            <input type="hidden" id="inToId" name="inToId" th:value="${inToId}">
+            <input type="hidden" id="materielId" name="materielId" th:value="${materielId}">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('erp:materielIntoStockDetails:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('erp:materielIntoStockDetails:remove')}]];
+    var prefix = ctx + "erp/materielIntoStockDetails";
+    var inToId = $("#inToId").val();
+    var materielId = $("#materielId").val();
+    $(function () {
+        var options = {
+            // url: prefix + "/list",
+            url: prefix + "/listById?inToId=" + inToId + "&materielId=" + materielId,
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "物料入库清单",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'supplierName',
+                    title: '供应商',
+                },
+                {
+                    field: 'supplierCode',
+                    title: '供应商编码',
+                    sortable: true
+                },
+                {
+                    field: 'materielCode',
+                    title: '物料编码',
+                    sortable: true
+                },
+                {
+                    field: 'intoCode',
+                    title: '入库单号',
+                    sortable: true
+                },
+                {
+                    field: 'purchaseCode',
+                    title: '采购单号',
+                    formatter: function(value, row, index) {
+                        if (row.purchaseCode == '-1' || row.purchaseCode == '') {
+                            return '--';
+                        } else {
+                            return row.purchaseCode;
+                        }
+                    }
+                },
+                {
+                    field: 'intoNumber',
+                    title: '入库数量',
+                },
+                {
+                    field: 'inToName',
+                    title: '入库姓名',
+                },
+                {
+                    field: 'createTime',
+                    title: '入库时间',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function submitHandler() {
+        $.modal.close();
+        window.parent.$.table.refresh();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.page.pageInfoConfig.mapper.PageInfoConfigMapper">
+    
+    <resultMap type="PageInfoConfig" id="PageInfoConfigResult">
+        <result property="id"    column="id"    />
+        <result property="pId"    column="p_id"    />
+        <result property="devId"    column="dev_id"    />
+        <result property="devName"    column="dev_name"    />
+        <result property="ioId"    column="io_id"    />
+        <result property="ioName"    column="io_name"    />
+        <result property="devIoConfig"    column="dev_io_config"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="devId1"    column="dev_id1"    />
+        <result property="devName1"    column="dev_name1"    />
+        <result property="ioId1"    column="io_id1"    />
+        <result property="ioName1"    column="io_name1"    />
+        <result property="lineId"    column="line_id"    />
+        <result property="lineName"    column="line_name"    />
+    </resultMap>
+	
+	<sql id="selectPageInfoConfigVo">
+        select id, p_id, dev_id, dev_name, io_id, io_name, dev_io_config, create_time, dev_id1, dev_name1, io_id1, io_name1, line_id from dev_page_config
+    </sql>
+	
+    <select id="selectPageInfoConfigList" parameterType="PageInfoConfig" resultMap="PageInfoConfigResult">
+        <include refid="selectPageInfoConfigVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="pId != null "> and p_id = #{pId}</if>
+             <if test="devId != null "> and dev_id = #{devId}</if>
+             <if test="devName != null  and devName != '' "> and dev_name = #{devName}</if>
+             <if test="ioId != null "> and io_id = #{ioId}</if>
+             <if test="ioName != null  and ioName != '' "> and io_name = #{ioName}</if>
+             <if test="devIoConfig != null  and devIoConfig != '' "> and dev_io_config = #{devIoConfig}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="devId1 != null "> and dev_id1 = #{devId1}</if>
+             <if test="devName1 != null  and devName1 != '' "> and dev_name1 = #{devName1}</if>
+             <if test="ioId1 != null "> and io_id1 = #{ioId1}</if>
+             <if test="ioName1 != null  and ioName1 != '' "> and io_name1 = #{ioName1}</if>
+             <if test="lineId != null "> and line_id = #{lineId}</if>
+         </where>
+    </select>
+    
+    <select id="selectPageInfoConfigById" parameterType="Integer" resultMap="PageInfoConfigResult">
+        <include refid="selectPageInfoConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPageInfoConfig" parameterType="PageInfoConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into dev_page_config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pId != null  ">p_id,</if>
+			<if test="devId != null  ">dev_id,</if>
+			<if test="devName != null  and devName != ''  ">dev_name,</if>
+			<if test="ioId != null  ">io_id,</if>
+			<if test="ioName != null  and ioName != ''  ">io_name,</if>
+			<if test="devIoConfig != null  and devIoConfig != ''  ">dev_io_config,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="devId1 != null  ">dev_id1,</if>
+			<if test="devName1 != null  and devName1 != ''  ">dev_name1,</if>
+			<if test="ioId1 != null  ">io_id1,</if>
+			<if test="ioName1 != null  and ioName1 != ''  ">io_name1,</if>
+			<if test="lineId != null  ">line_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pId != null  ">#{pId},</if>
+			<if test="devId != null  ">#{devId},</if>
+			<if test="devName != null  and devName != ''  ">#{devName},</if>
+			<if test="ioId != null  ">#{ioId},</if>
+			<if test="ioName != null  and ioName != ''  ">#{ioName},</if>
+			<if test="devIoConfig != null  and devIoConfig != ''  ">#{devIoConfig},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="devId1 != null  ">#{devId1},</if>
+			<if test="devName1 != null  and devName1 != ''  ">#{devName1},</if>
+			<if test="ioId1 != null  ">#{ioId1},</if>
+			<if test="ioName1 != null  and ioName1 != ''  ">#{ioName1},</if>
+			<if test="lineId != null  ">#{lineId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePageInfoConfig" parameterType="PageInfoConfig">
+        update dev_page_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null  ">p_id = #{pId},</if>
+            <if test="devId != null  ">dev_id = #{devId},</if>
+            <if test="devName != null  and devName != ''  ">dev_name = #{devName},</if>
+            <if test="ioId != null  ">io_id = #{ioId},</if>
+            <if test="ioName != null  and ioName != ''  ">io_name = #{ioName},</if>
+            <if test="devIoConfig != null  and devIoConfig != ''  ">dev_io_config = #{devIoConfig},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="devId1 != null  ">dev_id1 = #{devId1},</if>
+            <if test="devName1 != null  and devName1 != ''  ">dev_name1 = #{devName1},</if>
+            <if test="ioId1 != null  ">io_id1 = #{ioId1},</if>
+            <if test="ioName1 != null  and ioName1 != ''  ">io_name1 = #{ioName1},</if>
+            <if test="lineId != null  ">line_id = #{lineId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePageInfoConfigById" parameterType="Integer">
+        delete from dev_page_config where id = #{id}
+    </delete>
+	
+    <delete id="deletePageInfoConfigByIds" parameterType="String">
+        delete from dev_page_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--根据页面编号查询对应页面的配置信息-->
+    <select id="selectPageConfigByPageId" resultMap="PageInfoConfigResult">
+        SELECT a.*,b.line_name FROM dev_page_config as a left join dev_production_line as b on a.line_id =b.id where p_id = #{page_id};
+    </select>
+
+    <!--根据页面编号批量删除相关配置-->
+    <delete id="deletePageInfoConfigByPIds" parameterType="String">
+        delete from dev_page_config where p_id in
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+
+    <!--查询对应的轮播页面是否配置其他页面-->
+    <select id="selectPageConfigOtherPage" resultMap="PageInfoConfigResult">
+        SELECT * FROM dev_page_config where p_id = #{p_id} and io_id = #{other_id} limit 1;
+    </select>
+</mapper>

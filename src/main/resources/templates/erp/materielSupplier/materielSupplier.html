@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="addForm">
+				<input type="hidden" id="materielId" name="materielId" th:value="${materielId}"/>
+				<div class="select-list">
+					<ul>
+						<li>
+							供应商：
+							<select id="supplierId" name="supplierId" style="width: 140px" th:with="supplierList = ${@supplier.selectSupplierAllByCompanyId(#httpServletRequest.getCookies())}">
+								<option value="">请选择</option>
+								<option th:each="supplier : ${supplierList}" th:text="${supplier.supplierName}" th:value="${supplier.id}">
+								</option>
+							</select>
+						</li>
+						<li>
+							供应商物料编码：<input type="text" name="supplierCode" id="supplierCode" style="width: 200px"/>
+						</li>
+						<li>
+							供应商物料价格：<input type="number" name="supplierPrice" id="supplierPrice" style="width: 200px"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="addConnectSupplier()"><i></i>&nbsp;添加</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('erp:materielSupplier:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('erp:materielSupplier:remove')}]];
+    var prefix = ctx + "erp/materielSupplier";
+    var materielId = $("#materielId").val()
+    $(function () {
+        var options = {
+            url: prefix + '/listByMaterielId?materielId=' + materielId,
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "物料供应商关联",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'id',
+                    title: '自增长主键',
+                    visible: false
+                },
+                {
+                    field: 'materiel.materielCode',
+                    title: '物料编码'
+                },
+                {
+                    field: 'supplier.supplierName',
+                    title: '供应商名称',
+                },
+                {
+                    field: 'supplierCode',
+                    title: '供应商物料编码',
+                },
+                {
+                    field: 'supplierPrice',
+                    title: '供应商物料价格',
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="editMaterielSupplier(\'' + row.id + '\')"><i></i>修改</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    /**
+     * 添加供应商物料关联信息
+     */
+    function addConnectSupplier() {
+        var validate = false;
+        var supplierId = $("#supplierId").val();
+        var supplierPrice = $("#supplierPrice").val();
+        if (!supplierPrice) {
+            $.modal.alertWarning("请输入供应商物料价格")
+            return;
+        }
+        if (supplierId != "") {
+            validate = true;
+        }
+        if (validate) {
+            $.ajax({
+                type: 'POST',
+                url: prefix + "/add",
+                dataType: 'json',
+                data:$('#addForm').serialize(),
+                async:false,  //同步请求，
+                success: function (result) {
+                    if (result.code == web_status.SUCCESS) {
+                        layer.alert("添加成功");
+                        $.table.search() // 刷新数据
+                    }else{
+                        layer.alert(result.msg);
+                        $.table.search() // 刷新数据
+                    }
+                }
+            });
+        }else{
+            layer.alert("供应商不能为空")
+        }
+    }
+
+    /**
+     * 修改供应商物料关联编码
+     * @param id
+     */
+    function editMaterielSupplier(id) {
+        var url = prefix+"/edit/{id}";
+        if ($.common.isNotEmpty(id)) {
+            url = $.table._option.updateUrl.replace("{id}", id);
+        } else {
+            var id = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+            if (id.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            url = $.table._option.updateUrl.replace("{id}", id);
+        }
+        $.modal.open("修改供应商编码",url,350,300);
+    }
+
+    function submitHandler() {
+        $.modal.close();
+        window.parent.$.table.refresh();
+    }
+</script>
+</body>
+</html>

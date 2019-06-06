@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.lineIntoStockDetails.mapper.LineIntoStockDetailsMapper">
+
+    <resultMap type="LineIntoStockDetails" id="LineIntoStockDetailsResult">
+        <result property="id" column="id"/>
+        <result property="lineIntoId" column="line_into_id"/>
+        <result property="detIntoCode" column="det_into_code"/>
+        <result property="detIntoModel" column="det_into_model"/>
+        <result property="detIntoName" column="det_into_name"/>
+        <result property="detIntoNum" column="det_into_num"/>
+        <result property="intoCode" column="into_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="workOrderId" column="work_id"/>
+        <result property="detIntoId" column="det_into_id"/>
+        <result property="intoType" column="into_type"/>
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectLineIntoStockDetailsVo">
+        select id, line_into_id, det_into_code, det_into_model, det_into_name, det_into_num, into_code, create_time,work_id,det_into_id,into_type,del_flag from tab_line_into_stock_details
+    </sql>
+
+    <select id="selectLineIntoStockDetailsList" parameterType="LineIntoStockDetails"
+            resultMap="LineIntoStockDetailsResult">
+        <include refid="selectLineIntoStockDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null ">and id = #{id}</if>
+            <if test="lineIntoId != null ">and line_into_id = #{lineIntoId}</if>
+            <if test="detIntoCode != null  and detIntoCode != '' ">and det_into_code = #{detIntoCode}</if>
+            <if test="detIntoModel != null  and detIntoModel != '' ">and det_into_model = #{detIntoModel}</if>
+            <if test="detIntoName != null  and detIntoName != '' ">and det_into_name = #{detIntoName}</if>
+            <if test="detIntoNum != null ">and det_into_num = #{detIntoNum}</if>
+            <if test="detIntoId != null ">and det_into_id = #{detIntoId}</if>
+            <if test="intoCode != null  and intoCode != '' ">and into_code = #{intoCode}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="workOrderId != null ">and work_id = #{workOrderId}</if>
+            <if test="intoType != null ">and into_type = #{intoType}</if>
+        </where>
+    </select>
+
+    <select id="selectLineIntoStockDetailsById" parameterType="Integer" resultMap="LineIntoStockDetailsResult">
+        <include refid="selectLineIntoStockDetailsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLineIntoStockDetails" parameterType="LineIntoStockDetails" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into tab_line_into_stock_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lineIntoId != null  ">line_into_id,</if>
+            <if test="detIntoCode != null  and detIntoCode != ''  ">det_into_code,</if>
+            <if test="detIntoModel != null  and detIntoModel != ''  ">det_into_model,</if>
+            <if test="detIntoName != null  and detIntoName != ''  ">det_into_name,</if>
+            <if test="detIntoNum != null  ">det_into_num,</if>
+            <if test="intoCode != null  and intoCode != ''  ">into_code,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="workOrderId != null  ">work_id,</if>
+            <if test="detIntoId != null  ">det_into_id,</if>
+            <if test="intoType != null  ">into_type,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lineIntoId != null  ">#{lineIntoId},</if>
+            <if test="detIntoCode != null  and detIntoCode != ''  ">#{detIntoCode},</if>
+            <if test="detIntoModel != null  and detIntoModel != ''  ">#{detIntoModel},</if>
+            <if test="detIntoName != null  and detIntoName != ''  ">#{detIntoName},</if>
+            <if test="detIntoNum != null  ">#{detIntoNum},</if>
+            <if test="intoCode != null  and intoCode != ''  ">#{intoCode},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="workOrderId != null  ">#{workOrderId},</if>
+            <if test="detIntoId != null  ">#{detIntoId},</if>
+            <if test="intoType != null  ">#{intoType},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateLineIntoStockDetails" parameterType="LineIntoStockDetails">
+        update tab_line_into_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="lineIntoId != null  ">line_into_id = #{lineIntoId},</if>
+            <if test="detIntoCode != null  and detIntoCode != ''  ">det_into_code = #{detIntoCode},</if>
+            <if test="detIntoModel != null  and detIntoModel != ''  ">det_into_model = #{detIntoModel},</if>
+            <if test="detIntoName != null  and detIntoName != ''  ">det_into_name = #{detIntoName},</if>
+            <if test="detIntoNum != null  ">det_into_num = #{detIntoNum},</if>
+            <if test="intoCode != null  and intoCode != ''  ">into_code = #{intoCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="workOrderId != null  ">work_id = #{workOrderId},</if>
+            <if test="detIntoId != null  ">det_into_id = #{detIntoId},</if>
+            <if test="intoType != null  ">into_type = #{intoType},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废生产入库明细-->
+    <delete id="deleteLineIntoStockDetailsById" parameterType="Integer">
+        update tab_line_into_stock_details set del_flag = '1' where id = #{id}
+    </delete>
+
+    <delete id="deleteLineIntoStockDetailsByIds" parameterType="String">
+        delete from tab_line_into_stock_details where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectLineIntoStockDetailsByLineIntoId" parameterType="Integer" resultMap="LineIntoStockDetailsResult">
+        <include refid="selectLineIntoStockDetailsVo"/>
+        where line_into_id = #{lineIntoId};
+    </select>
+</mapper>

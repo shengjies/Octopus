@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-parts-edit" th:object="${parts}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司主键ID：</label>
+				<div class="col-sm-8">
+					<input id="companyId" name="companyId" th:field="*{companyId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品编码：</label>
+				<div class="col-sm-8">
+					<input id="partsCode" name="partsCode" th:field="*{partsCode}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品名称：</label>
+				<div class="col-sm-8">
+					<input id="partsName" name="partsName" th:field="*{partsName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">半成品单价：</label>
+				<div class="col-sm-8">
+					<input id="price" name="price" th:field="*{price}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">单位：</label>
+				<div class="col-sm-8">
+					<input id="unit" name="unit" th:field="*{unit}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注信息：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建者：</label>
+				<div class="col-sm-8">
+					<input id="createId" name="createId" th:field="*{createId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建者名称：</label>
+				<div class="col-sm-8">
+					<input id="createName" name="createName" th:field="*{createName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建时间：</label>
+				<div class="col-sm-8">
+					<input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/parts";
+		$("#form-parts-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-parts-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-productIntoStockDetails-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产品主键ID：</label>
+				<div class="col-sm-8">
+					<input id="productId" name="productId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产品编码：</label>
+				<div class="col-sm-8">
+					<input id="productCode" name="productCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产品型号：</label>
+				<div class="col-sm-8">
+					<input id="productModel" name="productModel" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产品名称：</label>
+				<div class="col-sm-8">
+					<input id="productName" name="productName" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">客户编码(自填)：</label>
+				<div class="col-sm-8">
+					<input id="customerCode" name="customerCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">入库数量：</label>
+				<div class="col-sm-8">
+					<input id="intoNumber" name="intoNumber" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">产品入库主键ID：</label>
+				<div class="col-sm-8">
+					<input id="intoId" name="intoId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">入库单号：</label>
+				<div class="col-sm-8">
+					<input id="intoCode" name="intoCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">退货单号：</label>
+				<div class="col-sm-8">
+					<input id="backCode" name="backCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">入库时间：</label>
+				<div class="col-sm-8">
+					<input id="createTime" name="createTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">结款状态(0、未结款，1、已结款)：</label>
+				<div class="col-sm-8">
+					<input id="paymentStatus" name="paymentStatus" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/productIntoStockDetails"
+		$("#form-productIntoStockDetails-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-productIntoStockDetails-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

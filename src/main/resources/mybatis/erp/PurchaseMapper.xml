@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.purchase.mapper.PurchaseMapper">
+    
+    <resultMap type="Purchase" id="PurchaseResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="supplierAddress"    column="supplier_address"    />
+        <result property="totalNumber"    column="total_number"    />
+        <result property="deliverTotalNum"    column="deliver_total_num"    />
+        <result property="liaisonMan"    column="liaison_man"    />
+        <result property="phone"    column="phone"    />
+        <result property="manEmail"    column="man_email"    />
+        <result property="deliverTime"    column="deliver_time"    />
+        <result property="deliverAddress"    column="deliver_address"    />
+        <result property="cost"    column="cost"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="contractContent"    column="contract_content"    />
+        <result property="purchaseStatut"    column="purchase_statut"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="create_by"    column="create_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="totalPrice"    column="total_price"    />
+    </resultMap>
+	
+	<sql id="selectPurchaseVo">
+        select id, company_id, purchase_code, supplier_id, supplier_name, supplier_address, total_number,
+         deliver_total_num, liaison_man, phone, man_email, deliver_time, deliver_address, cost, payment_method,
+         contract_content, purchase_statut, create_time, create_by,remark,total_price from tab_purchase
+    </sql>
+	
+    <select id="selectPurchaseList" parameterType="Purchase" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        <where>  company_id = #{companyId}
+             <if test="purchaseCode != null  and purchaseCode != '' "> and purchase_code like concat(#{purchaseCode},'%')</if>
+             <if test="supplierId != null and supplierId > 0 "> and supplier_id = #{supplierId}</if>
+             <if test="liaisonMan != null  and liaisonMan != '' "> and liaison_man like concat(#{liaisonMan},'%')</if>
+             <if test="phone != null  and phone != '' "> and phone  like concat(#{phone},'%')</if>
+             <if test="purchaseStatut != null and purchaseStatut > 0 "> and purchase_statut = #{purchaseStatut}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectPurchaseById" parameterType="Integer" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPurchase" parameterType="Purchase" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_purchase
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="supplierName != null  and supplierName != ''  ">supplier_name,</if>
+			<if test="supplierAddress != null  and supplierAddress != ''  ">supplier_address,</if>
+			<if test="totalNumber != null  ">total_number,</if>
+			<if test="deliverTotalNum != null  ">deliver_total_num,</if>
+			<if test="liaisonMan != null  and liaisonMan != ''  ">liaison_man,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="manEmail != null  and manEmail != ''  ">man_email,</if>
+			<if test="deliverTime != null  ">deliver_time,</if>
+			<if test="deliverAddress != null  and deliverAddress != ''  ">deliver_address,</if>
+			<if test="cost != null  and cost != ''  ">cost,</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">payment_method,</if>
+			<if test="contractContent != null  and contractContent != ''  ">contract_content,</if>
+			<if test="purchaseStatut != null  ">purchase_statut,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="create_by != null  ">create_by,</if>
+			<if test="remark != null  ">remark,</if>
+			<if test="totalPrice != null  ">total_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="supplierName != null  and supplierName != ''  ">#{supplierName},</if>
+			<if test="supplierAddress != null  and supplierAddress != ''  ">#{supplierAddress},</if>
+			<if test="totalNumber != null  ">#{totalNumber},</if>
+			<if test="deliverTotalNum != null  ">#{deliverTotalNum},</if>
+			<if test="liaisonMan != null  and liaisonMan != ''  ">#{liaisonMan},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="manEmail != null  and manEmail != ''  ">#{manEmail},</if>
+			<if test="deliverTime != null  ">#{deliverTime},</if>
+			<if test="deliverAddress != null  and deliverAddress != ''  ">#{deliverAddress},</if>
+			<if test="cost != null  and cost != ''  ">#{cost},</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">#{paymentMethod},</if>
+			<if test="contractContent != null  and contractContent != ''  ">#{contractContent},</if>
+			<if test="purchaseStatut != null  ">#{purchaseStatut},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="create_by != null  ">#{create_by},</if>
+			<if test="remark != null  ">#{remark},</if>
+			<if test="totalPrice != null  ">#{totalPrice},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePurchase" parameterType="Purchase">
+        update tab_purchase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code = #{purchaseCode},</if>
+            <if test="supplierId != null  ">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null  and supplierName != ''  ">supplier_name = #{supplierName},</if>
+            <if test="supplierAddress != null  and supplierAddress != ''  ">supplier_address = #{supplierAddress},</if>
+            <if test="totalNumber != null  ">total_number = #{totalNumber},</if>
+            <if test="deliverTotalNum != null  ">deliver_total_num = #{deliverTotalNum},</if>
+            <if test="liaisonMan != null  and liaisonMan != ''  ">liaison_man = #{liaisonMan},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="manEmail != null  and manEmail != ''  ">man_email = #{manEmail},</if>
+            <if test="deliverTime != null  ">deliver_time = #{deliverTime},</if>
+            <if test="deliverAddress != null  and deliverAddress != ''  ">deliver_address = #{deliverAddress},</if>
+            <if test="cost != null  and cost != ''  ">cost = #{cost},</if>
+            <if test="paymentMethod != null  and paymentMethod != ''  ">payment_method = #{paymentMethod},</if>
+            <if test="contractContent != null  and contractContent != ''  ">contract_content = #{contractContent},</if>
+            <if test="purchaseStatut != null  ">purchase_statut = #{purchaseStatut},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="create_by != null  ">create_by = #{create_by},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+            <if test="totalPrice != null  ">total_price = #{totalPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePurchaseById" parameterType="Integer">
+        delete from tab_purchase where id = #{id}
+    </delete>
+	
+    <delete id="deletePurchaseByIds" parameterType="String">
+        delete from tab_purchase where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询已审核未交付的采购单返回封装结果-->
+    <select id="selectPurchaseBySupIdAndCode" resultType="com.ruoyi.project.erp.purchase.domain.PurchaseResult">
+        SELECT a.id as purchaseId,a.purchase_code as purchaseCode,
+        a.supplier_id as supplierId,a.deliver_total_num as deliverTotalNum,a.purchase_statut as purchaseStatut,a.create_time as createTime,
+        b.supplier_code as supplierCode,b.materiel_code as materielCode,b.deliver_num as deliverNum
+        FROM tab_purchase as a,tab_purchase_details as b where a.id = b.purchase_id and a.purchase_statut in(2)
+        and a.company_id = #{companyId}
+        and a.supplier_id = #{supplierId}
+        and b.materiel_code = #{materielCode}
+        and b.supplier_code = #{supplierCode}
+        and b.deliver_num &lt; b.number order by a.create_time desc limit 1;
+    </select>
+
+    <select id="selectPurchaseBySupIdAndPuraseCode" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        where company_id = #{companyId} and supplier_id = #{supplierId} and purchase_code = #{purchaseCode}
+    </select>
+
+    <!--查询各公司已审核未完成交付的采购单信息-->
+    <select id="selectPurchaseBySupIdAndComId" resultMap="PurchaseResult">
+        <include refid="selectPurchaseVo"/>
+        where supplier_id = #{supplierId} and company_id = #{companyId} and purchase_statut in (2);
+    </select>
+
+    <!--查询预收仓库存在数量的采购单信息-->
+    <select id="selectPurchaseHavePreNumberBySupId" resultType="com.ruoyi.project.erp.purchase.domain.Purchase">
+        select a.id as Id,a.purchase_code as purchaseCode,a.total_number as totalNumber,a.deliver_total_num as deliverTotalNum from tab_purchase as a left join tab_purchase_details as b on a.id=b.purchase_id
+        where a.company_id =#{companyId} and a.supplier_id = #{supplierId} and b.prereceive_number > 0 group by a.id;;
+    </select>
+
+    <!--通过采购单状态查询最新的一条记录-->
+    <select id="selectPurchaseListByStatusInThree" resultType="com.ruoyi.project.erp.purchase.domain.Purchase">
+        select * from tab_purchase where company_id = #{companyId} and supplier_id = #{supplierId} and purchase_statut = #{purchaseStatut} order by deliver_time desc limit 1;
+    </select>
+</mapper>

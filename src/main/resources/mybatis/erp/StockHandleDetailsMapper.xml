@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.stockHandleDetails.mapper.StockHandleDetailsMapper">
+    
+    <resultMap type="StockHandleDetails" id="StockHandleDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="handleId"    column="handle_id"    />
+        <result property="handleCode"    column="handle_code"    />
+        <result property="handleType"    column="handle_type"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createName"    column="create_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="actualTime"    column="actual_time"    />
+        <result property="attrId"    column="attr_id"    />
+        <result property="attrCode"    column="attr_code"    />
+        <result property="attrModel"    column="attr_model"    />
+        <result property="attrName"    column="attr_name"    />
+        <result property="handleStatus"    column="handle_status"    />
+        <result property="handleNumber"    column="handle_number"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectStockHandleDetailsVo">
+        select id, company_id, handle_id, handle_code, handle_type, create_id, create_name, create_time, actual_time, attr_id, attr_code, attr_model, attr_name, handle_status, handle_number, del_flag from tab_stock_handle_details
+    </sql>
+	
+    <select id="selectStockHandleDetailsList" parameterType="StockHandleDetails" resultMap="StockHandleDetailsResult">
+        <include refid="selectStockHandleDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="handleId != null "> and handle_id = #{handleId}</if>
+             <if test="handleCode != null  and handleCode != '' "> and handle_code = #{handleCode}</if>
+             <if test="handleType != null  and handleType != '' "> and handle_type = #{handleType}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createName != null  and createName != '' "> and create_name = #{createName}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="actualTime != null "> and actual_time = #{actualTime}</if>
+             <if test="attrId != null "> and attr_id = #{attrId}</if>
+             <if test="attrCode != null  and attrCode != '' "> and attr_code = #{attrCode}</if>
+             <if test="attrModel != null  and attrModel != '' "> and attr_model = #{attrModel}</if>
+             <if test="attrName != null  and attrName != '' "> and attr_name = #{attrName}</if>
+             <if test="handleStatus != null  and handleStatus != '' "> and handle_status = #{handleStatus}</if>
+             <if test="handleNumber != null "> and handle_number = #{handleNumber}</if>
+             <if test="delFlag != null  and delFlag != '' "> and del_flag = #{delFlag}</if>
+         </where>
+    </select>
+    
+    <select id="selectStockHandleDetailsById" parameterType="Integer" resultMap="StockHandleDetailsResult">
+        <include refid="selectStockHandleDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertStockHandleDetails" parameterType="StockHandleDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_stock_handle_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="handleId != null  ">handle_id,</if>
+			<if test="handleCode != null  and handleCode != ''  ">handle_code,</if>
+			<if test="handleType != null  and handleType != ''  ">handle_type,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createName != null  and createName != ''  ">create_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="actualTime != null  ">actual_time,</if>
+			<if test="attrId != null  ">attr_id,</if>
+			<if test="attrCode != null  and attrCode != ''  ">attr_code,</if>
+			<if test="attrModel != null  and attrModel != ''  ">attr_model,</if>
+			<if test="attrName != null  and attrName != ''  ">attr_name,</if>
+			<if test="handleStatus != null  and handleStatus != ''  ">handle_status,</if>
+			<if test="handleNumber != null  ">handle_number,</if>
+			<if test="delFlag != null  and delFlag != ''  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="handleId != null  ">#{handleId},</if>
+			<if test="handleCode != null  and handleCode != ''  ">#{handleCode},</if>
+			<if test="handleType != null  and handleType != ''  ">#{handleType},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createName != null  and createName != ''  ">#{createName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="actualTime != null  ">#{actualTime},</if>
+			<if test="attrId != null  ">#{attrId},</if>
+			<if test="attrCode != null  and attrCode != ''  ">#{attrCode},</if>
+			<if test="attrModel != null  and attrModel != ''  ">#{attrModel},</if>
+			<if test="attrName != null  and attrName != ''  ">#{attrName},</if>
+			<if test="handleStatus != null  and handleStatus != ''  ">#{handleStatus},</if>
+			<if test="handleNumber != null  ">#{handleNumber},</if>
+			<if test="delFlag != null  and delFlag != ''  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateStockHandleDetails" parameterType="StockHandleDetails">
+        update tab_stock_handle_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="handleId != null  ">handle_id = #{handleId},</if>
+            <if test="handleCode != null  and handleCode != ''  ">handle_code = #{handleCode},</if>
+            <if test="handleType != null  and handleType != ''  ">handle_type = #{handleType},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createName != null  and createName != ''  ">create_name = #{createName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="actualTime != null  ">actual_time = #{actualTime},</if>
+            <if test="attrId != null  ">attr_id = #{attrId},</if>
+            <if test="attrCode != null  and attrCode != ''  ">attr_code = #{attrCode},</if>
+            <if test="attrModel != null  and attrModel != ''  ">attr_model = #{attrModel},</if>
+            <if test="attrName != null  and attrName != ''  ">attr_name = #{attrName},</if>
+            <if test="handleStatus != null  and handleStatus != ''  ">handle_status = #{handleStatus},</if>
+            <if test="handleNumber != null  ">handle_number = #{handleNumber},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废库存管理明细-->
+	<delete id="deleteStockHandleDetailsById" parameterType="Integer">
+        update tab_stock_handle_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteStockHandleDetailsByIds" parameterType="String">
+        delete from tab_stock_handle_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

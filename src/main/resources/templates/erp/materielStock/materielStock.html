@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								物料编码：
+								<select id="materielCode" name="materielCode" th:with="allMat=${@materiel.selectAllMatByComId()}">
+									<option value="">请选择</option>
+									<option th:each="mat:${allMat}" th:text="${mat.materielCode}" th:value="${mat.materielCode}"></option>
+								</select>
+							</li>
+							<li>
+								物料型号：
+								<select id="materielModel" name="materielModel" th:with="allMat=${@materiel.selectAllMatByComId()}">
+									<option value="">请选择</option>
+									<option th:each="mat:${allMat}" th:text="${mat.materielModel}" th:value="${mat.materielModel}"></option>
+								</select>
+							</li>
+							<li>
+								物料名称：
+								<select id="materielName" name="materielName" th:with="allMatName=${@materiel.selectAllMatNameByComId()}">
+									<option value="">请选择</option>
+									<option th:each="mat:${allMatName}" th:text="${mat.materielName}" th:value="${mat.materielName}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间"
+									   name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间"
+									   name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="formReset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-primary" onclick="$.table.exportExcel()" shiro:hasPermission="erp:materielStock:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+				<a class="btn btn-default" onclick="handleMat()" shiro:hasPermission="erp:stockHandle:list">
+					<i class="fa fa-hand-rock-o"></i> 库存内部管理
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        $(function () {
+            $("select").select2({
+                width:"100px",
+                placeholder:'请选择'
+            });
+        })
+        // 重置搜索表单信息
+        function formReset(params) {
+            $('#formId')[0].reset();//input标签重置
+            $("#materielCode").val(null).trigger("change"); // select2标签重置
+            $("#materielModel").val(null).trigger("change");
+            $("#materielName").val(null).trigger("change");
+        }
+        var listFlag = [[${@permission.hasPermi('erp:stockHandleDetails:list')}]];
+        var matOutFlag = [[${@permission.hasPermi('erp:materielOutStockDetails:list')}]];
+        var matIntoFlag = [[${@permission.hasPermi('erp:materielIntoStockDetails:list')}]];
+        var editFlag = [[${@permission.hasPermi('erp:materielStock:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:materielStock:remove')}]];
+        var prefix = ctx + "erp/materielStock";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "物料库存",
+                search: false,
+                showExport: false,
+                showSearch: false,
+                showRefresh: false,
+                showColumns: false,
+                showToggle: false,
+                columns: [
+				{
+					field : 'id', 
+					title : '物料库存主键ID',
+					visible: false
+				},
+				{
+					field : 'materielCode', 
+					title : '物料编码',
+					sortable: true
+				},
+				{
+					field : 'materielModel', 
+					title : '物料型号',
+					sortable: true
+				},
+				{
+					field : 'materielName',
+					title : '物料名称',
+					sortable: true
+				},
+				{
+					field : 'goodNumber', 
+					title : '良品数',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="btn btn-primary btn-xs" href="javascript:void(0)" onclick="handleMatStock(\'' + row.materielId + '\')"><i></i>'+ row.goodNumber +'</a> '
+                    }
+				},
+				{
+					field : 'badNumber', 
+					title : '不良品数',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<span class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="handleMatStock(\'' + row.materielId + '\')"><i></i>'+ row.badNumber +'</span> '
+                    }
+				},
+				{
+					field : 'scrapNumber', 
+					title : '报废品数',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="handleMatStock(\'' + row.materielId + '\')"><i></i>'+ row.scrapNumber +'</a> '
+                    }
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+				{
+					field : 'lastUpdate', 
+					title : '最后一次更新时间',
+					sortable: true
+				},
+		        {
+		            title: '查看详情',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + matOutFlag + '" href="javascript:void(0)" onclick="materielOutStockDetail(\'' + row.materielId + '\')"><i></i>出库</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="javascript:void(0)" onclick="materielHandleDetail(\'' + row.materielId + '\')"><i></i>内部调整</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + matIntoFlag + '" href="javascript:void(0)" onclick="materielInToStockDetail(\'' + row.materielId + '\')"><i></i>入库</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+
+        /**
+         * 打开产品内部处理页面
+         */
+        function handleMat() {
+            createMenuItem("/erp/stockHandle/handleStock?handleType=1","查看物料库存内部调整列表")
+        }
+
+        /**
+         * 查看物料出库详情
+         * @param id
+         */
+        function materielOutStockDetail(materielId) {
+            var url = "/erp/materielOutStockDetails/outStockDetailByMaterielId/" + materielId;
+            // $.modal.open("查看物料出库详情",url,900,500)
+            createMenuItem(url,"查看物料出库详情")
+        }
+
+        /**
+         * 查看物料内部调整详情
+         * @param id
+         */
+        function materielHandleDetail(materielId) {
+            var url = "/erp/stockHandleDetails/stockHandleDetails?handleType=1&attrId=" + materielId;
+            $.modal.open("查看物料出库详情",url,1000,500)
+        }
+
+        /**
+         * 物料入库详情查看
+         * @param materielId 物料id
+         */
+        function materielInToStockDetail(materielId) {
+			var url = "/erp/materielIntoStockDetails/inToStockDetailByMaterielId/" + materielId;
+            $.modal.open("物料入库明细",url,1000,500);
+        }
+
+        /**
+         * 跳转物料内部库存管理页面
+         * @param id 半成品id
+         */
+        function handleMatStock(materielId) {
+            var url = '/erp/stockHandle/add?handleType=1&attrId='+ materielId;
+            createMenuItem(url,"新增库存管理");
+        }
+
+    </script>
+</body>
+</html>

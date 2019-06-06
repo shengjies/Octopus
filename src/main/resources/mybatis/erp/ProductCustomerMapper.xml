@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productCustomer.mapper.ProductCustomerMapper">
+    
+    <resultMap type="ProductCustomer" id="ProductCustomerResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="customerCode"    column="customer_code"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="customerPrice"    column="customer_price"    />
+    </resultMap>
+	
+	<sql id="selectProductCustomerVo">
+        select id, product_id, customer_code, customer_id, create_id, create_time,customer_price from tab_product_customer
+    </sql>
+	
+    <select id="selectProductCustomerList" parameterType="ProductCustomer" resultMap="ProductCustomerResult">
+        <include refid="selectProductCustomerVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="productId != null "> and product_id = #{productId}</if>
+             <if test="customerCode != null  and customerCode != '' "> and customer_code = #{customerCode}</if>
+             <if test="customerId != null "> and customer_id = #{customerId}</if>
+             <if test="createId != null "> and create_id = #{createId}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="customerPrice != null "> and customer_price = #{customerPrice}</if>
+         </where>
+    </select>
+    
+    <select id="selectProductCustomerById" parameterType="Integer" resultMap="ProductCustomerResult">
+        <include refid="selectProductCustomerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductCustomer" parameterType="ProductCustomer">
+        insert into tab_product_customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="productId != null  ">product_id,</if>
+			<if test="customerCode != null  and customerCode != ''  ">customer_code,</if>
+			<if test="customerId != null  ">customer_id,</if>
+			<if test="createId != null  ">create_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="customerPrice != null  ">customer_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="productId != null  ">#{productId},</if>
+			<if test="customerCode != null  and customerCode != ''  ">#{customerCode},</if>
+			<if test="customerId != null  ">#{customerId},</if>
+			<if test="createId != null  ">#{createId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="customerPrice != null  ">#{customerPrice},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductCustomer" parameterType="ProductCustomer">
+        update tab_product_customer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code = #{customerCode},</if>
+            <if test="customerId != null  ">customer_id = #{customerId},</if>
+            <if test="createId != null  ">create_id = #{createId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="customerPrice != null  ">customer_price = #{customerPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteProductCustomerById" parameterType="Integer">
+        delete from tab_product_customer where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductCustomerByIds" parameterType="String">
+        delete from tab_product_customer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--校验对应客户的产品编码唯一性-->
+    <select id="checkCustomerCodeUnique" resultType="int">
+        SELECT count(1) FROM tab_product_customer where customer_id = #{customerId} and customer_code = #{customerCode};
+    </select>
+
+    <!--校验产品是否已经关联过该客户-->
+    <select id="checkProductUnique" resultType="int">
+        SELECT count(1) FROM tab_product_customer where product_id = #{productId} and customer_id = #{customerId};
+    </select>
+
+    <!--通过产品id查询产品客户关联信息-->
+    <select id="selectProductCustomerByProIdOrCusId"  parameterType="Integer" resultMap="ProductCustomerResult">
+        <include refid="selectProductCustomerVo"/>
+        where 1=1
+        <if test="productId != null"> and product_id = #{productId}</if>
+        <if test="customerId != null"> and customer_id = #{customerId}</if>
+    </select>
+
+    <select id="findCustomerCode" resultMap="ProductCustomerResult">
+        <include refid="selectProductCustomerVo"/>
+         where product_id = #{pid} and customer_id = #{cid} limit 1;
+    </select>
+</mapper>

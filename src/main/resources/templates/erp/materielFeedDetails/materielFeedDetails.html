@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 select-table table-striped">
+			<input type="hidden" name="partId" id="partId" th:value="${partId}">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('erp:lineIntoStockDetails:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('erp:lineIntoStockDetails:remove')}]];
+    var prefix = ctx + "erp/materielFeedDetails";
+    var partId = $("#partId").val();
+    $(function() {
+        var options = {
+            // url: prefix + "/list",
+            url: prefix + "/listByMatId?feedType=2&feedDetailId="+partId,
+            modalName: "生产发料",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field : 'id',
+                    title : '产线入库明细主键ID',
+                    visible: false
+                },
+                {
+                    field : 'feedLine',
+                    title : '产线',
+                },
+                {
+                    field : 'lineReceive',
+                    title : '收料人',
+                },
+                {
+                    field : 'feedDetailCode',
+                    title : '半成品编码',
+                    sortable: true
+                },
+                {
+                    field : 'feedDetailName',
+                    title : '半成品名称',
+                    sortable: true
+                },
+                {
+                    field : 'outNumber',
+                    title : '出库数量',
+                    sortable: true
+                },
+                {
+                    field : 'feedCode',
+                    title : '出库编码',
+                    sortable: true
+                },
+                {
+                    field : 'outName',
+                    title : '出库姓名',
+                },
+                {
+                    field : 'createTime',
+                    title : '创建时间',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

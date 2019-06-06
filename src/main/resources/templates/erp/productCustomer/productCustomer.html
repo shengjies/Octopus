@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="addForm">
+                <input type="hidden" id="productId" name="productId" th:value="${productId}"/>
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            选择客户：
+                            <select id="customerId" name="customerId" style="width: 140px"
+                                    th:with="customerList = ${@customer.selectCustomerAllByCompanyId(#httpServletRequest.getCookies())}">
+                                <option value="">请选择</option>
+                                <option th:each="customer : ${customerList}" th:text="${customer.customerName}"
+                                        th:value="${customer.id}">
+                                </option>
+                            </select>
+                        </li>
+                        <li>
+                            客户产品编码：<input type="text" name="customerCode" id="customerCode"/>
+                        </li>
+                        <li>
+                            客户产品价格：<input type="number" name="customerPrice" id="customerPrice" style="width: 200px"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="addConnectCustomer()"><i></i>&nbsp;添加</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('erp:productCustomer:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('erp:productCustomer:remove')}]];
+    var prefix = ctx + "erp/productCustomer";
+    var productId = $("#productId").val();
+    $(function () {
+        var options = {
+            url: prefix + "/list?productId=" + productId,
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "产品客户关联",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'id',
+                    title: '主键，自增长',
+                    visible: false
+                },
+                {
+                    field: 'productList.productCode',
+                    title: '产品编码',
+                },
+                {
+                    field: 'customer.customerName',
+                    title: '客户名称'
+                },
+                {
+                    field: 'customerCode',
+                    title: '客户产品编码',
+                },
+                {
+                    field: 'customerPrice',
+                    title: '客户产品价格',
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    /**
+     * 添加客户产品关联信息
+     */
+    function addConnectCustomer() {
+        var validate = false;
+        var customerId = $("#customerId").val();
+        if (customerId != "") {
+            validate = true;
+        }
+        var customerPrice = $("#customerPrice").val();
+        if (!customerPrice) {
+            $.modal.alertWarning("请输入客户产品价格")
+            return;
+        }
+        if (validate) {
+            $.ajax({
+                type: 'POST',
+                url: prefix + "/add",
+                dataType: 'json',
+                data: $('#addForm').serialize(),
+                async: false,  //同步请求，
+                success: function (result) {
+                    if (result.code == web_status.SUCCESS) {
+                        layer.alert("添加成功");
+                        $.table.search() // 刷新数据
+                    } else {
+                        layer.alert(result.msg);
+                        $.table.search() // 刷新数据
+                    }
+                }
+            });
+        } else {
+            layer.alert("客户不能为空")
+        }
+    }
+
+    /**
+     * 修改客户产品关联
+     * @param id
+     */
+    function edit(id) {
+        var url = prefix+"/edit/{id}";
+        if ($.common.isNotEmpty(id)) {
+            url = $.table._option.updateUrl.replace("{id}", id);
+        } else {
+            var id = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+            if (id.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            url = $.table._option.updateUrl.replace("{id}", id);
+        }
+        $.modal.open("修改客户产品编码",url,350,300);
+    }
+
+    function submitHandler() {
+        $.modal.close();
+        window.parent.$.table.refresh();
+    }
+</script>
+</body>
+</html>

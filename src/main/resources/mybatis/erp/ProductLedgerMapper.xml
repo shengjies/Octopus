@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productLedger.mapper.ProductLedgerMapper">
+    
+    <resultMap type="ProductLedger" id="ProductLedgerResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerCompanyName"    column="customer_company_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="manEmail"    column="man_email"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="ledgerStatus"    column="ledger_status"    />
+        <result property="ledgerTime"    column="ledger_time"    />
+        <result property="ledgerPeople"    column="ledger_people"    />
+        <result property="voidTime"    column="void_time"    />
+        <result property="voidPeople"    column="void_people"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="beginTime"    column="b_time"    />
+        <result property="endTime"    column="e_time"    />
+    </resultMap>
+	
+	<sql id="selectProductLedgerVo">
+        select id, company_id, customer_id, customer_company_name, customer_name, phone, man_email, payment_method,
+        ledger_status, ledger_time, ledger_people, void_time, void_people, create_time ,remark,b_time,e_time from tab_product_ledger
+    </sql>
+	
+    <select id="selectProductLedgerList" parameterType="ProductLedger" resultMap="ProductLedgerResult">
+        <include refid="selectProductLedgerVo"/>
+        <where>  
+            company_id = #{companyId}
+             <if test="customerId != null and customerId > 0 "> and customer_id = #{customerId}</if>
+             <if test="ledgerStatus != null and  ledgerStatus > 0"> and ledger_status = #{ledgerStatus}</if>
+              <if test="beginTime != null">
+                  AND date_format(ledger_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+              </if>
+            <if test="endTime != null">
+                AND date_format(ledger_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+             <if test="ledgerPeople != null  and ledgerPeople != '' and ledgerPeople != '-1'"> and ledger_people = #{ledgerPeople}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectProductLedgerById" parameterType="Integer" resultMap="ProductLedgerResult">
+        <include refid="selectProductLedgerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductLedger" parameterType="ProductLedger" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_product_ledger
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="customerId != null  ">customer_id,</if>
+			<if test="customerCompanyName != null  and customerCompanyName != ''  ">customer_company_name,</if>
+			<if test="customerName != null  and customerName != ''  ">customer_name,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="manEmail != null  and manEmail != ''  ">man_email,</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">payment_method,</if>
+			<if test="ledgerStatus != null  ">ledger_status,</if>
+			<if test="ledgerTime != null  ">ledger_time,</if>
+			<if test="ledgerPeople != null  and ledgerPeople != ''  ">ledger_people,</if>
+			<if test="voidTime != null  ">void_time,</if>
+			<if test="voidPeople != null  and voidPeople != ''  ">void_people,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="remark != null  ">remark,</if>
+			<if test="beginTime != null  ">b_time,</if>
+			<if test="endTime != null  ">e_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="customerId != null  ">#{customerId},</if>
+			<if test="customerCompanyName != null  and customerCompanyName != ''  ">#{customerCompanyName},</if>
+			<if test="customerName != null  and customerName != ''  ">#{customerName},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="manEmail != null  and manEmail != ''  ">#{manEmail},</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">#{paymentMethod},</if>
+			<if test="ledgerStatus != null  ">#{ledgerStatus},</if>
+			<if test="ledgerTime != null  ">#{ledgerTime},</if>
+			<if test="ledgerPeople != null  and ledgerPeople != ''  ">#{ledgerPeople},</if>
+			<if test="voidTime != null  ">#{voidTime},</if>
+			<if test="voidPeople != null  and voidPeople != ''  ">#{voidPeople},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="remark != null  ">#{remark},</if>
+			<if test="beginTime != null  ">#{beginTime},</if>
+			<if test="endTime != null  ">#{endTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductLedger" parameterType="ProductLedger">
+        update tab_product_ledger
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="customerId != null  ">customer_id = #{customerId},</if>
+            <if test="customerCompanyName != null  and customerCompanyName != ''  ">customer_company_name = #{customerCompanyName},</if>
+            <if test="customerName != null  and customerName != ''  ">customer_name = #{customerName},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="manEmail != null  and manEmail != ''  ">man_email = #{manEmail},</if>
+            <if test="paymentMethod != null  and paymentMethod != ''  ">payment_method = #{paymentMethod},</if>
+            <if test="ledgerStatus != null  ">ledger_status = #{ledgerStatus},</if>
+            <if test="ledgerTime != null  ">ledger_time = #{ledgerTime},</if>
+            <if test="ledgerPeople != null  and ledgerPeople != ''  ">ledger_people = #{ledgerPeople},</if>
+            <if test="voidTime != null  ">void_time = #{voidTime},</if>
+            <if test="voidPeople != null  and voidPeople != ''  ">void_people = #{voidPeople},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteProductLedgerById" parameterType="Integer">
+        delete from tab_product_ledger where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductLedgerByIds" parameterType="String">
+        delete from tab_product_ledger where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

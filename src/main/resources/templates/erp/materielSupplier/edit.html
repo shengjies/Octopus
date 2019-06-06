@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-materielSupplier-edit" th:object="${materielSupplier}">
+		<input id="id" name="id" th:field="*{id}"  type="hidden">
+		<input id="supplierId" name="supplierId" th:field="*{supplierId}" type="hidden">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">供应商物料编码：</label>
+			<div class="col-sm-5">
+				<input id="supplierCode" name="supplierCode" th:field="*{supplierCode}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">供应商物料价格：</label>
+			<div class="col-sm-5">
+				<input id="supplierPrice" name="supplierPrice" th:field="*{supplierPrice}" class="form-control" type="number">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "erp/materielSupplier";
+    $("#form-materielSupplier-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-materielSupplier-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.production.workExceptionType.mapper.WorkExceptionTypeMapper">
+    
+    <resultMap type="WorkExceptionType" id="WorkExceptionTypeResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="defId"    column="def_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectWorkExceptionTypeVo">
+        select id, company_id, type_name, def_id, create_time from dev_work_exception_type
+    </sql>
+	
+    <select id="selectWorkExceptionTypeList" parameterType="WorkExceptionType" resultMap="WorkExceptionTypeResult">
+        <include refid="selectWorkExceptionTypeVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="typeName != null  and typeName != '' "> and type_name = #{typeName}</if>
+             <if test="defId != null "> and def_id = #{defId}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectWorkExceptionTypeById" parameterType="Integer" resultMap="WorkExceptionTypeResult">
+        <include refid="selectWorkExceptionTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWorkExceptionType" parameterType="WorkExceptionType" useGeneratedKeys="true" keyProperty="id">
+        insert into dev_work_exception_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="typeName != null  and typeName != ''  ">type_name,</if>
+			<if test="defId != null  ">def_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="typeName != null  and typeName != ''  ">#{typeName},</if>
+			<if test="defId != null  ">#{defId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWorkExceptionType" parameterType="WorkExceptionType">
+        update dev_work_exception_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="typeName != null  and typeName != ''  ">type_name = #{typeName},</if>
+            <if test="defId != null  ">def_id = #{defId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteWorkExceptionTypeById" parameterType="Integer">
+        delete from dev_work_exception_type where id = #{id}
+    </delete>
+
+	<!--删除异常类型，更新异常的删除状态-->
+    <delete id="deleteWorkExceptionTypeByIds" parameterType="String">
+        update dev_work_exception_type set def_id = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询对应公司的所有异常信息-->
+    <select id="findExceTypeAll" resultType="com.ruoyi.project.production.workExceptionType.domain.WorkExceptionType">
+        SELECT id as Id,type_name as typeName FROM dev_work_exception_type where company_id = #{companyId};
+    </select>
+
+    <!--查询对应公司对应工单的异常信息-->
+    <select id="selectCompanyWork" resultMap="WorkExceptionTypeResult">
+         SELECT b.* FROM dev_work_exception_list as a,dev_work_exception_type as b where a.exce_type = b.id and a.company_id = #{company_id} and a.work_id = #{work_id};
+    </select>
+
+    <!--根据公司id和异常类型名称查询对应的异常类型信息-->
+    <select id="selectByCompanyAndTypeName" resultMap="WorkExceptionTypeResult">
+        SELECT * FROM dev_work_exception_type where company_id = #{company_id} and type_name = #{type_name} limit 1;
+    </select>
+    
+</mapper>

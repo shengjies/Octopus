@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.productOutStockDetails.mapper.ProductOutStockDetailsMapper">
+    
+    <resultMap type="ProductOutStockDetails" id="ProductOutStockDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="productName"    column="product_name"    />
+        <result property="customerCode"    column="customer_code"    />
+        <result property="outNumber"    column="out_number"    />
+        <result property="outId"    column="out_id"    />
+        <result property="outCode"    column="out_code"    />
+        <result property="orderCode"    column="order_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="price"    column="price"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+	
+	<sql id="selectProductOutStockDetailsVo">
+        select id, product_id, product_code, product_model, product_name, customer_code, out_number, out_id, out_code, order_code, create_time,payment_status,total_price,price,del_flag from tab_product_out_stock_details
+    </sql>
+	
+    <select id="selectProductOutStockDetailsList" parameterType="ProductOutStockDetails" resultMap="ProductOutStockDetailsResult">
+        <include refid="selectProductOutStockDetailsVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+             <if test="productId != null "> and product_id = #{productId}</if>
+             <if test="productCode != null  and productCode != '' "> and product_code = #{productCode}</if>
+             <if test="productModel != null  and productModel != '' "> and product_model = #{productModel}</if>
+             <if test="productName != null  and productName != '' "> and product_name = #{productName}</if>
+             <if test="customerCode != null  and customerCode != '' "> and customer_code = #{customerCode}</if>
+             <if test="outNumber != null "> and out_number = #{outNumber}</if>
+             <if test="outId != null "> and out_id = #{outId}</if>
+             <if test="outCode != null  and outCode != '' "> and out_code = #{outCode}</if>
+             <if test="orderCode != null  and orderCode != '' "> and order_code = #{orderCode}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="paymentStatus != null "> and payment_status = #{paymentStatus}</if>
+            <if test="totalPrice != null "> and total_price = #{totalPrice}</if>
+            <if test="price != null "> and price = #{price}</if>
+         </where>
+    </select>
+    
+    <select id="selectProductOutStockDetailsById" parameterType="Integer" resultMap="ProductOutStockDetailsResult">
+        <include refid="selectProductOutStockDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductOutStockDetails" parameterType="ProductOutStockDetails" >
+        insert into tab_product_out_stock_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null  ">product_id,</if>
+			<if test="productCode != null  and productCode != ''  ">product_code,</if>
+			<if test="productModel != null  and productModel != ''  ">product_model,</if>
+			<if test="productName != null  and productName != ''  ">product_name,</if>
+			<if test="customerCode != null  and customerCode != ''  ">customer_code,</if>
+			<if test="outNumber != null  ">out_number,</if>
+			<if test="outId != null  ">out_id,</if>
+			<if test="outCode != null  and outCode != ''  ">out_code,</if>
+			<if test="orderCode != null  and orderCode != ''  ">order_code,</if>
+			<if test="createTime != null  ">create_time,</if>
+            <if test="paymentStatus != null  ">payment_status,</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price,</if>
+            <if test="price != null  and price != ''  ">price,</if>
+            <if test="delFlag != null  ">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null  ">#{productId},</if>
+			<if test="productCode != null  and productCode != ''  ">#{productCode},</if>
+			<if test="productModel != null  and productModel != ''  ">#{productModel},</if>
+			<if test="productName != null  and productName != ''  ">#{productName},</if>
+			<if test="customerCode != null  and customerCode != ''  ">#{customerCode},</if>
+			<if test="outNumber != null  ">#{outNumber},</if>
+			<if test="outId != null  ">#{outId},</if>
+			<if test="outCode != null  and outCode != ''  ">#{outCode},</if>
+			<if test="orderCode != null  and orderCode != ''  ">#{orderCode},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+            <if test="paymentStatus != null  ">#{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">#{totalPrice},</if>
+            <if test="price != null  and price != ''  ">#{price},</if>
+            <if test="delFlag != null  ">#{delFlag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProductOutStockDetails" parameterType="ProductOutStockDetails">
+        update tab_product_out_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">product_code = #{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code = #{customerCode},</if>
+            <if test="outNumber != null  ">out_number = #{outNumber},</if>
+            <if test="outId != null  ">out_id = #{outId},</if>
+            <if test="outCode != null  and outCode != ''  ">out_code = #{outCode},</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code = #{orderCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  ">payment_status = #{paymentStatus},</if>
+            <if test="totalPrice != null  and totalPrice != ''  ">total_price = #{totalPrice},</if>
+            <if test="price != null  and price != ''  ">price = #{price},</if>
+            <if test="delFlag != null  ">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--作废产品出库明细-->
+	<delete id="deleteProductOutStockDetailsById" parameterType="Integer">
+        update tab_product_out_stock_details set del_flag = '1' where id = #{id}
+    </delete>
+	
+    <delete id="deleteProductOutStockDetailsByIds" parameterType="String">
+        delete from tab_product_out_stock_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--通过产品出库单号查询产品出库详情-->
+    <select id="selectProductOutStockDetailsByOutCode" parameterType="String" resultMap="ProductOutStockDetailsResult">
+        <include refid="selectProductOutStockDetailsVo"/>
+        where out_code = #{outCode}
+    </select>
+
+    <!--通过产品出库单修改产品出库清单信息-->
+    <update id="updateProductOutStockDetailsByCode" parameterType="ProductOutStockDetails">
+        update tab_product_out_stock_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null  ">product_id = #{productId},</if>
+            <if test="productCode != null  and productCode != ''  ">product_code = #{productCode},</if>
+            <if test="productModel != null  and productModel != ''  ">product_model = #{productModel},</if>
+            <if test="productName != null  and productName != ''  ">product_name = #{productName},</if>
+            <if test="customerCode != null  and customerCode != ''  ">customer_code = #{customerCode},</if>
+            <if test="outNumber != null  ">out_number = #{outNumber},</if>
+            <if test="outId != null  ">out_id = #{outId},</if>
+            <if test="orderCode != null  and orderCode != ''  ">order_code = #{orderCode},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="paymentStatus != null  ">payment_status = #{paymentStatus},</if>
+        </trim>
+        where out_code = #{outCode}
+    </update>
+
+    <!--通过产品出库单id删除产品出库清单明细-->
+    <delete id="deleteProductOutStockDetailsByOutId" parameterType="Integer">
+         delete from tab_product_out_stock_details where out_id = #{outId}
+    </delete>
+
+    <!-- 根据公司id和客户id查询对应时间段内容的出货记录-->
+    <select id="selectOutStockByCIdAndCompanyId" resultMap="ProductOutStockDetailsResult">
+        SELECT a.* FROM tab_product_out_stock_details as a,tab_product_out_stock as b
+        where a.out_id = b.id and b.company_id = #{company_id}
+         and b.customer_id = #{cid} and a.del_flag = '0' and b.payment_status = 0
+        AND date_format(b.create_time,'%y%m%d') &gt;= date_format(#{bTime},'%y%m%d')
+         AND date_format(b.create_time,'%y%m%d') &lt;= date_format(#{eTime},'%y%m%d')
+    </select>
+</mapper>

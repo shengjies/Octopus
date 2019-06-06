@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 select-table">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="ibox float-e-margins">
+							<div class="ibox-title">
+								<h5>基础数据</h5>
+							</div>
+							<div class="ibox-content">
+								<form id="form-contract-add" >
+									<div class="form-group" >
+										<input type="hidden" id="contract_id" th:value="${contract != null ? contract.id:0}" name="id">
+										<input type="hidden" id="contract_cid" th:value="${contract != null ? contract.id:0}" name="cId">
+									</div>
+									<div class="form-group">
+										<label class="col-sm-12 control-label"  style="margin-top: 10px;">联系人：</label>
+										<div class="col-sm-12">
+											<input id="liaisonMan" type="text" th:value="${contract != null ?contract.liaisonMan:''}" class="form-control" name="liaisonMan"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-12 control-label" style="margin-top: 10px;">联系电话：</label>
+										<div class="col-sm-12">
+											<input  id="phone" name="phone" th:value="${contract != null ?contract.phone:''}" type="tel"  class="form-control">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-12 control-label" style="margin-top: 10px;">电子邮箱：</label>
+										<div class="col-sm-12">
+											<input type="text" id="manEmail" th:value="${contract != null ? contract.manEmail:''}" class="form-control" name="manEmail"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-12 control-label" style="margin-top: 10px;">授权人：</label>
+										<div class="col-sm-12">
+											<input type="text" id="authorizedPerson" th:value="${contract != null ? contract.authorizedPerson:''}" class="form-control" name="authorizedPerson"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-12 control-label" style="margin-top: 10px;">备注信息：</label>
+										<div class="col-sm-12">
+											<textarea id="remark" class="form-control" th:utext="${contract != null ? contract.remark:''}" rows="4" type="text" name="remark"></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<div style="width: 100%;text-align: center;">
+											<a class="btn btn-primary btn-rounded btn-sm" style="margin-top: 15px" onclick="submitHandler()"><i class="fa fa-save"></i>&nbsp;保存基础数据</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="ibox float-e-margins">
+							<div class="ibox-title">
+								<span style="font-size: 14px;font-weight: 600;margin-right: 20px;">合同内容</span>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-success btn-rounded btn-sm" onclick="addContract()" shiro:hasPermission="erp:contract:add" ><i class="fa fa-plus"></i>&nbsp;添加合同内容</a>
+
+							</div>
+							<div class="ibox-content">
+								<table id="bootstrap-table" ></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+	 <script type="text/javascript">
+		 function getEditFlag(){
+		 	return editFlag;
+		 }
+		 $(function () {
+			 jQuery.validator.addMethod("isMobile", function(value, element) {
+				 var length = value.length;
+				 var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
+				 return this.optional(element) || (length == 11 && mobile.test(value));
+			 }, "请正确填写手机号码");
+		 })
+		 $("#form-contract-add").validate({
+			 rules:{
+				 liaisonMan:{
+					 required:true,
+				 },
+				 phone:{
+					 required:true,
+					 isMobile:true
+				 },
+				 authorizedPerson:{
+					 required:true,
+				 },
+				 manEmail:{
+					 email:true
+				 }
+
+			 },
+			 messages:{
+				 liaisonMan:{
+					 required:"请填写联系人"
+				 },
+				 phone:{
+					 required:"请填写联系人电话",
+					 isMobile:"请输入正确的手机号码"
+				 },
+				 authorizedPerson:{
+					 required:"请填写授权人",
+				 },
+				 manEmail:{
+					 email:"请输入正确的email",
+				 }
+			 }
+		 });
+
+		 /**
+		  * 编辑基本数据
+		  */
+		 function submitHandler() {
+			 if ($.validate.form()) {
+			 	var contract_id = $("#contract_id").val();
+			 	var url ="/erp/contract/add";
+			 	if(contract_id > 0 ){
+					url = "/erp/contract/edit";
+				}
+				 var config = {
+					 url:url,
+					 type: "post",
+					 dataType: "json",
+					 data: $('#form-contract-add').serialize(),
+					 beforeSend: function () {
+						 $.modal.loading("正在处理中，请稍后...");
+						 $.modal.disable();
+					 },
+					 success: function (result) {
+						 if (result.code == web_status.SUCCESS) {
+							 $.modal.msg("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+							 $("#contract_id").val(result.data.id);
+							 $("#contract_cid").val(result.data.id);
+                             $.table.refresh();
+						 } else {
+							 $.modal.alertError(result.msg);
+						 }
+						 $.modal.closeLoading();
+					 }
+				 };
+				 $.ajax(config)
+			 }
+		 }
+
+		 /**
+		  * 添加合同
+		  */
+		 function addContract() {
+			 var contract_id = $("#contract_id").val();
+			 if(contract_id<=0){
+			 	$.modal.alertWarning("请先保存合同基本数据");
+			 	return;
+			 }
+			 $.modal.open("添加合同内容",prefix+"/add",800,400)
+		 }
+
+		 /**
+		  * 修改合同内容
+		  * @param id
+		  */
+		 function editContract(id) {
+			 $.modal.open("修改合同内容",prefix+"/edit/"+id,800,400)
+		 }
+	 </script>
+	 <script th:inline="javascript">
+		 var editFlag = [[${@permission.hasPermi('erp:contractContent:edit')}]];
+		 var removeFlag = [[${@permission.hasPermi('erp:contractContent:remove')}]];
+		 var prefix = ctx + "erp/contractContent";
+		 var data={
+			 cId:$("#contract_id").val(),
+			 pageSize:30
+		 }
+		 $(function() {
+			 var options = {
+				 url: prefix + "/list",
+				 createUrl: prefix + "/add",
+				 updateUrl: prefix + "/edit/{id}",
+				 removeUrl: prefix + "/remove",
+				 modalName: "合同内容",
+				 search: false,
+				 queryParams:data,
+				 sortName:'createTime',
+				 showExport: true,
+				 showSearch:false,
+				 showRefresh:false,
+				 showColumns:false,
+				 showToggle:false,
+				 showExport:false,
+				 columns: [
+					 {
+						 field : 'id',
+						 title : '',
+						 visible: false
+					 },
+					 {
+						 field : 'content',
+						 title : '合同内容',
+						 sortable: true
+					 },
+					 {
+						 field : 'corder',
+						 title : '显示顺序',
+						 sortable: true,
+						 width:80
+					 },
+					 {
+						 field : 'createTime',
+						 title : '创建时间',
+						 sortable: true,
+						 width:180
+					 },
+					 {
+						 title: '操作',
+						 align: 'center',
+						 width:140,
+						 formatter: function(value, row, index) {
+							 var actions = [];
+							 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="editContract(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+							 actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+							 return actions.join('');
+						 }
+					 }]
+			 };
+			 $.table.init(options);
+		 });
+	 </script>
+</body>
+</html>

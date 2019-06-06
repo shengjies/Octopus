@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								入库类型：
+								<select id="intoType" name="intoType" style="width: 100px">
+									<option value="">请选择</option>
+									<option value="0">成品入库</option>
+									<option value="1">半成品入库</option>
+								</select>
+							</li>
+
+							<li>
+								产线名称：
+								<select style="width: 200px" name="lineName" id="lineId"
+										th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId()}">
+									<option value="">全部</option>
+									<option th:each="line : ${productionLine}" th:text="${line.lineName}"
+											th:value="${line.lineName}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="add()" shiro:hasPermission="erp:lineIntoStock:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var list = [[${@permission.hasPermi('erp:lineIntoStock:list')}]];
+        var viewFileFlag = [[${@permission.hasPermi('erp:fileSourceInfo:list')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:lineIntoStock:remove')}]];
+        var prefix = ctx + "erp/lineIntoStock";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "产线入库",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '产线入库主键ID',
+					visible: false
+				},
+				{
+					field : 'intoCode',
+					title : '入库编码',
+					sortable: true
+				},
+				{
+					field : 'lineName', 
+					title : '产线名称',
+					sortable: true
+				},
+				{
+					field : 'actualTime', 
+					title : '实际时间',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '备注信息',
+					sortable: true
+				},
+				{
+					field : 'createName', 
+					title : '创建者名称',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-primary btn-xs ' + list + '" href="#" onclick="details(\'' + row.id + '\')"><i class="fa fa-eye"></i>详情</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + viewFileFlag + '" href="#" onclick="viewFile(\'' + row.id + '\')"><i class="fa fa-arrow-up"></i>文件</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>作废</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+        /**
+         * 跳转添加生产入库
+         */
+        function add() {
+            createMenuItem(prefix + "/add", "生产入库")
+        }
+
+        /** 查看生产入库明细 */
+        function details(id) {
+            var url = prefix+"/details/" + id;
+            $.modal.open("查看生产入库明细",url,1000,580);
+        }
+
+        /**
+		 * 作废入库单
+         * @param id
+         */
+        function remove(id) {
+            $.modal.confirm("确认作废该生产入库单吗？", function () {
+                $.ajax({
+                    type: 'POST',
+                    url: prefix + '/nullify',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json', // 要什么类型的数据
+                    async: false,  //同步请求，
+                    cache: false, // 不使用缓存
+                    success: function (result) {
+                        $.operate.ajaxSuccess(result);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 查看文件
+         */
+        function viewFile(id) {
+            $.modal.open("文件查看","/erp/fileSourceInfo?save_type=12&save_id="+id,900)
+        }
+    </script>
+</body>
+</html>

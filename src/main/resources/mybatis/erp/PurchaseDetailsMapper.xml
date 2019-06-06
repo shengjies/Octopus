@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.purchaseDetails.mapper.PurchaseDetailsMapper">
+    
+    <resultMap type="PurchaseDetails" id="PurchaseDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="purchaseId"    column="purchase_id"    />
+        <result property="materielCode"    column="materiel_code"    />
+        <result property="materielName"    column="materiel_name"    />
+        <result property="materielModel"    column="materiel_model"    />
+        <result property="price"    column="price"    />
+        <result property="supplierCode"    column="supplier_code"    />
+        <result property="number"    column="number"    />
+        <result property="deliverNum"    column="deliver_num"    />
+        <result property="prereceiveNumber"    column="prereceive_number"    />
+        <result property="totalPrict"    column="total_prict"    />
+        <result property="remark"    column="remark"    />
+        <result property="moq"    column="moq"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="purchaseCode"    column="purchase_code"    />
+    </resultMap>
+	
+	<sql id="selectPurchaseDetailsVo">
+        select id, purchase_id, materiel_code, materiel_name, materiel_model, price, supplier_code, number, deliver_num,prereceive_number,total_prict, remark,moq,supplier_id,company_id,purchase_code from tab_purchase_details
+    </sql>
+	
+    <select id="selectPurchaseDetailsList" parameterType="PurchaseDetails" resultMap="PurchaseDetailsResult">
+        <include refid="selectPurchaseDetailsVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="purchaseId != null "> and purchase_id = #{purchaseId}</if>
+             <if test="materielCode != null  and materielCode != '' "> and materiel_code = #{materielCode}</if>
+             <if test="materielName != null  and materielName != '' "> and materiel_name = #{materielName}</if>
+             <if test="materielModel != null  and materielModel != '' "> and materiel_model = #{materielModel}</if>
+             <if test="price != null "> and price = #{price}</if>
+             <if test="supplierCode != null  and supplierCode != '' "> and supplier_code = #{supplierCode}</if>
+             <if test="number != null "> and number = #{number}</if>
+             <if test="deliverNum != null "> and deliver_num = #{deliverNum}</if>
+             <if test="totalPrict != null "> and total_prict = #{totalPrict}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="purchaseCode != null  and purchaseCode != '' "> and purchase_code = #{purchaseCode}</if>
+         </where>
+    </select>
+    
+    <select id="selectPurchaseDetailsById" parameterType="Integer" resultMap="PurchaseDetailsResult">
+        <include refid="selectPurchaseDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPurchaseDetails" parameterType="PurchaseDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_purchase_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="purchaseId != null  ">purchase_id,</if>
+			<if test="materielCode != null  and materielCode != ''  ">materiel_code,</if>
+			<if test="materielName != null  and materielName != ''  ">materiel_name,</if>
+			<if test="materielModel != null  and materielModel != ''  ">materiel_model,</if>
+			<if test="price != null  ">price,</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">supplier_code,</if>
+			<if test="number != null  ">number,</if>
+			<if test="deliverNum != null  ">deliver_num,</if>
+            <if test="prereceiveNumber != null  ">prereceive_number,</if>
+			<if test="totalPrict != null  ">total_prict,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="moq != null  and moq != ''  ">moq,</if>
+            <if test="supplierId != null  and supplierId != ''  ">supplier_id,</if>
+            <if test="companyId != null  and companyId != ''  ">company_id,</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="purchaseId != null  ">#{purchaseId},</if>
+			<if test="materielCode != null  and materielCode != ''  ">#{materielCode},</if>
+			<if test="materielName != null  and materielName != ''  ">#{materielName},</if>
+			<if test="materielModel != null  and materielModel != ''  ">#{materielModel},</if>
+			<if test="price != null  ">#{price},</if>
+			<if test="supplierCode != null  and supplierCode != ''  ">#{supplierCode},</if>
+			<if test="number != null  ">#{number},</if>
+			<if test="deliverNum != null  ">#{deliverNum},</if>
+            <if test="prereceiveNumber != null  ">#{prereceiveNumber},</if>
+			<if test="totalPrict != null  ">#{totalPrict},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="moq != null  and moq != ''  ">#{moq},</if>
+            <if test="supplierId != null  and supplierId != ''  ">#{supplierId},</if>
+            <if test="companyId != null  and companyId != ''  ">#{companyId},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">#{purchaseCode},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePurchaseDetails" parameterType="PurchaseDetails">
+        update tab_purchase_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchaseId != null  ">purchase_id = #{purchaseId},</if>
+            <if test="materielCode != null  and materielCode != ''  ">materiel_code = #{materielCode},</if>
+            <if test="materielName != null  and materielName != ''  ">materiel_name = #{materielName},</if>
+            <if test="materielModel != null  and materielModel != ''  ">materiel_model = #{materielModel},</if>
+            <if test="price != null  ">price = #{price},</if>
+            <if test="supplierCode != null  and supplierCode != ''  ">supplier_code = #{supplierCode},</if>
+            <if test="number != null  ">number = #{number},</if>
+            <if test="deliverNum != null  ">deliver_num = #{deliverNum},</if>
+            <if test="prereceiveNumber != null  ">prereceive_number = #{prereceiveNumber},</if>
+            <if test="totalPrict != null  ">total_prict = #{totalPrict},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="moq != null  and moq != ''  ">moq = #{moq},</if>
+            <if test="supplierId != null  and supplierId != ''  ">supplier_id = #{supplierId},</if>
+            <if test="companyId != null  and companyId != ''  ">company_id = #{companyId},</if>
+            <if test="purchaseCode != null  and purchaseCode != ''  ">purchase_code = #{purchaseCode},</if>
+            <if test="moq != null  and moq != ''  ">remark = #{moq},</if>
+            <if test="sign >=0  ">sign = #{sign},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePurchaseDetailsById" parameterType="Integer">
+        delete from tab_purchase_details where id = #{id}
+    </delete>
+	
+    <delete id="deletePurchaseDetailsByIds" parameterType="String">
+        delete from tab_purchase_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询供应商对应物料的采购单明细信息-->
+    <select id="selectPurchaseDetailsListBySidAndMatCode" resultMap="PurchaseDetailsResult">
+        <include refid="selectPurchaseDetailsVo"/>
+        where company_id = #{companyId} and supplier_id = #{supplierId} and purchase_id = #{purchaseId} and materiel_code = #{materielCode}
+    </select>
+
+    <!--查询采购详情对象-->
+    <select id="selectPurchaseDetailsByCode" resultMap="PurchaseDetailsResult">
+        <include refid="selectPurchaseDetailsVo"/>
+        where 1 = 1
+        <if test="purchaseId != null "> and purchase_id = #{purchaseId}</if>
+        <if test="purchaseCode != null  and purchaseCode != '' "> and purchase_code = #{purchaseCode}</if>
+        <if test="supplierCode != null  and supplierCode != '' "> and supplier_code = #{supplierCode}</if>
+        <if test="materielCode != null  and materielCode != '' "> and materiel_code = #{materielCode}</if> limit 1;
+    </select>
+
+
+    <!--对详情进行标记-->
+    <update id="editPurchaseSign">
+        update tab_purchase_details set sign = #{sign} where purchase_id =#{pid}
+    </update>
+
+    <!--根据采购id和物料编码查询对应的详情-->
+    <select id="selectDetailByPidAndMCode" resultMap="PurchaseDetailsResult">
+       SELECT * FROM tab_purchase_details where purchase_id = #{pid} and materiel_code = #{mcode} limit 1;
+    </select>
+
+    <!--删除所以标记为1的采购详情信息-->
+    <delete id="deletePurchaseDetailsBySign">
+        delete from tab_purchase_details where purchase_id = #{pid} and sign = 1;
+    </delete>
+
+    <!--查询存在预收库存的采购单详情信息-->
+    <select id="selectDetailsHavePreByPurId" resultMap="PurchaseDetailsResult">
+        SELECT * FROM tab_purchase_details where company_id = #{companyId} and purchase_id = #{purchaseId} and prereceive_number > 0;
+    </select>
+</mapper>

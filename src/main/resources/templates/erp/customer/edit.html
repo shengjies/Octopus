@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-customer-edit" th:object="${customer}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">客户名称：</label>
+				<div class="col-sm-8">
+					<input id="customerName" name="customerName" th:field="*{customerName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">联系方式：</label>
+				<div class="col-sm-8">
+					<input id="contactInformation" name="contactInformation" th:field="*{contactInformation}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">邮箱：</label>
+				<div class="col-sm-8">
+					<input id="email" name="email" th:field="*{email}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">性别：</label>
+				<div class="col-sm-8">
+					<div class="radio-box">
+						<input type="radio" id="radio1" name="sex" value="1" th:checked="*{sex == 1 ? true : false}">
+						<label for="radio1">男</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="radio2" name="sex" value="0" th:checked="*{sex == 0 ? true : false}">
+						<label for="radio2">女</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">职位：</label>
+				<div class="col-sm-8">
+					<input id="position" name="position" th:field="*{position}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司名称：</label>
+				<div class="col-sm-8">
+					<input id="companyName" name="companyName" th:field="*{companyName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">纳税识别号：</label>
+				<div class="col-sm-8">
+					<input id="taxpayerNumber" name="taxpayerNumber" th:field="*{taxpayerNumber}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公司注册地址：</label>
+				<div class="col-sm-8">
+					<input id="companyAddress" name="companyAddress" th:field="*{companyAddress}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">客户收货地址：</label>
+				<div class="col-sm-8">
+					<input id="receiveAddress" name="receiveAddress" th:field="*{receiveAddress}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">开户银行：</label>
+				<div class="col-sm-8">
+					<input id="bankDeposit" name="bankDeposit" th:field="*{bankDeposit}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">开户账号：</label>
+				<div class="col-sm-8">
+					<input id="openingAccount" name="openingAccount" th:field="*{openingAccount}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">账期时间：</label>
+				<div class="col-sm-8">
+					<input id="paymentTime" name="paymentTime" th:field="*{paymentTime}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注信息：</label>
+				<div class="col-sm-8">
+					<textarea id="remark" name="remark" rows="4" th:field="*{remark}" class="form-control" type="text"></textarea>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "erp/customer";
+		$("#form-customer-edit").validate({
+            rules:{
+                customerName:{
+                    required:true,
+                },
+                contactInformation:{
+                    required:true,
+                },
+                email:{
+                    email:true,
+                },
+                companyName:{
+                    required:true,
+                },
+                taxpayerNumber:{
+                    required:true,
+                },
+                bankDeposit:{
+                    required:true,
+                },
+                openingAccount:{
+                    required:true,
+                },
+                receiveAddress:{
+                    required:true,
+                }
+            }
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-customer-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

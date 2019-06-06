@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.erp.materielLedger.mapper.MaterielLedgerMapper">
+    
+    <resultMap type="MaterielLedger" id="MaterielLedgerResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierCompanyName"    column="supplier_company_name"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="manEmail"    column="man_email"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="ledgerStatus"    column="ledger_status"    />
+        <result property="ledgerTime"    column="ledger_time"    />
+        <result property="ledgerPeople"    column="ledger_people"    />
+        <result property="voidTime"    column="void_time"    />
+        <result property="voidPeople"    column="void_people"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="bTime"    column="b_time"    />
+        <result property="eTime"    column="e_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectMaterielLedgerVo">
+        select id, company_id, supplier_id, supplier_company_name, supplier_name, phone, man_email, payment_method,
+        ledger_status, ledger_time, ledger_people, void_time, void_people, create_time, b_time, e_time ,remark from tab_materiel_ledger
+    </sql>
+	
+    <select id="selectMaterielLedgerList" parameterType="MaterielLedger" resultMap="MaterielLedgerResult">
+        <include refid="selectMaterielLedgerVo"/>
+        <where>  company_id = #{companyId}
+             <if test="supplierId != null and supplierId > 0"> and supplier_id = #{supplierId}</if>
+             <if test="ledgerStatus != null and ledgerStatus > 0 "> and ledger_status = #{ledgerStatus}</if>
+             <if test="ledgerPeople != null  and ledgerPeople != ''and ledgerPeople != '-1' "> and ledger_people = #{ledgerPeople}</if>
+            <if test="bTime != null">
+                AND date_format(ledger_time,'%y%m%d') &gt;= date_format(#{bTime},'%y%m%d')
+            </if>
+            <if test="eTime != null">
+                AND date_format(ledger_time,'%y%m%d') &lt;= date_format(#{eTime},'%y%m%d')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectMaterielLedgerById" parameterType="Integer" resultMap="MaterielLedgerResult">
+        <include refid="selectMaterielLedgerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMaterielLedger" parameterType="MaterielLedger" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_materiel_ledger
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="supplierId != null  ">supplier_id,</if>
+			<if test="supplierCompanyName != null  and supplierCompanyName != ''  ">supplier_company_name,</if>
+			<if test="supplierName != null  and supplierName != ''  ">supplier_name,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="manEmail != null  and manEmail != ''  ">man_email,</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">payment_method,</if>
+			<if test="ledgerStatus != null  ">ledger_status,</if>
+			<if test="ledgerTime != null  ">ledger_time,</if>
+			<if test="ledgerPeople != null  and ledgerPeople != ''  ">ledger_people,</if>
+			<if test="voidTime != null  ">void_time,</if>
+			<if test="voidPeople != null  and voidPeople != ''  ">void_people,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="bTime != null  ">b_time,</if>
+			<if test="eTime != null  ">e_time,</if>
+			<if test="remark != null  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="supplierId != null  ">#{supplierId},</if>
+			<if test="supplierCompanyName != null  and supplierCompanyName != ''  ">#{supplierCompanyName},</if>
+			<if test="supplierName != null  and supplierName != ''  ">#{supplierName},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="manEmail != null  and manEmail != ''  ">#{manEmail},</if>
+			<if test="paymentMethod != null  and paymentMethod != ''  ">#{paymentMethod},</if>
+			<if test="ledgerStatus != null  ">#{ledgerStatus},</if>
+			<if test="ledgerTime != null  ">#{ledgerTime},</if>
+			<if test="ledgerPeople != null  and ledgerPeople != ''  ">#{ledgerPeople},</if>
+			<if test="voidTime != null  ">#{voidTime},</if>
+			<if test="voidPeople != null  and voidPeople != ''  ">#{voidPeople},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="bTime != null  ">#{bTime},</if>
+			<if test="eTime != null  ">#{eTime},</if>
+			<if test="remark != null  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMaterielLedger" parameterType="MaterielLedger">
+        update tab_materiel_ledger
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="supplierId != null  ">supplier_id = #{supplierId},</if>
+            <if test="supplierCompanyName != null  and supplierCompanyName != ''  ">supplier_company_name = #{supplierCompanyName},</if>
+            <if test="supplierName != null  and supplierName != ''  ">supplier_name = #{supplierName},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="manEmail != null  and manEmail != ''  ">man_email = #{manEmail},</if>
+            <if test="paymentMethod != null  and paymentMethod != ''  ">payment_method = #{paymentMethod},</if>
+            <if test="ledgerStatus != null  ">ledger_status = #{ledgerStatus},</if>
+            <if test="ledgerTime != null  ">ledger_time = #{ledgerTime},</if>
+            <if test="ledgerPeople != null  and ledgerPeople != ''  ">ledger_people = #{ledgerPeople},</if>
+            <if test="voidTime != null  ">void_time = #{voidTime},</if>
+            <if test="voidPeople != null  and voidPeople != ''  ">void_people = #{voidPeople},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="bTime != null  ">b_time = #{bTime},</if>
+            <if test="eTime != null  ">e_time = #{eTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    
+</mapper>

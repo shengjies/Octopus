@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 select-table table-striped">
+				<input type="hidden" name="materielId" id="materielId" th:value="${materielId}">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('erp:materielStockHandleDetails:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('erp:materielStockHandleDetails:remove')}]];
+        var prefix = ctx + "erp/materielStockHandleDetails";
+        var materielId = $("#materielId").val();
+        $(function() {
+            var options = {
+                // url: prefix + "/list",
+                url: prefix + "/listByMatId?materielId=" + materielId,
+                modalName: "物料库存内部调整清单",
+                search: false,
+                showExport: false,
+                showSearch:false,
+                showRefresh:false,
+                showColumns:false,
+                showToggle:false,
+                columns: [
+				{
+					field : 'id', 
+					title : '物料库存内部调整清单主键ID',
+					visible: false
+				},
+				{
+					field : 'materielCode', 
+					title : '物料编码',
+					sortable: true
+				},
+				{
+					field : 'materielModel', 
+					title : '物料型号',
+					sortable: true
+				},
+				{
+					field : 'materielName', 
+					title : '物料名称',
+					sortable: true
+				},
+				{
+					title : '操作类型',
+                    formatter: function(value, row, index) {
+                        if (row.handleStatus == 0) {
+                            return '<span style="color: orange;font-weight: bold">不良品</span>' +
+                                '<span style="font-weight: bold;color: #1a2226">==></span>' +
+                                '<span style="font-weight: bold;color: green">良品</span>';
+                        } else if (row.handleStatus == 1) {
+                            return '<span style="color: orange;font-weight: bold">不良品</span>' +
+                                '<span style="font-weight: bold;color: #1a2226">==></span>' +
+                                '<span style="font-weight: bold;color: red">报废品</span>';
+                        } else if (row.handleStatus == 2) {
+                            return '<span style="color: green;font-weight: bold">良品</span>' +
+                                '<span style="font-weight: bold;color: #1a2226">==></span>' +
+                                '<span style="font-weight: bold;color: orange">不良品</span>';
+                        } else if (row.handleStatus == 3) {
+                            return '<span style="color: green;font-weight: bold">良品</span>' +
+                                '<span style="font-weight: bold;color: #1a2226">==></span>' +
+                                '<span style="font-weight: bold;color: red">报废品</span>';
+                        } else if (row.temporaryStatus == 0) {
+                            return '<span style="color:grey;font-weight: bold">临时仓</span>' +
+                                '<span style="font-weight: bold;color: #1a2226">==></span>' +
+                                '<span style="font-weight: bold;color: green">良品仓</span>';
+                        } else if (row.handleType == 2) {
+                            return '<span style="color:red;font-weight: bold">报废品清库</span>';
+                        }
+                    }
+				},
+				{
+					field : 'handleNumber', 
+					title : '操作数量',
+					sortable: true
+				},
+				{
+					field : 'handleName', 
+					title : '操作者名称',
+					sortable: true
+				},
+				{
+					field : 'handleTime', 
+					title : '操作时间',
+					sortable: true
+				}]
+            };
+            $.table.init(options);
+        });
+
+        function submitHandler() {
+            $.modal.close();
+            window.parent.$.table.refresh();
+        }
+    </script>
+</body>
+</html>
