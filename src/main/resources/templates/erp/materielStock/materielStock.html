@@ -12,21 +12,21 @@
 						<ul>
 							<li>
 								物料编码：
-								<select id="materielCode" name="materielCode" th:with="allMat=${@materiel.selectAllMatByComId()}">
+								<select id="materielCode" name="materielCode" th:with="allMat=${@materiel.selectAllMatByComId(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="mat:${allMat}" th:text="${mat.materielCode}" th:value="${mat.materielCode}"></option>
 								</select>
 							</li>
 							<li>
 								物料型号：
-								<select id="materielModel" name="materielModel" th:with="allMat=${@materiel.selectAllMatByComId()}">
+								<select id="materielModel" name="materielModel" th:with="allMat=${@materiel.selectAllMatByComId(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="mat:${allMat}" th:text="${mat.materielModel}" th:value="${mat.materielModel}"></option>
 								</select>
 							</li>
 							<li>
 								物料名称：
-								<select id="materielName" name="materielName" th:with="allMatName=${@materiel.selectAllMatNameByComId()}">
+								<select id="materielName" name="materielName" th:with="allMatName=${@materiel.selectAllMatNameByComId(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="mat:${allMatName}" th:text="${mat.materielName}" th:value="${mat.materielName}"></option>
 								</select>

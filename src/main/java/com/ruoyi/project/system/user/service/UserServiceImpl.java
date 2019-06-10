@@ -370,8 +370,10 @@ public class UserServiceImpl implements IUserService {
     public String selectUserPostGroup(Long userId) {
         List<Post> list = postMapper.selectPostsByUserId(userId);
         StringBuffer idsStr = new StringBuffer();
-        for (Post post : list) {
-            idsStr.append(post.getPostName()).append(",");
+        if(list != null){
+            for (Post post : list) {
+                idsStr.append(post.getPostName()).append(",");
+            }
         }
         if (StringUtils.isNotEmpty(idsStr.toString())) {
             return idsStr.substring(0, idsStr.length() - 1);

@@ -15,14 +15,14 @@
 							</li>
 							<li>
 								发料产线：
-								<select id="feedLine" name="feedLine" style="width: 150px" th:with="lineList = ${@productionLine.selectAllProductionLineByCompanyId()}">
+								<select id="feedLine" name="feedLine" style="width: 150px" th:with="lineList = ${@productionLine.selectAllProductionLineByCompanyId(#httpServletRequest.getCookies())}">
 									<option value="">全部</option>
 									<option th:each="line:${lineList}" th:text="${line.lineName}" th:value="${line.lineName}"></option>
 								</select>
 							</li>
 							<li>
 								收料人姓名：
-								<select id="lineReceive" name="lineReceive" style="width: 150px" th:with="user=${@user.selectComAllUser()}">
+								<select id="lineReceive" name="lineReceive" style="width: 150px" th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 									<option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userName}"></option>
 								</select>
 							</li>
@@ -37,7 +37,7 @@
 							</li>
 							<li>
 								创建者：
-								<select id="createId" name="createId" style="width: 150px" th:with="user=${@user.selectComAllUser()}">
+								<select id="createId" name="createId" style="width: 150px" th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 									<option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userId}"></option>
 								</select>
 							</li>

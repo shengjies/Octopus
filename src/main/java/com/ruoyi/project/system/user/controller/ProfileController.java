@@ -64,8 +64,8 @@ public class ProfileController extends BaseController {
      * 个人信息
      */
     @GetMapping()
-    public String profile(ModelMap mmap) {
-        User user = getSysUser();
+    public String profile(ModelMap mmap,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         user.setSex(dict.getLabel("sys_user_sex", user.getSex()));
         mmap.put("user", user);
         mmap.put("roleGroup", userService.selectUserRoleGroup(user.getUserId()));

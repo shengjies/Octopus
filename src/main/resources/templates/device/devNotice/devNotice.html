@@ -13,7 +13,7 @@
                         <li>
                             消息创建者：
                             <select id="createId" name="createId" style="width: 180px"
-                                    th:with="user=${@user.selectComAllUser()}">
+                                    th:with="user=${@user.selectComAllUser(#httpServletRequest.getCookies())}">
                                 <option value="">请选择</option>
                                 <option th:each="u : ${user}" th:text="${u.userName}" th:value="${u.userId}"></option>
                             </select>
@@ -28,7 +28,7 @@
                                 <option value="3">已下线</option>
                             </select>
                         </li>
-                        <li th:if="${@product.isSys()}">
+                        <li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
                             所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
                             <option value="-1">所有</option>
                             <option th:each="com : ${Company}" th:text="${com.comName}"

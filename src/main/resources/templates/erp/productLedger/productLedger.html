@@ -34,7 +34,7 @@
 
 							<li>
 								对账人：<select style="width: 240px"  name="ledgerPeople" id="ledgerPeople"
-											th:with="user = ${@user.selectComAllUser()}">
+											th:with="user = ${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 								<option value="-1">请选择</option>
 								<option th:each="u : ${user}" th:value="${u.userName}" th:utext="${u.userName}"></option>
 							</select>

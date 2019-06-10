@@ -22,7 +22,7 @@
 							<li>
 								产线名称：
 								<select style="width: 200px" name="lineName" id="lineId"
-										th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId()}">
+										th:with="productionLine=${@productionLine.selectAllProductionLineByCompanyId(#httpServletRequest.getCookies())}">
 									<option value="">全部</option>
 									<option th:each="line : ${productionLine}" th:text="${line.lineName}"
 											th:value="${line.lineName}"></option>
