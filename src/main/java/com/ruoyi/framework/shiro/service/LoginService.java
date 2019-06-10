@@ -1,6 +1,8 @@
 package com.ruoyi.framework.shiro.service;
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.PasswordUtil;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import org.aspectj.weaver.loadtime.Aj;
@@ -37,8 +39,8 @@ import java.util.Map;
 @Component
 public class LoginService
 {
-//    @Autowired
-//    private PasswordService passwordService;
+    //@Autowired
+    //private PasswordService passwordService;
 
     @Autowired
     private IUserService userService;
@@ -104,11 +106,13 @@ public class LoginService
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.blocked", user.getRemark())));
             throw new UserBlockedException();
         }
-
-//        passwordService.validate(user, password);
-//        new PasswordService().validate(user,password);
+        // 用户名密码错误
+        if (!PasswordUtil.matches(user, password)) {
+            //throw new BusinessException("用户名或密码错误");
+            throw new UserPasswordNotMatchException();
+        }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
-//        recordLoginInfo(user);
+        //recordLoginInfo(user);
         Map<String,Object> map = new HashMap<>();
         map.put(JwtUtil.CLAIM_KEY_USER, JSON.toJSONString(user));
         return AjaxResult.login(null,JwtUtil.getToken(map),1,username);

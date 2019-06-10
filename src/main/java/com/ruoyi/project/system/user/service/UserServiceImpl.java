@@ -3,11 +3,13 @@ package com.ruoyi.project.system.user.service;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.support.Convert;
+import com.ruoyi.common.utils.PasswordUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
+import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.post.domain.Post;
@@ -55,6 +57,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private IConfigService configService;
+
+    @Autowired
+    private DevCompanyMapper companyMapper;
 
 //    @Autowired
 //    private PasswordService passwordService;
@@ -246,7 +251,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public int resetUserPwd(User user) {
         user.randomSalt();
-//        user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
+        user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         return updateUserInfo(user);
     }
 
@@ -475,20 +480,16 @@ public class UserServiceImpl implements IUserService {
         user.setUserName("普通用户");
         // 注册默认创立公司
         DevCompany devCompany = new DevCompany();
-        String name = "普通公司" + ((Math.random() * 9 + 1) * 100000);
-        devCompany.setComName(name);
+        devCompany.setComName(user.getComName());
+        devCompany.setIndustry(user.getIndustry());
         devCompany.setCreateTime(new Date());
-        devCompanyService.insertDevCompany(devCompany);
-        // 获取公司id
-        DevCompany company = devCompanyService.selectDevCompanyByComName(name);
-        // 重新修改公司名称
-        company.setComName("普通群" + company.getCompanyId());
-        devCompanyService.updateDevCompany(company);
+        companyMapper.insertDevCompany(devCompany);
+
         // 设置用户所属公司id
-        user.setCompanyId(company.getCompanyId());
+        user.setCompanyId(devCompany.getCompanyId());
 
         user.randomSalt();
-//        user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
+        user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
 
         // 新增用户信息
         int rows = userMapper.insertUser(user);

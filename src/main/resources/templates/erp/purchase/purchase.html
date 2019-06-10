@@ -164,11 +164,12 @@
 		            	if(row.purchaseStatut  == 4){
 							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" disabled="true"><i class="fa fa-edit"></i>编辑</a> ');
 							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" disabled="true"><i class="fa fa-remove"></i>取消</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" disabled="true"><i class="fa fa-eye"></i>关闭</a> ');
 						}else{
 							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="editPurchase(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
 							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="puCancel(\'' + row.id + '\')"><i class="fa fa-remove"></i>取消</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closePurchase(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
 						}
-                        actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closePurchase(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
 						return actions.join('');
 		            }
 		        }]

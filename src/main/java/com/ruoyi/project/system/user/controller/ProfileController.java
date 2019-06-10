@@ -2,6 +2,7 @@ package com.ruoyi.project.system.user.controller;
 
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.PasswordUtil;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
@@ -48,8 +49,8 @@ public class ProfileController extends BaseController {
     @Autowired
     private IUserService userService;
 
-//    @Autowired
-//    private PasswordService passwordService;
+    //@Autowired
+    //private PasswordService passwordService;
 
     @Autowired
     private DictService dict;
@@ -75,11 +76,11 @@ public class ProfileController extends BaseController {
 
     @GetMapping("/checkPassword")
     @ResponseBody
-    public boolean checkPassword(String password) {
-        User user = getSysUser();
-//        if (passwordService.matches(user, password)) {
-//            return true;
-//        }
+    public boolean checkPassword(String password,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
+        if (PasswordUtil.matches(user, password)) {
+            return true;
+        }
         return false;
     }
 
@@ -93,19 +94,18 @@ public class ProfileController extends BaseController {
     @Log(title = "重置密码", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     @ResponseBody
-    public AjaxResult resetPwd(String oldPassword, String newPassword) {
-        User user = getSysUser();
-//        if (StringUtils.isNotEmpty(newPassword) && passwordService.matches(user, oldPassword)) {
-//            user.setPassword(newPassword);
-//            if (userService.resetUserPwd(user) > 0) {
-//                setSysUser(userService.selectUserById(user.getUserId()));
-//                return success();
-//            }
-//            return error();
-//        } else {
-//            return error("修改密码失败，旧密码错误");
-//        }
-        return error("修改密码失败，旧密码错误");
+    public AjaxResult resetPwd(String oldPassword, String newPassword,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
+        if (StringUtils.isNotEmpty(newPassword) && PasswordUtil.matches(user, oldPassword)) {
+            user.setPassword(newPassword);
+            if (userService.resetUserPwd(user) > 0) {
+                setSysUser(userService.selectUserById(user.getUserId()));
+                return success();
+            }
+            return error();
+        } else {
+            return error("修改密码失败，旧密码错误");
+        }
     }
 
     /**

@@ -282,13 +282,12 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public String checkRoleNameUnique(Role role,HttpServletRequest request) {
         Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
-        Map<String, Object> mmap = new HashMap<>();
-        mmap.put("roleName", role.getRoleName());
         User u = JwtUtil.getTokenUser(request);
+        Integer companyId = null;
         if (!User.isSys(u)) {
-            mmap.put("companyId", u.getUserId());
+            companyId = u.getCompanyId();
         }
-        Role info = roleMapper.checkRoleNameUnique(mmap);
+        Role info = roleMapper.checkRoleNameUnique(companyId,role.getRoleName());
         if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
             return UserConstants.ROLE_NAME_NOT_UNIQUE;
         }

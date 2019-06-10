@@ -75,6 +75,7 @@ public class ShiroConfig {
         // 不需要拦截的访问
         filterRuleMap.put("/login", "anon");
         filterRuleMap.put("/system/user/checkLoginNameUnique", "anon");
+        filterRuleMap.put("/device/devCompany/checkComNameUnique", "anon");
         filterRuleMap.put("/t/**", "anon");
         filterRuleMap.put("/profile/**", "anon");
         filterRuleMap.put("/register", "anon");

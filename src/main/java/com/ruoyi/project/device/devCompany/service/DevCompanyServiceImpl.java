@@ -2,6 +2,8 @@ package com.ruoyi.project.device.devCompany.service;
 
 import java.util.List;
 
+import com.ruoyi.common.constant.CompanyConstants;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -95,5 +97,19 @@ public class DevCompanyServiceImpl implements IDevCompanyService
 	@Override
 	public DevCompany selectDevCompanyByComName(String comName) {
 		return devCompanyMapper.selectDevCompanyByComName(comName);
+	}
+
+	/**
+	 * 校验公司名称是否存在
+	 * @param comName 公司名称
+	 * @return 结果
+	 */
+	@Override
+	public String checkComNameUnique(String comName) {
+		DevCompany devCompany = devCompanyMapper.selectDevCompanyByComName(comName);
+		if (!StringUtils.isNull(devCompany)) { // 数据库存在记录
+		    return CompanyConstants.COM_NAME_NOT_UNIQUE;
+		}
+		return CompanyConstants.COM_NAME_UNIQUE;
 	}
 }

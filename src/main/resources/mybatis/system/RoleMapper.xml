@@ -125,11 +125,10 @@
     </select>
 
     <!--校验角色名称是否唯一-->
-    <select id="checkRoleNameUnique" parameterType="Map" resultMap="RoleResult">
-        <include refid="selectRoleVo"/>
-        where r.role_name=#{roleName}
+    <select id="checkRoleNameUnique" resultType="com.ruoyi.project.system.role.domain.Role">
+        SELECT * FROM sys_role where role_name = #{roleName}
         <if test="companyId != null and companyId != ''">
-            AND r.company_id = #{companyId}
+            AND company_id = #{companyId}
         </if>
     </select>
 

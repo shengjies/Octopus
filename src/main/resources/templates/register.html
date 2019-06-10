@@ -24,12 +24,23 @@
             color: #3c8dbc;
             font-size: medium;
         }
+        .myform-control {
+            background: #FFFFFF none;
+            border: 1px solid #e5e6e7;
+            border-radius: 1px;
+            color: black;
+            display: block;
+            padding: 6px 12px;
+            -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s  ease-in-out 0s;
+            transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s  ease-in-out 0s;
+            width: 100%;
+            font-size: 14px;
+        }
     </style>
     <script>
         if (window.top !== window.self) {
             window.top.location = window.location
-        }
-        ;
+        };
     </script>
 </head>
 
@@ -37,7 +48,7 @@
 
 <div class="signinpanel">
     <div class="row">
-        <div class="col-sm-7">
+        <div class="col-sm-6">
             <div class="signin-info">
                 <div class="logopanel m-b">
 
@@ -47,19 +58,31 @@
 
             </div>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-6">
             <form id="form-register">
                 <h4 class="no-margins">注册：</h4>
                 <div class="form-group">
-                    <input type="text" name="loginName" id="loginName" class="form-control uname"
-                           placeholder="手机号"/>
+                    <input type="text" name="loginName" id="loginName" class="form-control uname" placeholder="手机号"/>
                 </div>
                 <div class="form-group">
                     <input name="password" id="password" type="password" class="form-control pword" placeholder="密码"/>
                 </div>
-                <input name="confirm" id="confirm" type="password" class="form-control pword" placeholder="确认密码"/>
-                <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在注册，请稍后..."
-                >注册
+                <div class="form-group">
+                    <input name="confirm" id="confirm" type="password" class="form-control pword" placeholder="确认密码"/>
+                </div>
+                <div class="form-group">
+                    <select name="industry" id="industry" class="myform-control">
+                        <option value="" >所属行业</option>
+                        <option value="0">金属制品制造</option>
+                        <option value="1">电子设备制造</option>
+                        <option value="2">家具家电制造</option>
+                        <option value="3">汽车制造</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="comName" id="comName" class="form-control uname" placeholder="公司名称"/>
+                </div>
+                <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在注册，请稍后...">注册
                 </button>
                 <p class="text-muted text-center">
                     <a href="javascript:void(0)" onclick="login()">已经有账号了，进行登录</a>
@@ -107,7 +130,23 @@
                 confirm: {
                     required: true,
                     equalTo: "#password"
-                }
+                },
+                comName: {
+                    required: true,
+                    remote: {
+                        url: ctx + "device/devCompany/checkComNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            name: function () {
+                                return $.common.trim($("#comName").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
             },
             messages: {
                 password: {
@@ -121,6 +160,9 @@
                 },
                 "loginName": {
                     remote: "登录手机号已经存在"
+                },
+                "comName": {
+                    remote: "公司名称已存在"
                 }
             },
             onsubmit: true,

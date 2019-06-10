@@ -66,5 +66,11 @@ public interface IDevCompanyService
 	 * @return
 	 */
 	public DevCompany selectDevCompanyByComName(String comName);
-	
+
+	/**
+	 * 校验公司名称是否存在
+	 * @param comName 公司名称
+	 * @return 结果
+	 */
+    String checkComNameUnique(String comName);
 }

@@ -1,17 +1,16 @@
 package com.ruoyi.project.device.devCompany.controller;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.file.FileUploadUtils;
-import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.framework.aspectj.lang.annotation.Log;
+import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.config.RuoYiConfig;
 import com.ruoyi.framework.jwt.JwtUtil;
-import com.ruoyi.project.system.user.controller.ProfileController;
+import com.ruoyi.framework.web.controller.BaseController;
+import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.framework.web.page.TableDataInfo;
+import com.ruoyi.project.device.devCompany.domain.DevCompany;
+import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.service.IUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,17 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.framework.aspectj.lang.annotation.Log;
-import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
-import com.ruoyi.project.device.devCompany.domain.DevCompany;
-import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
-import com.ruoyi.framework.web.controller.BaseController;
-import com.ruoyi.framework.web.page.TableDataInfo;
-import com.ruoyi.framework.web.domain.AjaxResult;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 公司 信息操作处理
@@ -55,6 +48,9 @@ public class DevCompanyController extends BaseController {
 
     @Autowired
     private IDevCompanyService devCompanyService;
+
+    @Autowired
+    private IUserService userService;
 
     @RequiresPermissions("device:devCompany:view")
     @GetMapping()
@@ -154,9 +150,6 @@ public class DevCompanyController extends BaseController {
         return prefix + "/comLogo";
     }
 
-    @Autowired
-    private IUserService userService;
-
     /**
      * 保存公司lOGO
      */
@@ -224,5 +217,16 @@ public class DevCompanyController extends BaseController {
         DevCompany company = devCompanyService.selectDevCompanyById(JwtUtil.getTokenUser(request).getCompanyId());
         company.setComPicture(comPicture);
         return toAjax(devCompanyService.updateDevCompany(company));
+    }
+
+    /**
+     * 校验公司名称是否唯一
+     * @param company
+     * @return
+     */
+    @PostMapping("/checkComNameUnique")
+    @ResponseBody
+    public String checkComNameUnique(DevCompany company){
+        return devCompanyService.checkComNameUnique(company.getComName());
     }
 }

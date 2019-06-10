@@ -185,13 +185,14 @@
 							// actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#"  disabled="true" ><i class="fa fa-edit"></i>审核</a> ');
 							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#"  disabled="true" ><i class="fa fa-edit"></i>编辑</a> ');
 							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" disabled="true"><i class="fa fa-remove"></i>取消</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" disabled="true"><i class="fa fa-eye"></i>关闭</a> ');
 
 						}else{
 							// actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#"  onclick="examine(\'' + row.id + '\')"><i class="fa fa-edit"></i>审核</a> ');
 							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#"  onclick="editOrder('+row.id+','+row.orderStatus+')"><i class="fa fa-edit"></i>编辑</a> ');
 							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="cancelOrder(\''+row.id+'\')"><i class="fa fa-remove"></i>取消</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closeOrderInfo(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
 		            	}
-                        actions.push('<a class="btn btn-warning btn-xs ' + closeFlag + '" href="#" onclick="closeOrderInfo(\'' + row.id + '\')"><i class="fa fa-eye"></i>关闭</a> ');
 						return actions.join('');
 		            }
 		        }]

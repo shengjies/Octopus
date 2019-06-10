@@ -17,7 +17,7 @@
 							<li>
 								创建者：
 								<select style="width: 240px"  name="createId" id="createId"
-										th:with="user = ${@user.selectComAllUser()}">
+										th:with="user = ${@user.selectComAllUser(#httpServletRequest.getCookies())}">
 									<option value="">请选择</option>
 									<option th:each="u : ${user}" th:value="${u.userId}" th:utext="${u.userName}"></option>
 								</select>

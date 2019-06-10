@@ -1,6 +1,7 @@
 package com.ruoyi.project.device.devCompany.domain;
 
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.web.domain.BaseEntity;
@@ -35,6 +36,18 @@ public class DevCompany extends BaseEntity
 	private String comLogo;
 	/** 公司轮播图片 */
 	private String comPicture;
+	/**
+	 * 公司所属行业
+	 */
+	private Integer industry;
+
+	public Integer getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(Integer industry) {
+		this.industry = industry;
+	}
 
 	public void setCompanyId(Integer companyId)
 	{

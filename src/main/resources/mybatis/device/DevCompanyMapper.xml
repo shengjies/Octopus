@@ -12,10 +12,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="comType"    column="com_type"    />
         <result property="comLogo"    column="com_logo"    />
         <result property="comPicture"    column="com_picture"    />
+        <result property="industry"    column="industry"    />
     </resultMap>
 
     <sql id="selectDevCompanyVo">
-        select company_id, com_name, create_time, com_address, com_type, com_logo, com_picture from dev_company
+        select company_id, com_name, create_time, com_address, com_type, com_logo, com_picture,industry from dev_company
     </sql>
 
     <select id="selectDevCompanyList" parameterType="DevCompany" resultMap="DevCompanyResult">
@@ -46,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comType != null  and comType != ''  ">com_type,</if>
             <if test="comLogo != null  and comLogo != ''  ">com_logo,</if>
             <if test="comPicture != null  and comPicture != ''  ">com_picture,</if>
+            <if test="industry != null  and industry != ''  ">industry,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="comName != null  and comName != ''  ">#{comName},</if>
@@ -54,6 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comType != null  and comType != ''  ">#{comType},</if>
             <if test="comLogo != null  and comLogo != ''  ">#{comLogo},</if>
             <if test="comPicture != null  and comPicture != ''  ">#{comPicture},</if>
+            <if test="industry != null  and industry != ''  ">#{industry},</if>
         </trim>
     </insert>
 
@@ -65,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comType != null  and comType != ''  ">com_type = #{comType},</if>
             <if test="comLogo != null  and comLogo != ''  ">com_logo = #{comLogo},</if>
             <if test="comPicture != null  and comPicture != ''  ">com_picture = #{comPicture},</if>
+            <if test="industry != null  and industry != ''  ">industry = #{industry},</if>
         </trim>
         where company_id = #{companyId}
     </update>

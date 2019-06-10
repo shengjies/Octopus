@@ -79,16 +79,17 @@ public interface RoleMapper {
     /**
      * 校验角色名称是否唯一
      *
-     * @param mmap 角色名称和公司ID
-     * @return 角色信息
+     * @param companyId 公司id
+     * @param roleName 角色名称
+     * @return 结果
      */
-    public Role checkRoleNameUnique(Map mmap);
+    public Role checkRoleNameUnique(@Param("companyId") Integer companyId, @Param("roleName") String roleName);
 
     /**
      * 校验角色权限是否唯一
      *
-     * @param roleKey 角色权限
-     * @param companyId  公司id
+     * @param roleKey   角色权限
+     * @param companyId 公司id
      * @return 角色信息
      */
     public Role checkRoleKeyUnique(@Param("roleKey") String roleKey, @Param("companyId") Integer companyId);

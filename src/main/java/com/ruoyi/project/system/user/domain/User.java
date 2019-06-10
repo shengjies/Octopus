@@ -112,10 +112,29 @@ public class User extends BaseEntity
 
     /** 公司主键ID */
     private Integer companyId;
-
+    /** 所属行业 */
+    private Integer industry;
+    /** 公司名称 */
+    private String comName;
     /** 公司对象 */
     @Excel(name = "公司名称", targetAttr = "comName", type = Type.EXPORT)
     private DevCompany devCompany;
+
+    public Integer getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(Integer industry) {
+        this.industry = industry;
+    }
+
+    public String getComName() {
+        return comName;
+    }
+
+    public void setComName(String comName) {
+        this.comName = comName;
+    }
 
     public String getLoginTag() {
         return loginTag;

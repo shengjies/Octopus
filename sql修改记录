@@ -66,3 +66,8 @@ ADD INDEX `code_company` (`company_id` ASC, `product_code` ASC) VISIBLE;
 #2019-06-03
 ALTER TABLE `devicemanage2`.`dev_work_order`
 ADD COLUMN `sign` INT NULL DEFAULT 1 AFTER `ecn_text`;
+
+#2019-06-10 未执行
+ALTER TABLE `devicemanage`.`dev_company`
+ADD COLUMN `industry` INT(11) NULL COMMENT '公司所属行业' AFTER `com_picture`;
+
