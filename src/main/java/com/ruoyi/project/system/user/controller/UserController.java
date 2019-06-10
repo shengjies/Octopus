@@ -9,11 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -27,6 +23,7 @@ import com.ruoyi.project.system.role.service.IRoleService;
 import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.service.IUserService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -233,5 +230,20 @@ public class UserController extends BaseController {
         } catch (BusinessException e) {
             return error(e.getMessage());
         }
+    }
+
+    /*********      用户API 操作  **********/
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PostMapping("/api/edit")
+    @Transactional(rollbackFor = Exception.class)
+    @ResponseBody
+    public AjaxResult ApiEdit(@RequestBody User user,HttpServletRequest request){
+        try {
+            userService.ApiEdit(user);
+            return AjaxResult.success();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return AjaxResult.error();
     }
 }

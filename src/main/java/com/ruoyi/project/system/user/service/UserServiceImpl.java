@@ -556,4 +556,16 @@ public class UserServiceImpl implements IUserService {
     public User getSysUser() {
         return ShiroUtils.getSysUser();
     }
+
+
+    /*******     操作用户数据    *******/
+    /**
+     *
+     * @param user 用户数据
+     * @return
+     */
+    @Override
+    public int ApiEdit(User user) {
+        return userMapper.updateUser(user);
+    }
 }
