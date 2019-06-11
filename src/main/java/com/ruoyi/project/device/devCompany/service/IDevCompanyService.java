@@ -73,4 +73,11 @@ public interface IDevCompanyService
 	 * @return 结果
 	 */
     String checkComNameUnique(String comName);
+
+	/**
+	 * 修改公司信息
+	 * @param company
+	 * @return
+	 */
+	int apiEditCompany(DevCompany company);
 }

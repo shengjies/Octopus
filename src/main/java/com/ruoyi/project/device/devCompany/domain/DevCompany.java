@@ -1,5 +1,6 @@
 package com.ruoyi.project.device.devCompany.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -27,8 +28,8 @@ public class DevCompany extends BaseEntity
 	@Excel(name = "公司地址")
 	private String comAddress;
 	/** 创建时间 */
-	@Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Excel.Type.EXPORT)
-	private Date createTime;
+	//@Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Excel.Type.EXPORT)
+	//private Date createTime;
 	/** 公司类型 */
 	private Integer comType;
 	/** 公司logo */
@@ -67,15 +68,15 @@ public class DevCompany extends BaseEntity
 	{
 		return comName;
 	}
-	public void setCreateTime(Date createTime)
-	{
-		this.createTime = createTime;
-	}
-
-	public Date getCreateTime()
-	{
-		return createTime;
-	}
+	//public void setCreateTime(Date createTime)
+	//{
+	//	this.createTime = createTime;
+	//}
+    //
+	//public Date getCreateTime()
+	//{
+	//	return createTime;
+	//}
 	public void setComAddress(String comAddress)
 	{
 		this.comAddress = comAddress;

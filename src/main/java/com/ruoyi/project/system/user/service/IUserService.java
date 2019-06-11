@@ -192,5 +192,12 @@ public interface IUserService
      * @param user 用户数据
      * @return
      */
-    int ApiEdit(User user);
+    int apiEdit(User user);
+
+    /**
+     * 新增用户数据
+     * @param user 用户信息
+     * @return 结果
+     */
+    User apiAdd(User user);
 }

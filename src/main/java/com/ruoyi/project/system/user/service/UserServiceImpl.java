@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -252,7 +253,7 @@ public class UserServiceImpl implements IUserService {
     public int resetUserPwd(User user) {
         user.randomSalt();
         user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
-        return updateUserInfo(user);
+        return userMapper.updateUserByLoginName(user);
     }
 
     /**
@@ -566,7 +567,19 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public int ApiEdit(User user) {
+    public int apiEdit(User user) {
         return userMapper.updateUser(user);
+    }
+
+    /**
+     * 新增用户数据
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public User apiAdd(User user) {
+        userMapper.insertUser(user);
+        return user;
     }
 }

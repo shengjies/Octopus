@@ -232,18 +232,18 @@ public class UserController extends BaseController {
         }
     }
 
-    /*********      用户API 操作  **********/
-    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
-    @PostMapping("/api/edit")
-    @Transactional(rollbackFor = Exception.class)
-    @ResponseBody
-    public AjaxResult ApiEdit(@RequestBody User user,HttpServletRequest request){
-        try {
-            userService.ApiEdit(user);
-            return AjaxResult.success();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return AjaxResult.error();
-    }
+    ///*********      用户API 操作  **********/
+    //@Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    //@PostMapping("/api/edit")
+    //@Transactional(rollbackFor = Exception.class)
+    //@ResponseBody
+    //public AjaxResult ApiEdit(@RequestBody User user,HttpServletRequest request){
+    //    try {
+    //        userService.ApiEdit(user);
+    //        return AjaxResult.success();
+    //    }catch (Exception e){
+    //        e.printStackTrace();
+    //    }
+    //    return AjaxResult.error();
+    //}
 }

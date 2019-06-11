@@ -112,4 +112,14 @@ public class DevCompanyServiceImpl implements IDevCompanyService
 		}
 		return CompanyConstants.COM_NAME_UNIQUE;
 	}
+
+	/**
+	 * 修改公司信息
+	 * @param company 公司信息
+	 * @return
+	 */
+	@Override
+	public int apiEditCompany(DevCompany company) {
+		return 0;
+	}
 }
