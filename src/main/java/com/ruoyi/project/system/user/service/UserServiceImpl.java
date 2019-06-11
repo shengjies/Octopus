@@ -162,14 +162,7 @@ public class UserServiceImpl implements IUserService {
     public int deleteUserByIds(String ids,HttpServletRequest request) throws BusinessException {
         Long sysUserId = JwtUtil.getTokenUser(request).getUserId();
         Long[] userIds = Convert.toLongArray(ids);
-        for (Long userId : userIds) {
-            if (userId == sysUserId) {
-                throw new BusinessException("不允许删除本人");
-            }
-            if (User.isAdmin(userId)) {
-                throw new BusinessException("不允许删除超级管理员用户");
-            }
-        }
+        judgeUserId(sysUserId, userIds);
         return userMapper.deleteUserByIds(userIds);
     }
 
@@ -524,8 +517,8 @@ public class UserServiceImpl implements IUserService {
     public int changeLoginTag(User user) {
         user.setLoginTag(UserConstants.LOGIN_TAG_ADD); // 更新用户登录标记
         String comName = null;
-       if(user.getDevCompany() != null && !org.springframework.util.StringUtils.isEmpty(user.getDevCompany().getComName())){
-            comName = user.getDevCompany().getComName();
+       if(user.getDevCompany() != null && !StringUtils.isEmpty(user.getDevCompany().getComName())){
+           comName = user.getDevCompany().getComName();
            // 判断公司名称是否已经存在
            DevCompany devCompany = devCompanyService.selectDevCompanyByComName(comName);
            if (StringUtils.isNotNull(devCompany) && devCompany.getCompanyId() != user.getCompanyId()) {
@@ -545,7 +538,6 @@ public class UserServiceImpl implements IUserService {
                 throw new BusinessException("邮箱已存在，请重新输入");
             }
         }
-
         return userMapper.updateUser(user);
     }
 
@@ -567,8 +559,13 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public int apiEdit(User user) {
-        return userMapper.updateUser(user);
+    public int apiEdit(User user,HttpServletRequest request) {
+        User tokenUser = JwtUtil.getTokenUser(request);
+        if (null == user.getUserId()) {
+            user.setCompanyId(tokenUser.getCompanyId());
+            userMapper.updateUserByLoginName(user);
+        }
+         return userMapper.updateUser(user);
     }
 
     /**
@@ -578,8 +575,28 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public User apiAdd(User user) {
+    public int apiAdd(User user) {
         userMapper.insertUser(user);
-        return user;
+        return user.getUserId().intValue();
+    }
+
+    @Override
+    public int apiRemove(String ids,HttpServletRequest request) {
+        Long sysUserId = JwtUtil.getTokenUser(request).getUserId();
+        String replace = ids.replace("\"", "").replace("\"", "");
+        Long[] userIds = Convert.toLongArray(replace);
+        judgeUserId(sysUserId, userIds);
+        return userMapper.deleteUserByIds(userIds);
+    }
+
+    private void judgeUserId(Long sysUserId, Long[] userIds) {
+        for (Long userId : userIds) {
+            if (userId == sysUserId) {
+                throw new BusinessException("不允许删除本人");
+            }
+            if (User.isAdmin(userId)) {
+                throw new BusinessException("不允许删除超级管理员用户");
+            }
+        }
     }
 }

@@ -84,4 +84,5 @@ public interface IDevListService
 	 * 验证硬件
 	 */
 	int  deviceValidate(String code);
+
 }

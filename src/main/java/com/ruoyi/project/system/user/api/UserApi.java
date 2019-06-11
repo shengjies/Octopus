@@ -1,13 +1,14 @@
 package com.ruoyi.project.system.user.api;
 
+import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.service.IUserService;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,9 @@ public class UserApi {
     @Autowired
     private IUserService userService;
 
+    /**
+     * 新增用户信息
+     */
     @RequestMapping("/add")
     public AjaxResult add(@RequestBody User user,HttpServletRequest request){
         try {
@@ -45,12 +49,25 @@ public class UserApi {
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult edit(@RequestBody User user, HttpServletRequest request){
         try {
-            userService.apiEdit(user);
+            userService.apiEdit(user,request);
             return AjaxResult.success();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return AjaxResult.error();
+    }
+
+    /**
+     * 删除用户信息
+     */
+    @RequestMapping("/remove")
+    public AjaxResult remove(@RequestBody String ids,HttpServletRequest request){
+        try {
+            userService.apiRemove(ids,request);
+            return AjaxResult.success();
+        } catch (BusinessException e) {
+            return AjaxResult.error(e.getMessage());
+        }
     }
 
 }

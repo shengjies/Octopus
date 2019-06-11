@@ -192,12 +192,19 @@ public interface IUserService
      * @param user 用户数据
      * @return
      */
-    int apiEdit(User user);
+    int apiEdit(User user,HttpServletRequest request);
 
     /**
      * 新增用户数据
      * @param user 用户信息
      * @return 结果
      */
-    User apiAdd(User user);
+    int apiAdd(User user);
+
+    /**
+     * 删除用户信息
+     * @param ids 用户id
+     * @return 结果
+     */
+    int apiRemove(String ids,HttpServletRequest request);
 }

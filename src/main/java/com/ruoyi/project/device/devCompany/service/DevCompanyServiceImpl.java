@@ -120,6 +120,6 @@ public class DevCompanyServiceImpl implements IDevCompanyService
 	 */
 	@Override
 	public int apiEditCompany(DevCompany company) {
-		return 0;
+		return devCompanyMapper.updateDevCompany(company);
 	}
 }
