@@ -62,6 +62,9 @@
             <form id="form-register">
                 <h4 class="no-margins">注册：</h4>
                 <div class="form-group">
+                    <input type="text" name="userName" id="userName" class="form-control uname" placeholder="用户名称"/>
+                </div>
+                <div class="form-group">
                     <input type="text" name="loginName" id="loginName" class="form-control uname" placeholder="手机号"/>
                 </div>
                 <div class="form-group">
@@ -105,6 +108,9 @@
         // 表单校验
         $("#form-register").validate({
             rules: {
+                userName:{
+                    required: true,
+                },
                 loginName: {
                     required: true,
                     isPhone: true,
@@ -149,6 +155,9 @@
                 },
             },
             messages: {
+                userName:{
+                    required:'请输入用户名称'
+                },
                 password: {
                     required: "请输入密码",
                     minlength: "密码不能小于6个字符",
@@ -158,10 +167,12 @@
                     required: "确认密码",
                     equalTo: "两次密码输入不一致"
                 },
-                "loginName": {
+                loginName: {
+                    required:'请输入手机号码',
                     remote: "登录手机号已经存在"
                 },
-                "comName": {
+                comName: {
+                    required: "请输入公司名称",
                     remote: "公司名称已存在"
                 }
             },

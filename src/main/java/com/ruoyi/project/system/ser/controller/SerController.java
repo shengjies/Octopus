@@ -123,5 +123,22 @@ public class SerController extends BaseController
 	{		
 		return toAjax(serService.deleteSerByIds(ids));
 	}
+
+	/**
+	 * 查询对应的服务器端口配置数量是否大于等于服务器的最多用户数
+	 * @param sid
+	 * @return
+	 */
+	@RequiresPermissions("system:ser:add")
+	@PostMapping( "/findMax")
+	@ResponseBody
+	public AjaxResult findMax(int sid){
+		try {
+			return AjaxResult.success("对比信息",serService.findMax(sid));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return AjaxResult.error();
+	}
 	
 }

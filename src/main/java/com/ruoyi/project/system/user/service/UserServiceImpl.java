@@ -8,6 +8,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
 import com.ruoyi.framework.jwt.JwtUtil;
+import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.project.device.devCompany.api.CompanyFeignApi;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.mapper.DevCompanyMapper;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
@@ -16,12 +18,20 @@ import com.ruoyi.project.system.post.domain.Post;
 import com.ruoyi.project.system.post.mapper.PostMapper;
 import com.ruoyi.project.system.role.domain.Role;
 import com.ruoyi.project.system.role.mapper.RoleMapper;
+import com.ruoyi.project.system.ser.domain.Ser;
+import com.ruoyi.project.system.ser.mapper.SerMapper;
+import com.ruoyi.project.system.serPort.domain.SerPort;
+import com.ruoyi.project.system.serPort.mapper.SerPortMapper;
+import com.ruoyi.project.system.user.api.UserFeignApi;
 import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.domain.UserPost;
 import com.ruoyi.project.system.user.domain.UserRole;
 import com.ruoyi.project.system.user.mapper.UserMapper;
 import com.ruoyi.project.system.user.mapper.UserPostMapper;
 import com.ruoyi.project.system.user.mapper.UserRoleMapper;
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +72,12 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private DevCompanyMapper companyMapper;
 
+    @Autowired
+    private SerPortMapper serPortMapper;
+
+    @Autowired
+    private SerMapper serMapper;
+
 //    @Autowired
 //    private PasswordService passwordService;
 
@@ -78,12 +94,13 @@ public class UserServiceImpl implements IUserService {
         User sysUser = JwtUtil.getTokenUser(request);
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
-        if (User.isSys(sysUser) && user.getCompanyId() != null && (user.getCompanyId()) != -1) { // 系统查询对应公司成员
-            map.put("companyId", user.getCompanyId());
-        }
-        if (!User.isSys(sysUser)) { //非系统用户
-            map.put("companyId", sysUser.getCompanyId());
-        }
+        map.put("companyId", sysUser.getCompanyId());
+//        if (User.isSys(sysUser) && user.getCompanyId() != null && (user.getCompanyId()) != -1) { // 系统查询对应公司成员
+//            map.put("companyId", user.getCompanyId());
+//        }
+//        if (!User.isSys(sysUser)) { //非系统用户
+//            map.put("companyId", sysUser.getCompanyId());
+//        }
         List<User> userList = userMapper.selectUserListByCompanyId(map);
         List<Role> userRoles = null;
         for (User user1 : userList) {
@@ -459,39 +476,89 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public int register(User user) {
-        // 注册用户设置用户登录标记为1
+       //查询是否有空余的服务器
+        SerPort serPort = serPortMapper.selectNotConfigSerPort();
+        if(serPort == null)return 0;
+        //将服务器信息查询
+        Ser ser = serMapper.selectSerById(serPort.getSid());
+        if(ser == null)return 0;
+//        // 注册用户设置用户登录标记为1
         user.setLoginTag(UserConstants.LOGIN_TAG_REG);
-        // 部门
+//        // 部门
         user.setDeptId(103L);
-        // 设置首次注册用户为普通管理员权限
+//        // 设置首次注册用户为普通管理员权限
         Long[] roleIds = {2L};
         user.setRoleIds(roleIds);
-        // 设置用户标记
+//        // 设置用户标记
         user.setTag(User.COMPANY_OTHER);
-        // 用户首次注册，创建者应该为自己
+//        // 用户首次注册，创建者应该为自己
         user.setCreateBy(user.getLoginName());
-        // 设置用户注册时的初始名字
-        user.setUserName("普通用户");
-        // 注册默认创立公司
+
+//        // 注册默认创立公司
         DevCompany devCompany = new DevCompany();
         devCompany.setComName(user.getComName());
         devCompany.setIndustry(user.getIndustry());
         devCompany.setCreateTime(new Date());
-        companyMapper.insertDevCompany(devCompany);
-
+        devCompany.setTotalIso("iso"+ser.getId()+serPort.getPort());
+         companyMapper.insertDevCompany(devCompany);
+        String url = ser.getSpath()+":"+serPort.getPort();
+         //调用对应从服务器公司注册接口进行注册公司信息
+        String[] cids ={devCompany.getCompanyId().toString()};
+        try {
+            devCompany.setCreateTime(null);
+            CompanyFeignApi feignApi = Feign.builder()
+                    .encoder(new GsonEncoder())
+                    .decoder(new GsonDecoder())
+                    .target(CompanyFeignApi.class,url);
+            HashMap<String,Object> result = feignApi.initCompanyInfo(devCompany);
+            if(Double.valueOf(result.get("code").toString()) != 0){
+                //删除公司信息
+                companyMapper.deleteDevCompanyByIds(cids);
+                return 0;
+            }
+        }catch (Exception e){
+            //删除公司信息
+            companyMapper.deleteDevCompanyByIds(cids);
+            return 0;
+        }
         // 设置用户所属公司id
         user.setCompanyId(devCompany.getCompanyId());
-
         user.randomSalt();
         user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
-
         // 新增用户信息
         int rows = userMapper.insertUser(user);
-        // 新增用户岗位关联
-        insertUserPost(user);
-        // 新增用户与角色管理
+        //从服务器初始化用户
+        try {
+            UserFeignApi feignApi = Feign.builder()
+                    .encoder(new GsonEncoder())
+                    .decoder(new GsonDecoder())
+                    .target(UserFeignApi.class,url);
+            HashMap<String,Object> result = feignApi.initUserInfo(user);
+            if(Double.valueOf(result.get("code").toString()) != 0){
+                //删除用户信息
+                userMapper.deleteUserById(user.getUserId());
+                //删除公司信息
+                companyMapper.deleteDevCompanyByIds(cids);
+                return 0;
+            }
+        }catch (Exception e){
+            //删除用户信息
+            userMapper.deleteUserById(user.getUserId());
+            //删除公司信息
+            companyMapper.deleteDevCompanyByIds(cids);
+            return 0;
+        }
+//        // 新增用户岗位关联
+//        insertUserPost(user);
+//        // 新增用户与角色管理
         insertUserRole(user);
-
+        //将对应端口公司配置id加上
+        serPort.setCompanyId(devCompany.getCompanyId());
+        serPort.setUpdateTime(new Date());
+        serPortMapper.updateSerPort(serPort);
+        //将对应服务器用户加一
+        ser.setSuserNum(ser.getSuserNum()==null?1:ser.getSuserNum()+1);
+        serMapper.updateSer(ser);
         return rows;
     }
 

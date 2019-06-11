@@ -71,3 +71,10 @@ ADD COLUMN `sign` INT NULL DEFAULT 1 AFTER `ecn_text`;
 ALTER TABLE `devicemanage`.`dev_company`
 ADD COLUMN `industry` INT(11) NULL COMMENT '公司所属行业' AFTER `com_picture`;
 
+
+
+#2019-06-11
+ALTER TABLE `devicemanage`.`dev_company`
+ADD COLUMN `total_iso` VARCHAR(45) NULL AFTER `industry`;
+
+

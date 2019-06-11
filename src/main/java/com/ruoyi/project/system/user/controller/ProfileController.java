@@ -122,8 +122,8 @@ public class ProfileController extends BaseController {
      * 修改头像
      */
     @GetMapping("/avatar")
-    public String avatar(ModelMap mmap) {
-        User user = getSysUser();
+    public String avatar(ModelMap mmap,HttpServletRequest request) {
+        User user = JwtUtil.getTokenUser(request);
         mmap.put("user", userService.selectUserById(user.getUserId()));
         return prefix + "/avatar";
     }
@@ -134,8 +134,8 @@ public class ProfileController extends BaseController {
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     @ResponseBody
-    public AjaxResult update(User user) {
-        User currentUser = getSysUser();
+    public AjaxResult update(User user,HttpServletRequest request) {
+        User currentUser = JwtUtil.getTokenUser(request);
         currentUser.setUserName(user.getUserName());
         currentUser.setEmail(user.getEmail());
         currentUser.setSex(user.getSex());
@@ -162,8 +162,8 @@ public class ProfileController extends BaseController {
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PostMapping("/updateAvatar")
     @ResponseBody
-    public AjaxResult updateAvatar(@RequestParam("avatarfile") MultipartFile file) {
-        User currentUser = getSysUser();
+    public AjaxResult updateAvatar(@RequestParam("avatarfile") MultipartFile file,HttpServletRequest request) {
+        User currentUser = JwtUtil.getTokenUser(request);
         try {
             if (!file.isEmpty()) {
                 String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);

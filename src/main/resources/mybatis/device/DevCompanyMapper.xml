@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="comLogo"    column="com_logo"    />
         <result property="comPicture"    column="com_picture"    />
         <result property="industry"    column="industry"    />
+        <result property="totalIso"    column="total_iso"    />
     </resultMap>
 
     <sql id="selectDevCompanyVo">
-        select company_id, com_name, create_time, com_address, com_type, com_logo, com_picture,industry from dev_company
+        select company_id, com_name, create_time, com_address, com_type, com_logo, com_picture,industry,total_iso from dev_company
     </sql>
 
     <select id="selectDevCompanyList" parameterType="DevCompany" resultMap="DevCompanyResult">
@@ -48,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comLogo != null  and comLogo != ''  ">com_logo,</if>
             <if test="comPicture != null  and comPicture != ''  ">com_picture,</if>
             <if test="industry != null  and industry != ''  ">industry,</if>
+            <if test="totalIso != null  and industry != ''  ">total_iso,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="comName != null  and comName != ''  ">#{comName},</if>
@@ -57,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comLogo != null  and comLogo != ''  ">#{comLogo},</if>
             <if test="comPicture != null  and comPicture != ''  ">#{comPicture},</if>
             <if test="industry != null  and industry != ''  ">#{industry},</if>
+            <if test="totalIso != null  and totalIso != ''  ">#{totalIso},</if>
         </trim>
     </insert>
 
@@ -91,7 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDevCompanyByComName" parameterType="String" resultMap="DevCompanyResult">
         <include refid="selectDevCompanyVo"/>
-        where com_name = #{comName}
+        where com_name = #{comName} limit 1;
     </select>
 
     <select id="selectDevCompanyAll" resultMap="DevCompanyResult">

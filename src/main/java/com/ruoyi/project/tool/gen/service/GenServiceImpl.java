@@ -43,7 +43,7 @@ public class GenServiceImpl implements IGenService
      * @return 数据库表列表
      */
     @Override
-    @DataSource(value = DataSourceType.ERP)
+//    @DataSource(value = DataSourceType.ERP)
     public List<TableInfo> selectTableList(TableInfo tableInfo)
     {
         return genMapper.selectTableList(tableInfo);
@@ -56,7 +56,7 @@ public class GenServiceImpl implements IGenService
      * @return 数据
      */
     @Override
-    @DataSource(value = DataSourceType.ERP)
+//    @DataSource(value = DataSourceType.ERP)
     public byte[] generatorCode(String tableName)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -78,7 +78,7 @@ public class GenServiceImpl implements IGenService
      * @return 数据
      */
     @Override
-    @DataSource(value = DataSourceType.ERP)
+//    @DataSource(value = DataSourceType.ERP)
     public byte[] generatorCode(String[] tableNames)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

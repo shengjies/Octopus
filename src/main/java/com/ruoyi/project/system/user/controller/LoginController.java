@@ -45,7 +45,6 @@ public class LoginController extends BaseController {
     @PostMapping("/login")
     @ResponseBody
     public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe) {
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password, rememberMe);
         try {
             return loginService.login(username,password);
         } catch (AuthenticationException e) {

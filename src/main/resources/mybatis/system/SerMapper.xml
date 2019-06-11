@@ -15,10 +15,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="maxNum"    column="max_num"    />
         <result property="spwd"    column="spwd"    />
         <result property="pwd"    column="pwd"    />
+        <result property="s_status"    column="s_status"    />
+        <result property="s_type"    column="s_type"    />
     </resultMap>
 	
 	<sql id="selectSerVo">
-        select id, sname, sip, spath, suser_num, remark, create_time, max_num, spwd, pwd from tab_ser
+        select id, sname, sip, spath, suser_num, remark, create_time, max_num, spwd, pwd,s_status,s_type from tab_ser
     </sql>
 	
     <select id="selectSerList" parameterType="Ser" resultMap="SerResult">
@@ -27,6 +29,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="sname != null  and sname != '' "> and sname like concat( #{sname},'%')</if>
              <if test="sip != null  and sip != '' "> and sip like concat( #{sip},'%')</if>
             <if test="spwd != null  and spwd != '' "> and spwd like concat(#{spwd},'%')</if>
+            <if test="s_status != null  and s_status > -1 "> and s_status =#{s_status}</if>
+            <if test="s_type != null  and s_type > -1 "> and s_type =#{s_type}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
                 AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
             </if>
@@ -53,6 +57,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="maxNum != null  ">max_num,</if>
 			<if test="spwd != null  and spwd != ''  ">spwd,</if>
 			<if test="pwd != null  and pwd != ''  ">pwd,</if>
+			<if test="s_status != null  and s_status != ''  ">s_status,</if>
+			<if test="s_type != null  and s_type != ''  ">s_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="sname != null  and sname != ''  ">#{sname},</if>
@@ -64,6 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="maxNum != null  ">#{maxNum},</if>
 			<if test="spwd != null  and spwd != ''  ">#{spwd},</if>
 			<if test="pwd != null  and pwd != ''  ">#{pwd},</if>
+			<if test="s_status != null  and s_status != ''  ">#{s_status},</if>
+			<if test="s_type != null  and s_type != ''  ">#{s_type},</if>
          </trim>
     </insert>
 	 
@@ -79,6 +87,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="maxNum != null  ">max_num = #{maxNum},</if>
             <if test="spwd != null  and spwd != ''  ">spwd = #{spwd},</if>
             <if test="pwd != null  and pwd != ''  ">pwd = #{pwd},</if>
+            <if test="s_status != null  and s_status != ''  ">s_status = #{s_status},</if>
+            <if test="s_type != null  and s_type != ''  ">s_type = #{s_type},</if>
         </trim>
         where id = #{id}
     </update>

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruoyi.project.system.serPort.mapper.SerPortMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.system.ser.mapper.SerMapper;
@@ -22,6 +23,9 @@ public class SerServiceImpl implements ISerService
 {
 	@Autowired
 	private SerMapper serMapper;
+
+	@Autowired
+	private SerPortMapper serPortMapper;
 
 	/**
      * 查询服务器管理信息
@@ -59,6 +63,7 @@ public class SerServiceImpl implements ISerService
 		ser.setSpwd(UUID.randomUUID().toString());
 		ser.setCreateTime(new Date());
 		ser.setSuserNum(0);
+		ser.setSpath("http://"+ser.getSip());
 	    return serMapper.insertSer(ser);
 	}
 	
@@ -71,6 +76,7 @@ public class SerServiceImpl implements ISerService
 	@Override
 	public int updateSer(Ser ser)
 	{
+		ser.setSpath("http://"+ser.getSip());  
 	    return serMapper.updateSer(ser);
 	}
 
@@ -85,5 +91,20 @@ public class SerServiceImpl implements ISerService
 	{
 		return serMapper.deleteSerByIds(Convert.toStrArray(ids));
 	}
-	
+
+	/**
+	 * 查询对应的服务器端口配置数量是否大于等于服务器的最多用户数
+	 * @param sid 服务器id
+	 * @return
+	 */
+	@Override
+	public boolean findMax(int sid) {
+		Ser ser = serMapper.selectSerById(sid);
+		if(ser != null){
+			//查询对应的端口配置信息
+			int count  =  serPortMapper.countSerPort(sid);
+			return ser.getMaxNum() > count;
+		}
+		return false;
+	}
 }

@@ -5,6 +5,11 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.PasswordUtil;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
+import com.ruoyi.project.system.ser.domain.Ser;
+import com.ruoyi.project.system.ser.service.ISerService;
+import com.ruoyi.project.system.serPort.domain.SerPort;
+import com.ruoyi.project.system.serPort.service.ISerPortService;
 import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +46,14 @@ public class LoginService
 {
     //@Autowired
     //private PasswordService passwordService;
+
+
+
+    @Autowired
+    private ISerService serService;
+
+    @Autowired
+    private ISerPortService serPortService;
 
     @Autowired
     private IUserService userService;
@@ -108,14 +121,23 @@ public class LoginService
         }
         // 用户名密码错误
         if (!PasswordUtil.matches(user, password)) {
-            //throw new BusinessException("用户名或密码错误");
             throw new UserPasswordNotMatchException();
+        }
+        String path ="/index";
+        //查询对应服务器端口配置
+        SerPort serPort = serPortService.selectSerPortByCompanyId(user.getCompanyId());
+        //查询对应服务器信息
+        if(serPort !=null) {
+            Ser ser = serService.selectSerById(serPort.getSid());
+            if(ser != null){
+                path = ser.getSpath()+":"+serPort.getPort()+"/index";
+            }
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         //recordLoginInfo(user);
         Map<String,Object> map = new HashMap<>();
         map.put(JwtUtil.CLAIM_KEY_USER, JSON.toJSONString(user));
-        return AjaxResult.login(null,JwtUtil.getToken(map),1,username);
+        return AjaxResult.login(path,JwtUtil.getToken(map),Integer.parseInt(user.getTag()),username);
     }
 
     private boolean maybeEmail(String username)

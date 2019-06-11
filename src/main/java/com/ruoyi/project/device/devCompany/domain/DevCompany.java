@@ -42,6 +42,8 @@ public class DevCompany extends BaseEntity
 	 */
 	private Integer industry;
 
+	private String totalIso;//iso 总文件夹名称
+
 	public Integer getIndustry() {
 		return industry;
 	}
@@ -112,6 +114,14 @@ public class DevCompany extends BaseEntity
 	public String getComPicture()
 	{
 		return comPicture;
+	}
+
+	public String getTotalIso() {
+		return totalIso;
+	}
+
+	public void setTotalIso(String totalIso) {
+		this.totalIso = totalIso;
 	}
 
 	public String toString() {

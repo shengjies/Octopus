@@ -29,9 +29,10 @@ function login() {
             "rememberMe": rememberMe
         },
         success: function(r) {
+            console.log(r)
             if (r.code == 0) {
                 document.cookie="token="+r.token;
-                location.href = ctx + 'index';
+                location.href = r.path;
             } else {
             	$.modal.closeLoading();
             	$('.imgcode').click();

@@ -35,7 +35,7 @@ public static final String CLAIM_KEY_USER="sub";
      * @return
      */
     public static Date getExpirationDate(){
-        return new Date(System.currentTimeMillis()+60*60*1000);
+        return new Date(System.currentTimeMillis()+60*1000);
     }
 
     /**

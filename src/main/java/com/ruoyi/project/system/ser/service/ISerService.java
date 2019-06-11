@@ -50,5 +50,12 @@ public interface ISerService
      * @return 结果
      */
 	public int deleteSerByIds(String ids);
+
+	/**
+	 * 查询对应的服务器端口配置数量是否大于等于服务器的最多用户数
+	 * @param sid 服务器id
+	 * @return
+	 */
+	boolean findMax(int sid);
 	
 }

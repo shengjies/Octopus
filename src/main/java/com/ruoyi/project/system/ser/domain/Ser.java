@@ -36,6 +36,10 @@ public class Ser extends BaseEntity
 	/** 服务器密码 */
 	private String pwd;
 
+	private Integer s_status ;//状态 0、开启 1、关闭
+
+	private Integer s_type;//0、共用 1、专用
+
 	public void setId(Integer id) 
 	{
 		this.id = id;
@@ -127,7 +131,23 @@ public class Ser extends BaseEntity
 		return pwd;
 	}
 
-    public String toString() {
+	public Integer getS_status() {
+		return s_status;
+	}
+
+	public void setS_status(Integer s_status) {
+		this.s_status = s_status;
+	}
+
+	public Integer getS_type() {
+		return s_type;
+	}
+
+	public void setS_type(Integer s_type) {
+		this.s_type = s_type;
+	}
+
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("sname", getSname())
