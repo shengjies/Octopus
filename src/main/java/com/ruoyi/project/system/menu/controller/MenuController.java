@@ -101,9 +101,9 @@ public class MenuController extends BaseController
     @RequiresPermissions("system:menu:add")
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Menu menu)
+    public AjaxResult addSave(Menu menu,HttpServletRequest request)
     {
-        return toAjax(menuService.insertMenu(menu));
+        return toAjax(menuService.insertMenu(menu,request));
     }
 
     /**

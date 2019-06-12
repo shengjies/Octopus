@@ -120,9 +120,9 @@ public class DevListController extends BaseController
 	@Log(title = "硬件", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(DevList devList)
+	public AjaxResult editSave(DevList devList,HttpServletRequest request)
 	{		
-		return toAjax(devListService.updateDevList(devList));
+		return toAjax(devListService.updateDevList(devList,request));
 	}
 	
 	/**
@@ -143,8 +143,8 @@ public class DevListController extends BaseController
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
 	@RequiresPermissions("device:devList:edit")
-	public AjaxResult changeStatus(DevList devList){
-		return toAjax(devListService.updateDevList(devList));
+	public AjaxResult changeStatus(DevList devList,HttpServletRequest request){
+		return toAjax(devListService.updateDevList(devList,request));
 	}
 	/**
 	 * 获取所有没有配置的硬件编号
@@ -164,8 +164,8 @@ public class DevListController extends BaseController
 	@PostMapping("/configDev")
 	@ResponseBody
 	@RequiresPermissions("device:devList:configDev")
-	public AjaxResult configDev(DevList devList){
-		return toAjax(devListService.updateDevList(devList));
+	public AjaxResult configDev(DevList devList,HttpServletRequest request){
+		return toAjax(devListService.updateDevList(devList,request));
 	}
 
 	/**

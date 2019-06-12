@@ -82,25 +82,25 @@ public class DevIo extends BaseEntity
 		this.isSign = isSign;
 	}
 
-	public Integer getIsSign() 
+	public Integer getIsSign()
 	{
 		return isSign;
 	}
-	public void setRemark(String remark) 
+	public void setRemark(String remark)
 	{
 		this.remark = remark;
 	}
 
-	public String getRemark() 
+	public String getRemark()
 	{
 		return remark;
 	}
-	public void setCreateTime(Date createTime) 
+	public void setCreateTime(Date createTime)
 	{
 		this.createTime = createTime;
 	}
 
-	public Date getCreateTime() 
+	public Date getCreateTime()
 	{
 		return createTime;
 	}

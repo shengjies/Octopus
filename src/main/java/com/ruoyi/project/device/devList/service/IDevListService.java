@@ -45,7 +45,7 @@ public interface IDevListService
      * @param devList 硬件信息
      * @return 结果
      */
-	public int updateDevList(DevList devList);
+	public int updateDevList(DevList devList,HttpServletRequest request);
 
 	/**
 	 * 用户添加硬件
@@ -85,4 +85,30 @@ public interface IDevListService
 	 */
 	int  deviceValidate(String code);
 
+
+	/**
+	 * 接口验证硬件
+	 */
+	int apiDeviceValidate(String code);
+
+	/**
+	 * 接口添加硬件
+	 * @param devList 硬件信息
+	 * @return 结果
+	 */
+	int apiAddSave(DevList devList);
+
+	/**
+	 * 接口用户修改硬件状态
+	 * @param devList 硬件信息
+	 * @return 结果
+	 */
+	int apiEdit(DevList devList);
+
+	/**
+	 * 删除硬件信息
+	 * @param ids 硬件id
+	 * @return 结果
+	 */
+	int apiRemove(String ids);
 }

@@ -89,7 +89,7 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     @DataScope(tableAlias = "u")
-    public List<User> selectUserList(User user,HttpServletRequest request) {
+    public List<User> selectUserList(User user, HttpServletRequest request) {
         // 生成数据权限过滤条件
         User sysUser = JwtUtil.getTokenUser(request);
         Map<String, Object> map = new HashMap<>();
@@ -176,7 +176,7 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int deleteUserByIds(String ids,HttpServletRequest request) throws BusinessException {
+    public int deleteUserByIds(String ids, HttpServletRequest request) throws BusinessException {
         Long sysUserId = JwtUtil.getTokenUser(request).getUserId();
         Long[] userIds = Convert.toLongArray(ids);
         judgeUserId(sysUserId, userIds);
@@ -190,7 +190,7 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int insertUser(User user,HttpServletRequest request) {
+    public int insertUser(User user, HttpServletRequest request) {
         User sysUser = JwtUtil.getTokenUser(request);
         // 用户导入设置登录标记为
         user.setDeptId(103L);
@@ -223,7 +223,7 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int updateUser(User user,HttpServletRequest request) {
+    public int updateUser(User user, HttpServletRequest request) {
         Long userId = user.getUserId();
         User tokenUser = JwtUtil.getTokenUser(request);
         user.setUpdateBy(tokenUser.getLoginName());
@@ -386,7 +386,7 @@ public class UserServiceImpl implements IUserService {
     public String selectUserPostGroup(Long userId) {
         List<Post> list = postMapper.selectPostsByUserId(userId);
         StringBuffer idsStr = new StringBuffer();
-        if(list != null){
+        if (list != null) {
             for (Post post : list) {
                 idsStr.append(post.getPostName()).append(",");
             }
@@ -405,7 +405,7 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public String importUser(List<User> userList, Boolean isUpdateSupport,HttpServletRequest request) {
+    public String importUser(List<User> userList, Boolean isUpdateSupport, HttpServletRequest request) {
         if (StringUtils.isNull(userList) || userList.size() == 0) {
             throw new BusinessException("导入用户数据不能为空！");
         }
@@ -425,12 +425,12 @@ public class UserServiceImpl implements IUserService {
                 if (StringUtils.isNull(u)) {
                     user.setPassword(password);
                     user.setCreateBy(operName);
-                    this.insertUser(user,request);
+                    this.insertUser(user, request);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getLoginName() + " 导入成功");
                 } else if (isUpdateSupport) {
                     user.setUpdateBy(operName);
-                    this.updateUser(user,request);
+                    this.updateUser(user, request);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getLoginName() + " 更新成功");
                 } else {
@@ -461,7 +461,7 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int changeStatus(User user,HttpServletRequest request) {
+    public int changeStatus(User user, HttpServletRequest request) {
         if (User.isAdmin(user.getUserId())) {
             throw new BusinessException("不允许修改超级管理员用户");
         }
@@ -476,12 +476,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public int register(User user) {
-       //查询是否有空余的服务器
+        //查询是否有空余的服务器
         SerPort serPort = serPortMapper.selectNotConfigSerPort();
-        if(serPort == null)return 0;
+        if (serPort == null) return 0;
         //将服务器信息查询
         Ser ser = serMapper.selectSerById(serPort.getSid());
-        if(ser == null)return 0;
+        if (ser == null) return 0;
 //        // 注册用户设置用户登录标记为1
         user.setLoginTag(UserConstants.LOGIN_TAG_REG);
 //        // 部门
@@ -499,24 +499,24 @@ public class UserServiceImpl implements IUserService {
         devCompany.setComName(user.getComName());
         devCompany.setIndustry(user.getIndustry());
         devCompany.setCreateTime(new Date());
-        devCompany.setTotalIso("iso"+ser.getId()+serPort.getPort());
-         companyMapper.insertDevCompany(devCompany);
-        String url = ser.getSpath()+":"+serPort.getPort();
-         //调用对应从服务器公司注册接口进行注册公司信息
-        String[] cids ={devCompany.getCompanyId().toString()};
+        devCompany.setTotalIso("iso" + ser.getId() + serPort.getPort());
+        companyMapper.insertDevCompany(devCompany);
+        String url = ser.getSpath() + ":" + serPort.getPort();
+        //调用对应从服务器公司注册接口进行注册公司信息
+        String[] cids = {devCompany.getCompanyId().toString()};
         try {
             devCompany.setCreateTime(null);
             CompanyFeignApi feignApi = Feign.builder()
                     .encoder(new GsonEncoder())
                     .decoder(new GsonDecoder())
-                    .target(CompanyFeignApi.class,url);
-            HashMap<String,Object> result = feignApi.initCompanyInfo(devCompany);
-            if(Double.valueOf(result.get("code").toString()) != 0){
+                    .target(CompanyFeignApi.class, url);
+            HashMap<String, Object> result = feignApi.initCompanyInfo(devCompany);
+            if (Double.valueOf(result.get("code").toString()) != 0) {
                 //删除公司信息
                 companyMapper.deleteDevCompanyByIds(cids);
                 return 0;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             //删除公司信息
             companyMapper.deleteDevCompanyByIds(cids);
             return 0;
@@ -532,16 +532,16 @@ public class UserServiceImpl implements IUserService {
             UserFeignApi feignApi = Feign.builder()
                     .encoder(new GsonEncoder())
                     .decoder(new GsonDecoder())
-                    .target(UserFeignApi.class,url);
-            HashMap<String,Object> result = feignApi.initUserInfo(user);
-            if(Double.valueOf(result.get("code").toString()) != 0){
+                    .target(UserFeignApi.class, url);
+            HashMap<String, Object> result = feignApi.initUserInfo(user);
+            if (Double.valueOf(result.get("code").toString()) != 0) {
                 //删除用户信息
                 userMapper.deleteUserById(user.getUserId());
                 //删除公司信息
                 companyMapper.deleteDevCompanyByIds(cids);
                 return 0;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             //删除用户信息
             userMapper.deleteUserById(user.getUserId());
             //删除公司信息
@@ -557,7 +557,7 @@ public class UserServiceImpl implements IUserService {
         serPort.setUpdateTime(new Date());
         serPortMapper.updateSerPort(serPort);
         //将对应服务器用户加一
-        ser.setSuserNum(ser.getSuserNum()==null?1:ser.getSuserNum()+1);
+        ser.setSuserNum(ser.getSuserNum() == null ? 1 : ser.getSuserNum() + 1);
         serMapper.updateSer(ser);
         return rows;
     }
@@ -584,26 +584,26 @@ public class UserServiceImpl implements IUserService {
     public int changeLoginTag(User user) {
         user.setLoginTag(UserConstants.LOGIN_TAG_ADD); // 更新用户登录标记
         String comName = null;
-       if(user.getDevCompany() != null && !StringUtils.isEmpty(user.getDevCompany().getComName())){
-           comName = user.getDevCompany().getComName();
-           // 判断公司名称是否已经存在
-           DevCompany devCompany = devCompanyService.selectDevCompanyByComName(comName);
-           if (StringUtils.isNotNull(devCompany) && devCompany.getCompanyId() != user.getCompanyId()) {
-               throw new BusinessException("该公司名称已经存在，请重新输入");
-           }
-
-           DevCompany company = devCompanyService.selectDevCompanyById(user.getCompanyId());
-           company.setComName(comName); // 更新公司名称
-
-           company.setComAddress(user.getDevCompany().getComAddress()); // 更新公司地址
-           devCompanyService.updateDevCompany(company);
-       }
         //判断邮箱是否存在
         if (!StringUtils.isEmpty(user.getEmail())) {
             User user1 = userMapper.checkEmailUnique(user.getEmail());
             if (user1 != null && user.getUserId() != user1.getUserId()) {
                 throw new BusinessException("邮箱已存在，请重新输入");
             }
+        }
+        if (user.getDevCompany() != null && !StringUtils.isEmpty(user.getDevCompany().getComName())) {
+            comName = user.getDevCompany().getComName();
+            // 判断公司名称是否已经存在
+            DevCompany devCompany = devCompanyService.selectDevCompanyByComName(comName);
+            if (StringUtils.isNotNull(devCompany) && devCompany.getCompanyId() != user.getCompanyId()) {
+                throw new BusinessException("该公司名称已经存在，请重新输入");
+            }
+
+            DevCompany company = devCompanyService.selectDevCompanyById(user.getCompanyId());
+            company.setComName(comName); // 更新公司名称
+
+            company.setComAddress(user.getDevCompany().getComAddress()); // 更新公司地址
+            companyMapper.updateDevCompany(company);
         }
         return userMapper.updateUser(user);
     }
@@ -621,22 +621,22 @@ public class UserServiceImpl implements IUserService {
 
     /*******     操作用户数据    *******/
     /**
-     *
      * @param user 用户数据
      * @return
      */
     @Override
-    public int apiEdit(User user,HttpServletRequest request) {
+    public int apiEdit(User user, HttpServletRequest request) {
         User tokenUser = JwtUtil.getTokenUser(request);
         if (null == user.getUserId()) {
             user.setCompanyId(tokenUser.getCompanyId());
             userMapper.updateUserByLoginName(user);
         }
-         return userMapper.updateUser(user);
+        return userMapper.updateUser(user);
     }
 
     /**
      * 新增用户数据
+     *
      * @param user 用户信息
      * @return 结果
      */
@@ -648,7 +648,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public int apiRemove(String ids,HttpServletRequest request) {
+    public int apiRemove(String ids, HttpServletRequest request) {
         Long sysUserId = JwtUtil.getTokenUser(request).getUserId();
         String replace = ids.replace("\"", "").replace("\"", "");
         Long[] userIds = Convert.toLongArray(replace);

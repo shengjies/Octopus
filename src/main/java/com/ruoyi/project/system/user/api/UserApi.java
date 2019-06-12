@@ -58,6 +58,18 @@ public class UserApi {
     }
 
     /**
+     * 用户登录初始化设置
+     */
+    @RequestMapping("/changeLoginTag")
+    public AjaxResult changeLoginTag(@RequestBody User user,HttpServletRequest request){
+        try {
+            userService.changeLoginTag(user);
+            return AjaxResult.success();
+        } catch (BusinessException e) {
+            return AjaxResult.error(e.getMessage());
+        }
+    }
+    /**
      * 删除用户信息
      */
     @RequestMapping("/remove")

@@ -107,7 +107,7 @@ public interface IMenuService
      * @param menu 菜单信息
      * @return 结果
      */
-    public int insertMenu(Menu menu);
+    public int insertMenu(Menu menu,HttpServletRequest request);
 
     /**
      * 修改保存菜单信息

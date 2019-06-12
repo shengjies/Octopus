@@ -191,20 +191,24 @@ public class DevList extends BaseEntity
 		this.configStatus = configStatus;
 	}
 
+	@Override
 	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("deviceId", getDeviceId())
-            .append("deviceStatus", getDeviceStatus())
-            .append("deviceName", getDeviceName())
-            .append("devModelId", getDevModelId())
-            .append("deviceUploadTime", getDeviceUploadTime())
-            .append("companyId", getCompanyId())
-            .append("remark", getRemark())
-            .append("defId", getDefId())
-            .append("configDate", getConfigDate())
-            .append("createDate", getCreateDate())
-            .toString();
-    }
-
+		return "DevList{" +
+				"id=" + id +
+				", deviceId='" + deviceId + '\'' +
+				", devModel='" + devModel + '\'' +
+				", deviceStatus=" + deviceStatus +
+				", configStatus=" + configStatus +
+				", deviceName='" + deviceName + '\'' +
+				", devModelId=" + devModelId +
+				", deviceUploadTime=" + deviceUploadTime +
+				", companyId=" + companyId +
+				", comName='" + comName + '\'' +
+				", remark='" + remark + '\'' +
+				", defId=" + defId +
+				", configDate=" + configDate +
+				", createDate=" + createDate +
+				", devIos=" + devIos +
+				'}';
+	}
 }

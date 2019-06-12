@@ -1,6 +1,8 @@
 package com.ruoyi.project.device.devList.service;
 
 import com.ruoyi.common.constant.DevConstants;
+import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.feign.FeignUtils;
 import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
@@ -8,11 +10,17 @@ import com.ruoyi.common.utils.spring.DevId;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.project.device.devIo.domain.DevIo;
 import com.ruoyi.project.device.devIo.mapper.DevIoMapper;
+import com.ruoyi.project.device.devList.api.DevListApi;
+import com.ruoyi.project.device.devList.api.DevListFeignApi;
 import com.ruoyi.project.device.devList.domain.DevList;
+import com.ruoyi.project.device.devList.domain.DevListResult;
 import com.ruoyi.project.device.devList.mapper.DevListMapper;
 import com.ruoyi.project.device.devModel.domain.DevModel;
 import com.ruoyi.project.device.devModel.mapper.DevModelMapper;
 import com.ruoyi.project.system.user.domain.User;
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +28,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -122,9 +131,22 @@ public class DevListServiceImpl implements IDevListService
      * @return 结果
      */
 	@Override
-	public int updateDevList(DevList devList)
+	public int updateDevList(DevList devList,HttpServletRequest request)
 	{
-	    return devListMapper.updateDevList(devList);
+		DevListFeignApi devListApi = Feign.builder()
+				.decoder(new GsonDecoder())
+				.encoder(new GsonEncoder())
+				.target(DevListFeignApi.class, FeignUtils.MAIN_PATH);
+		DevListResult devListResult = new DevListResult();
+		devListResult.setId(devList.getId() != null ? devList.getId() : null);
+		devListResult.setRemark(devList.getRemark() != null ? devList.getRemark() : null);
+		devListResult.setDeviceName(devList.getDeviceName() != null ? devList.getDeviceName() : null);
+		devListResult.setDeviceStatus(devList.getDeviceStatus() != null ? devList.getDeviceStatus() : null);
+		HashMap<String, Object> result = devListApi.editDevList(devListResult, JwtUtil.getToken(request));
+		if (Double.valueOf(result.get("code").toString()) == 0) {
+			return devListMapper.updateDevList(devList);
+		}
+	    return 0;
 	}
 
 	/**
@@ -146,6 +168,7 @@ public class DevListServiceImpl implements IDevListService
 	@Override
 	public int deleteDevListByIds(String ids)
 	{
+
 		return devListMapper.deleteDevListByIds(Convert.toStrArray(ids));
 	}
 
@@ -191,5 +214,53 @@ public class DevListServiceImpl implements IDevListService
 			return DevConstants.DEV_BEING_USE;
 		}
 		return DevConstants.DEV_VALIDATE_TRUE;
+	}
+
+	/**
+	 * api验证硬件编号是否存在
+	 * @param code 硬件编号
+	 * @return 结果
+	 */
+	@Override
+	public int apiDeviceValidate(String code) {
+		String replace = code.replace("\"", "").replace("\"", "");
+		DevList devList = devListMapper.selectDevListByCode(replace);
+		if(devList == null){
+			throw new BusinessException("硬件不存在");
+		}else if(devList.getCompanyId() != null && devList.getCompanyId() >0){
+			throw new BusinessException("硬件正在使用");
+		}
+		return DevConstants.DEV_VALIDATE_TRUE;
+	}
+
+	/**
+	 * api接口添加硬件信息
+	 * @param devList 硬件信息
+	 * @return 结果
+	 */
+	@Override
+	public int apiAddSave(DevList devList) {
+		return devListMapper.addSave(devList);
+	}
+
+	/**
+	 * api接口修改硬件
+	 * @param devList 硬件信息
+	 * @return 结果
+	 */
+	@Override
+	public int apiEdit(DevList devList) {
+		return devListMapper.updateDevList(devList);
+	}
+
+	/**
+	 * api接口删除硬件
+	 * @param ids 硬件id
+	 * @return 结果
+	 */
+	@Override
+	public int apiRemove(String ids) {
+		String replace = ids.replace("\"", "").replace("\"", "");
+		return devListMapper.deleteDevListByIds(Convert.toStrArray(replace));
 	}
 }
