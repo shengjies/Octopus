@@ -54,7 +54,8 @@ public class IndexController extends BaseController {
     @GetMapping("/index")
     public String index(ModelMap mmap, HttpServletRequest request) {
         // 取身份信息
-        User user = JwtUtil.getTokenUser(request);
+        User tokenUser = JwtUtil.getTokenUser(request);
+        User user = userService.selectUserById(tokenUser.getUserId());
         // 根据用户id取出菜单
         List<Menu> menus = menuService.selectMenusByUser(user);
         DevCompany company = devCompanyService.selectDevCompanyById(user.getCompanyId());
@@ -70,7 +71,8 @@ public class IndexController extends BaseController {
     @GetMapping("/system/main")
     public String main(ModelMap mmap,HttpServletRequest request) {
         // 取身份信息
-        User user = JwtUtil.getTokenUser(request);
+        User tokenUser = JwtUtil.getTokenUser(request);
+        User user = userService.selectUserById(tokenUser.getUserId());
         // 根据用户id取出菜单
         List<Menu> menus = menuService.selectMenusByUser(user);
         DevCompany devCompany = devCompanyService.selectDevCompanyById(user.getCompanyId());

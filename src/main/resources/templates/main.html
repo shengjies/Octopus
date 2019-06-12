@@ -288,8 +288,8 @@
                 success: function (result) {
                     if (result.code == web_status.SUCCESS) {
                         $.modal.alert("初始化成功");
+                        $("#user_name",parent.parent.document).html(result.data.userName);
                         layer.close(index);
-                        top.location.reload();
                     } else if (result.code == web_status.FAIL) {
                         $.modal.alert(result.msg);
                     }

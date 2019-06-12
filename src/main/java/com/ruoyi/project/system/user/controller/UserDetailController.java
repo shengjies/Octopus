@@ -8,6 +8,7 @@ import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
 import com.ruoyi.project.system.menu.domain.Menu;
 import com.ruoyi.project.system.menu.service.IMenuService;
 import com.ruoyi.project.system.user.domain.User;
+import com.ruoyi.project.system.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,12 +34,16 @@ public class UserDetailController extends BaseController {
     @Autowired
     private IDevCompanyService devCompanyService;
 
+    @Autowired
+    private IUserService userService;
+
     private String prefix = "system/userDetail";
 
     @GetMapping("/userDetail")
     public String userDetail(ModelMap mmap, HttpServletRequest request){
         // 取身份信息
-        User user = JwtUtil.getTokenUser(request);
+        User tokenUser = JwtUtil.getTokenUser(request);
+        User user = userService.selectUserById(tokenUser.getUserId());
         // 根据用户id取出菜单
         List<Menu> menus = menuService.selectMenusByUser(user);
         // 根据用户id查询出公司信息

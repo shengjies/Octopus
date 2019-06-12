@@ -74,7 +74,12 @@ function submitHandler() {
         processData: false,
         contentType: false,
         success: function(result) {
-        	$.operate.saveSuccess(result);
+            if (result.code == web_status.SUCCESS) {
+                $.modal.close();
+                $("#c_img",parent.document).attr("src",result.data);
+                $("#imgUrl",parent.parent.document).attr("src",result.data);
+                $("#left_img",parent.parent.document).attr("src",result.data);
+            }
         }
     })
 }

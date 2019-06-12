@@ -171,7 +171,7 @@ public class ProfileController extends BaseController {
                 currentUser.setAvatar(imgUrl + avatar);
                 if (userService.updateUserInfo(currentUser) > 0) {
                     setSysUser(userService.selectUserById(currentUser.getUserId()));
-                    return success();
+                    return AjaxResult.success("success",(imgUrl+avatar));
                 }
             }
             return error();
@@ -193,7 +193,7 @@ public class ProfileController extends BaseController {
         try {
             if (userService.changeLoginTag(user) > 0) {
                 setSysUser(userService.selectUserById(JwtUtil.getTokenUser(request).getUserId()));
-                return success();
+                return AjaxResult.success("success",user);
             }
             return error();
         } catch (BusinessException e) {

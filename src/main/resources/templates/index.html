@@ -58,7 +58,7 @@
                             <a class="menuItem" title="个人中心">
                                 <div class="hide" th:text="个人中心"></div>
                                 <div class="pull-left image">
-                                    <img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : ${user.avatar}"
+                                    <img id="left_img" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : ${user.avatar}"
                                          class="img-circle" alt="User Image">
                                 </div>
                             </a>
@@ -112,10 +112,10 @@
                     <li><a title="全屏显示" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>
                     <li class="dropdown user-menu">
                         <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                            <img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} :  ${user.avatar}"
+                            <img id="imgUrl" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} :  ${user.avatar}"
                                  class="user-image">
-                            <!--显示公司名称-->
-                            <span class="hidden-xs">[[${user.userName}]]</span>
+                            <!--显示用户名称-->
+                            <span class="hidden-xs" id="user_name">[[${user.userName}]]</span>
                         </a>
                     </li>
                 </ul>
