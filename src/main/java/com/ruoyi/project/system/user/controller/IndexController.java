@@ -45,7 +45,11 @@ public class IndexController extends BaseController {
 
     @Autowired
     private IUserService userService;
-
+    @GetMapping("/s")
+    public String s(ModelMap mmap,HttpServletRequest request){
+        mmap.put("token",request.getParameter("token"));
+        return "s";
+    }
     // 系统首页
     @GetMapping("/index")
     public String index(ModelMap mmap, HttpServletRequest request) {

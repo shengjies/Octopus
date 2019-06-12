@@ -42,13 +42,13 @@
                         <li>
                             用户名称：<input type="text" name="userName"/>
                         </li>
-                        <li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
-                            所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
-                            <option value="-1">所有</option>
-                            <option th:each="com : ${Company}" th:text="${com.comName}"
-                                    th:value="${com.companyId}"></option>
-                        </select>
-                        </li>
+                        <!--<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">-->
+                            <!--所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">-->
+                            <!--<option value="-1">所有</option>-->
+                            <!--<option th:each="com : ${Company}" th:text="${com.comName}"-->
+                                    <!--th:value="${com.companyId}"></option>-->
+                        <!--</select>-->
+                        <!--</li>-->
                         <li>
                             用户状态：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}" style="width: 100px">
                             <option value="">所有</option>

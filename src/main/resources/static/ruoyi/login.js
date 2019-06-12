@@ -31,8 +31,12 @@ function login() {
         success: function(r) {
             console.log(r)
             if (r.code == 0) {
-                document.cookie="token="+r.token;
-                location.href = r.path;
+                if(r.sign == 1){
+                    document.cookie="token="+r.token;
+                    window.location.href=r.path
+                }else{
+                    window.location.href=r.path+"?token="+r.token;
+                }
             } else {
             	$.modal.closeLoading();
             	$('.imgcode').click();

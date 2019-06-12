@@ -7,6 +7,8 @@ import com.ruoyi.common.utils.PasswordUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
+import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
+import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.device.devCompany.api.CompanyFeignApi;
@@ -95,12 +97,6 @@ public class UserServiceImpl implements IUserService {
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         map.put("companyId", sysUser.getCompanyId());
-//        if (User.isSys(sysUser) && user.getCompanyId() != null && (user.getCompanyId()) != -1) { // 系统查询对应公司成员
-//            map.put("companyId", user.getCompanyId());
-//        }
-//        if (!User.isSys(sysUser)) { //非系统用户
-//            map.put("companyId", sysUser.getCompanyId());
-//        }
         List<User> userList = userMapper.selectUserListByCompanyId(map);
         List<Role> userRoles = null;
         for (User user1 : userList) {

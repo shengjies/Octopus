@@ -1,5 +1,7 @@
 package com.ruoyi.project.system.user.mapper;
 
+import com.ruoyi.framework.aspectj.lang.annotation.DataSource;
+import com.ruoyi.framework.aspectj.lang.enums.DataSourceType;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,6 +38,7 @@ public interface UserMapper
      * @param userName 用户名
      * @return 用户对象信息
      */
+    @DataSource(DataSourceType.SLAVE)
     public User selectUserByLoginName(String userName);
 
     /**

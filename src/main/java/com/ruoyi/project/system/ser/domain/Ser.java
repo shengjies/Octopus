@@ -147,18 +147,21 @@ public class Ser extends BaseEntity
 		this.s_type = s_type;
 	}
 
+	@Override
 	public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("sname", getSname())
-            .append("sip", getSip())
-            .append("spath", getSpath())
-            .append("suserNum", getSuserNum())
-            .append("remark", getRemark())
-            .append("createTime", getCreateTime())
-            .append("maxNum", getMaxNum())
-            .append("spwd", getSpwd())
-            .append("pwd", getPwd())
-            .toString();
-    }
+		return "Ser{" +
+				"id=" + id +
+				", sname='" + sname + '\'' +
+				", sip='" + sip + '\'' +
+				", spath='" + spath + '\'' +
+				", suserNum=" + suserNum +
+				", remark='" + remark + '\'' +
+				", createTime=" + createTime +
+				", maxNum=" + maxNum +
+				", spwd='" + spwd + '\'' +
+				", pwd='" + pwd + '\'' +
+				", s_status=" + s_status +
+				", s_type=" + s_type +
+				'}';
+	}
 }

@@ -87,8 +87,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="maxNum != null  ">max_num = #{maxNum},</if>
             <if test="spwd != null  and spwd != ''  ">spwd = #{spwd},</if>
             <if test="pwd != null  and pwd != ''  ">pwd = #{pwd},</if>
-            <if test="s_status != null  and s_status != ''  ">s_status = #{s_status},</if>
-            <if test="s_type != null  and s_type != ''  ">s_type = #{s_type},</if>
+            s_status = #{s_status},
+            s_type = #{s_type},
         </trim>
         where id = #{id}
     </update>

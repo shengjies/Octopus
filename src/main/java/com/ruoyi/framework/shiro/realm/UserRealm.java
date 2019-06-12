@@ -106,10 +106,10 @@ public class UserRealm extends AuthorizingRealm
 
         try
         {
-            User u = userService.selectUserByLoginName(user.getLoginName());
-            if(u ==null){
-                throw new Exception("用户验证失败");
-            }
+//            User u = userService.selectUserByLoginName(user.getLoginName());
+//            if(u ==null){
+//                throw new Exception("用户验证失败");
+//            }
         }
         catch (Exception e)
         {

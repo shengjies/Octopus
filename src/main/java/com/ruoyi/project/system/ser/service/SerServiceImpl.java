@@ -76,7 +76,8 @@ public class SerServiceImpl implements ISerService
 	@Override
 	public int updateSer(Ser ser)
 	{
-		ser.setSpath("http://"+ser.getSip());  
+		ser.setSpath("http://"+ser.getSip());
+		System.out.println(ser);
 	    return serMapper.updateSer(ser);
 	}
 

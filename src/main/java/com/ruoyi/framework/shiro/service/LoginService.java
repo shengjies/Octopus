@@ -124,13 +124,15 @@ public class LoginService
             throw new UserPasswordNotMatchException();
         }
         String path ="/index";
-        //查询对应服务器端口配置
-        SerPort serPort = serPortService.selectSerPortByCompanyId(user.getCompanyId());
-        //查询对应服务器信息
-        if(serPort !=null) {
-            Ser ser = serService.selectSerById(serPort.getSid());
-            if(ser != null){
-                path = ser.getSpath()+":"+serPort.getPort()+"/index";
+        if(user.getTag().equals("0")){
+            //查询对应服务器端口配置
+            SerPort serPort = serPortService.selectSerPortByCompanyId(user.getCompanyId());
+            //查询对应服务器信息
+            if(serPort !=null) {
+                Ser ser = serService.selectSerById(serPort.getSid());
+                if(ser != null){
+                    path = ser.getSpath()+":"+serPort.getPort()+"/s";
+                }
             }
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));

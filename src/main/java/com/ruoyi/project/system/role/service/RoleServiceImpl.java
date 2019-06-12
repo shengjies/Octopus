@@ -54,12 +54,7 @@ public class RoleServiceImpl implements IRoleService {
         User sysUser = JwtUtil.getTokenUser(request);
         Map<String, Object> map = new HashMap<>();
         map.put("role", role);
-        if (User.isSys(sysUser) && role.getCompanyId() != null && role.getCompanyId() != -1){ // 系统查询对应公司成员
-            map.put("companyId", role.getCompanyId());
-        }
-        if (!User.isSys(sysUser)) { //非系统用户
-            map.put("companyId", sysUser.getCompanyId());
-        }
+        map.put("companyId", sysUser.getCompanyId());
         return roleMapper.selectRoleListByCompanyId(map);
     }
 

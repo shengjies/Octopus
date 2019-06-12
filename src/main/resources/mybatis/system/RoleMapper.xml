@@ -91,7 +91,7 @@
             AND r.status = #{role.status}
         </if>
         <if test="companyId != null and companyId != ''">
-            AND r.company_id in (1,#{companyId})
+            AND r.company_id = #{companyId}
         </if>
         <if test="role.roleKey != null and role.roleKey != ''">
             AND r.role_key like concat('%', #{role.roleKey}, '%')
