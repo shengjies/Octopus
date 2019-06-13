@@ -82,4 +82,19 @@ public class UserApi {
         }
     }
 
+    /**
+     * 修改用户删除状态
+     * @param id
+     * @return
+     */
+    @RequestMapping("/updateUserDelFlag")
+    public AjaxResult updateUserDelFlag(@RequestBody User user){
+        try {
+            userService.updateUserDelFlag(user.getUserId().intValue(),user.getCompanyId());
+            return AjaxResult.success();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return AjaxResult.error();
+    }
 }

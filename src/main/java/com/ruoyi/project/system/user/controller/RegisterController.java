@@ -55,6 +55,7 @@ public class RegisterController extends BaseController {
         try {
             return toAjax(userService.register(user));
         } catch (Exception e) {
+            e.printStackTrace();
             return error("注册失败");
         }
     }

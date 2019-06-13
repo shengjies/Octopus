@@ -122,9 +122,9 @@ public class SerPortController extends BaseController
 	@Log(title = "服务器端口配置", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
+	public AjaxResult remove(Integer id)
 	{		
-		return toAjax(serPortService.deleteSerPortByIds(ids));
+		return toAjax(serPortService.deleteSerPortById(id));
 	}
 
 	/**

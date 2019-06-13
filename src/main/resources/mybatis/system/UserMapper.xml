@@ -278,4 +278,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectUserInfoById" resultType="com.ruoyi.project.system.user.domain.User">
 		SELECT user_id as userId,login_name as loginName,create_by as createBy,email as Email,user_name as userName FROM sys_user where user_id =#{user_id}
 	</select>
+
+	<!--修改用户删除状态-->
+	<update id="updateUserDelFlag">
+		update sys_user set del_flag =0,company_id =#{companyId} where user_id = #{id}
+	</update>
 </mapper> 

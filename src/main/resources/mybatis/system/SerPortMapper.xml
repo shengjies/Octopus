@@ -113,7 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!--查询未配置的服务端口-->
     <select id="selectNotConfigSerPort" resultMap="SerPortResult1">
         SELECT b.* FROM tab_ser as a,tab_ser_port as b where a.id = b.sid and  a.s_status = 0 and a.s_type = 0
-        and a.suser_num &lt; a.max_num and b.company_id = 0 order by a.create_time desc limit 1;
+        and a.suser_num &lt; a.max_num and b.company_id = 0 order by a.create_time asc limit 1;
     </select>
 
     <!---->

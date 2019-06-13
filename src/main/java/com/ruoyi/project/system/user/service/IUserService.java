@@ -207,4 +207,9 @@ public interface IUserService
      * @return 结果
      */
     int apiRemove(String ids,HttpServletRequest request);
+
+    /**
+     * 修改用户删除状态
+     */
+    int updateUserDelFlag(int id,int companyId);
 }

@@ -78,3 +78,5 @@ ALTER TABLE `devicemanage`.`dev_company`
 ADD COLUMN `total_iso` VARCHAR(45) NULL AFTER `industry`;
 
 
+ALTER TABLE `mainservers`.`sys_user`
+ADD COLUMN `r_sign` INT NULL DEFAULT 0 AFTER `user_department`;

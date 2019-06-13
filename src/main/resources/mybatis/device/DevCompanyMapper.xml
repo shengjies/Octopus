@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="comLogo != null  and comLogo != ''  ">com_logo,</if>
             <if test="comPicture != null  and comPicture != ''  ">com_picture,</if>
             <if test="industry != null  and industry != ''  ">industry,</if>
-            <if test="totalIso != null  and industry != ''  ">total_iso,</if>
+            <if test="totalIso != null  and totalIso != ''  ">total_iso,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="comName != null  and comName != ''  ">#{comName},</if>

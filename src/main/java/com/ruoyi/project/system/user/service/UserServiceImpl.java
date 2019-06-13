@@ -495,7 +495,7 @@ public class UserServiceImpl implements IUserService {
         devCompany.setComName(user.getComName());
         devCompany.setIndustry(user.getIndustry());
         devCompany.setCreateTime(new Date());
-        devCompany.setTotalIso("iso" + ser.getId() + serPort.getPort());
+        devCompany.setTotalIso("iso" + ser.getId() +"_"+ serPort.getPort());
         companyMapper.insertDevCompany(devCompany);
         String url = ser.getSpath() + ":" + serPort.getPort();
         //调用对应从服务器公司注册接口进行注册公司信息
@@ -661,5 +661,15 @@ public class UserServiceImpl implements IUserService {
                 throw new BusinessException("不允许删除超级管理员用户");
             }
         }
+    }
+
+    /**
+     * 修改用户删除状态
+     * @param id
+     * @return
+     */
+    @Override
+    public int updateUserDelFlag(int id,int companyId) {
+        return userMapper.updateUserDelFlag(id,companyId);
     }
 }

@@ -1,6 +1,8 @@
 package com.ruoyi.project.system.serPort.service;
 
 import com.ruoyi.project.system.serPort.domain.SerPort;
+import io.swagger.models.auth.In;
+
 import java.util.List;
 
 /**
@@ -57,6 +59,12 @@ public interface ISerPortService
      * @return 结果
      */
 	public int deleteSerPortByIds(String ids);
+
+	/**
+	 * 根据id删除
+	 * @return
+	 */
+	public int deleteSerPortById(Integer id);
 
 	/**
 	 * 检查对应的端口是否已经配置

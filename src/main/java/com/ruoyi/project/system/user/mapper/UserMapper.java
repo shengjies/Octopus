@@ -141,4 +141,11 @@ public interface UserMapper
      * @return
      */
     User selectUserInfoById(@Param("user_id")int user_id);
+
+    /**
+     * 修改用户删除状态
+     * @param id
+     * @return
+     */
+    int updateUserDelFlag(@Param("id")int id,@Param("companyId") int companyId);
 }

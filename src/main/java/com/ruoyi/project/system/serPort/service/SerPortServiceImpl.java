@@ -103,6 +103,15 @@ public class SerPortServiceImpl implements ISerPortService
 	}
 
 	/**
+	 * 根据id删除
+	 * @return
+	 */
+	@Override
+	public int deleteSerPortById(Integer id) {
+		return serPortMapper.deleteSerPortById(id);
+	}
+
+	/**
 	 * 检查对应的端口是否已经配置
 	 * @param id 端口id
 	 * @return

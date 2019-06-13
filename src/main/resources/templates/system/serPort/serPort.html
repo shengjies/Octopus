@@ -150,14 +150,19 @@
 		 */
 		function remove (id) {
 			$.modal.confirm("确定删除该条" + $.table._option.modalName + "信息吗？", function () {
-				var url = $.common.isEmpty(id) ? $.table._option.removeUrl : $.table._option.removeUrl.replace("{id}", id);
-				var data = {"ids": id};
 				$.post(prefix+"/portIsConfig",{id:id},function (data) {
 					if(data.code == 0){
 						if(data.data){
-							$.model.alertWarning("端口已经配置不能删除")
+							alert("端口已经配置不能删除")
+							// $.model.alertWarning("端口已经配置不能删除")
 						}else{
-							$.operate.submit(url, "post", "json", data);
+							$.post(prefix+"/remove",{id:id},function (data) {
+								if(data.code == 0){
+									$.table.search();
+								}else{
+									$.model.alertWarning(data.msg)
+								}
+							})
 						}
 					}else{
 						$.model.alertWarning(data.msg)
