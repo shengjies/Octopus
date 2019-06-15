@@ -73,9 +73,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!--查询当天正在生产或者已经生产完成当前系统时间与前一个小时的io口数据记录-->
     <select id="selectDataLogBeInOrFinish" resultType="com.ruoyi.project.device.devDeviceCounts.domain.DataLogTask">
-        select company_id as companyId,line_id as lineId,work_id as workId,dev_id as devId,io_id as ioId,io_order as ioOrder,create_date as createDate,hour(create_time)
-        as Hour,min(data_total) as Min,max(data_total) as Max,COALESCE(sum(del_data),0) as sumHour from dev_data_log
-        where dev_id = #{devId} and io_id = #{ioId} and work_id = #{workId}  and create_time BETWEEN #{sysDateTimeOld} AND #{sysDateTime};
+        SELECT hour(create_time)as timeHour,create_date as createDate, COALESCE(sum(del_data),0) as sumData FROM dev_data_log
+        where dev_id = #{devId} and io_id = #{ioId} and work_id = #{workId}  and create_time BETWEEN #{sysDateTimeOld} AND #{sysDateTime} group by timeHour,createDate;
     </select>
 
     <!--通过工单id查询各个IO口数据记录-->

@@ -93,11 +93,11 @@ public class UserServiceImpl implements IUserService {
     @DataScope(tableAlias = "u")
     public List<User> selectUserList(User user, HttpServletRequest request) {
         // 生成数据权限过滤条件
-        User sysUser = JwtUtil.getTokenUser(request);
-        Map<String, Object> map = new HashMap<>();
-        map.put("user", user);
-        map.put("companyId", sysUser.getCompanyId());
-        List<User> userList = userMapper.selectUserListByCompanyId(map);
+        //User sysUser = JwtUtil.getTokenUser(request);
+        //Map<String, Object> map = new HashMap<>();
+        //map.put("user", user);
+        //map.put("companyId", sysUser.getCompanyId());
+        List<User> userList = userMapper.selectUserList(user);
         List<Role> userRoles = null;
         for (User user1 : userList) {
             userRoles = roleMapper.selectRolesByUserId(user1.getUserId());

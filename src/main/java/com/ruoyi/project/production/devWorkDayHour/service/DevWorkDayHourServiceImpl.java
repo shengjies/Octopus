@@ -113,60 +113,55 @@ public class DevWorkDayHourServiceImpl implements IDevWorkDayHourService {
         Date sysDateTime = TimeUtil.getLastSecondOfLastHour(); // 定时任务当前系统时间-1S XX:59:59
         Date sysDateTimeOld = TimeUtil.getLastHour(); // 定时任务当前系统时间-1H XX:00:00
 
+
         DataLogTask dataLogTask = null; // 查询数据返回包装类集合
         DevWorkDayHour devWorkDayHour = null; // 硬件IO口24小时记录对象
         List<DevDataLog> dataLogs = null; // 各个IO口上传数据记录列表集合
+        // 所有正在生产或者已经完成的工单
+        List<DevWorkOrder> workOrders = workOrderMapper.selectWorkOrderAllBeInOrFinish();
+        for (DevWorkOrder workOrder : workOrders) { // 循环每个工单
+            // 上传数据各个公司各个IO口记录集合
+            dataLogs = dataLogMapper.selectDevDataLogByWorkId(workOrder.getId(),workOrder.getCompanyId());
+            // 上传数据列表
+            for (DevDataLog dataLog : dataLogs) {
+                try {
+                    // 查询出当前系统时间与前一个小时的上传数据
+                    dataLogTask = dataLogMapper.selectDataLogBeInOrFinish(dataLog.getDevId(),dataLog.getIoId(), dataLog.getWorkId(), sysDateTimeOld, sysDateTime);
+                    if (dataLogTask != null && dataLogTask.getSumData() != 0) {
+                        /**
+                         * 获取IO口数据的上传日期，通过上传日期判断硬件IO口24小时记录表有没有存在数据<br>
+                         *     没有记录则增加硬件IO口24小时记录
+                         */
+                        // 查询工单各个IO口每天24小时记录是否存在
+                        devWorkDayHour = devWorkDayHourMapper.selectWorkDayHourListByDate(dataLog.getWorkId(),dataLog.getDevId(), dataLog.getIoId(), dataLogTask.getCreateDate());
+                        if (devWorkDayHour == null) { // 不存在该工单指定IO口当天的记录
 
-        try {
-            // 所有正在生产或者已经完成的工单
-            List<DevWorkOrder> workOrders = workOrderMapper.selectWorkOrderAllBeInOrFinish();
-            for (DevWorkOrder workOrder : workOrders) { // 循环每个工单
-                // 上传数据各个公司各个IO口记录集合
-                dataLogs = dataLogMapper.selectDevDataLogByWorkId(workOrder.getId(),workOrder.getCompanyId());
-                // 上传数据列表
-                for (DevDataLog dataLog : dataLogs) {
-                    try {
-                        // 查询出当前系统时间与前一个小时的上传数据
-                        dataLogTask = dataLogMapper.selectDataLogBeInOrFinish(dataLog.getDevId(),dataLog.getIoId(), dataLog.getWorkId(), sysDateTimeOld, sysDateTime);
-                        if (dataLogTask != null && dataLogTask.getSumHour() != 0) {
-                            /**
-                             * 获取IO口数据的上传日期，通过上传日期判断硬件IO口24小时记录表有没有存在数据<br>
-                             *     没有记录则增加硬件IO口24小时记录
-                             */
-                            // 查询工单各个IO口每天24小时记录是否存在
-                            devWorkDayHour = devWorkDayHourMapper.selectWorkDayHourListByDate(dataLogTask.getWorkId(),dataLogTask.getDevId(), dataLogTask.getIoId(), dataLogTask.getCreateDate());
-                            if (devWorkDayHour == null) { // 不存在该工单指定IO口当天的记录
+                            devWorkDayHour = new DevWorkDayHour();
+                            devWorkDayHour.setCompanyId(dataLog.getCompanyId()); // 公司ID
+                            devWorkDayHour.setCreateTime(new Date()); // 创建时间
+                            devWorkDayHour.setDataTime(new Date());
+                            devWorkDayHour.setLineId(dataLog.getLineId()); // 产线ID
+                            devWorkDayHour.setWorkId(dataLog.getWorkId()); // 工单ID
+                            devWorkDayHour.setIoId(dataLog.getIoId()); // IO口ID
+                            devWorkDayHour.setDevId(dataLog.getDevId()); // 硬件ID
+                            devWorkDayHour.setIoOrder(dataLog.getIoOrder()); // IO口排序
+                            devWorkDayHour.setDevName(devListMapper.selectDevListById(dataLog.getDevId()).getDeviceName()); // 硬件名称
+                            devWorkDayHour.setIoName(devIoMapper.selectDevIoById(dataLog.getIoId()).getIoName()); //IO口名称
+                            devWorkDayHourMapper.insertDevWorkDayHour(devWorkDayHour); // 增加记录
 
-                                devWorkDayHour = new DevWorkDayHour();
-                                devWorkDayHour.setCompanyId(dataLogTask.getCompanyId()); // 公司ID
-                                devWorkDayHour.setCreateTime(new Date()); // 创建时间
-                                devWorkDayHour.setDataTime(new Date());
-                                devWorkDayHour.setLineId(dataLogTask.getLineId()); // 产线ID
-                                devWorkDayHour.setWorkId(dataLogTask.getWorkId()); // 工单ID
-                                devWorkDayHour.setIoId(dataLogTask.getIoId()); // IO口ID
-                                devWorkDayHour.setDevId(dataLogTask.getDevId()); // 硬件ID
-                                devWorkDayHour.setIoOrder(dataLogTask.getIoOrder()); // IO口排序
-                                devWorkDayHour.setDevName(devListMapper.selectDevListById(dataLogTask.getDevId()).getDeviceName()); // 硬件名称
-                                devWorkDayHour.setIoName(devIoMapper.selectDevIoById(dataLogTask.getIoId()).getIoName()); //IO口名称
-                                devWorkDayHourMapper.insertDevWorkDayHour(devWorkDayHour); // 增加记录
+                            updateWorkHourData(dataLogTask,dataLog); // 更新IO口每天每小时数据
 
-                                updateWorkHourData(dataLogTask); // 更新IO口每天每小时数据
+                        } else { // 数据库中存在记录直接更新数据
 
-                            } else { // 数据库中存在记录直接更新数据
-
-                                updateWorkHourData(dataLogTask); // 更新IO口每天每小时数据
-                            }
+                            updateWorkHourData(dataLogTask,dataLog); // 更新IO口每天每小时数据
                         }
-                    } catch (Exception e) {
-                        log.info("======定时任务>>>>>统计工单每小时数据出现了异常======");
-                        e.printStackTrace();
                     }
+                } catch (Exception e) {
+                    log.info("======定时任务>>>>>统计工单每小时数据出现了异常======");
+                    e.printStackTrace();
                 }
-
             }
-        } catch (Exception e) {
-            log.info("======定时任务>>>>>统计工单每小时数据出现了异常======");
-            e.printStackTrace();
+
         }
 
     }
@@ -175,12 +170,12 @@ public class DevWorkDayHourServiceImpl implements IDevWorkDayHourService {
      * 更新硬件IO口24小时每小时数据
      * @param dataLogTask
      */
-    private void updateWorkHourData(DataLogTask dataLogTask) {
-        devWorkDayHourMapper.updateDevWorkDayHour2(dataLogTask.getHour() == null ? 0 : dataLogTask.getHour(),
-                (dataLogTask.getSumHour() == null ? 0 : dataLogTask.getSumHour()),
-                dataLogTask.getWorkId(),
-                dataLogTask.getDevId(),
-                dataLogTask.getIoId(),
+    private void updateWorkHourData(DataLogTask dataLogTask,DevDataLog dataLog) {
+        devWorkDayHourMapper.updateDevWorkDayHour2(dataLogTask.getTimeHour() == null ? 0 : dataLogTask.getTimeHour(),
+                (dataLogTask.getSumData() == null ? 0 : dataLogTask.getSumData()),
+                dataLog.getWorkId(),
+                dataLog.getDevId(),
+                dataLog.getIoId(),
                 dataLogTask.getCreateDate() == null ? new Date() : dataLogTask.getCreateDate());
     }
 
