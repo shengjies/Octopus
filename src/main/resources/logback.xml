@@ -2,7 +2,7 @@
 <configuration>
 
 	<!--<property name="log.path" value="/home/zouqiang/logs" />-->
-	<property name="log.path" value="/home/logs/o8088" />
+	<property name="log.path" value="/root/logs" />
 	<property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
 
 	<!-- 控制台输出 -->
