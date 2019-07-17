@@ -55,6 +55,7 @@ public class DevList extends BaseEntity
 	@Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Excel.Type.EXPORT)
 	private Date createDate;
 
+	private Integer scan;
 
 	private List<DevIo> devIos;
 
@@ -189,6 +190,14 @@ public class DevList extends BaseEntity
 
 	public void setConfigStatus(Integer configStatus) {
 		this.configStatus = configStatus;
+	}
+
+	public Integer getScan() {
+		return scan;
+	}
+
+	public void setScan(Integer scan) {
+		this.scan = scan;
 	}
 
 	@Override

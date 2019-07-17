@@ -57,4 +57,12 @@ public enum BusinessType
      * 清空数据
      */
     CLEAN,
+    /**
+     * 详情查看
+     */
+    DETAILS,
+    /**
+     * 分发服务器
+     */
+    SERVICE,
 }

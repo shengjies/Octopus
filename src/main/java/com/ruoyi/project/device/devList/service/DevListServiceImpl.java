@@ -263,4 +263,14 @@ public class DevListServiceImpl implements IDevListService
 		String replace = ids.replace("\"", "").replace("\"", "");
 		return devListMapper.deleteDevListByIds(Convert.toStrArray(replace));
 	}
+
+	/**
+	 * 硬件扫描
+	 * @param id 硬件id
+	 * @return
+	 */
+	@Override
+	public int devScan(int id) {
+		return devListMapper.devScan(id);
+	}
 }

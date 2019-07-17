@@ -32,14 +32,14 @@
 									<option th:each="dict : ${type}" th:text="${dict.modelName}" th:value="${dict.id}"></option>
 								</select>
 							</li>
-							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
+							<li>
 								所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
 								<option value="-1">所有</option>
 								<option th:each="com : ${Company}" th:text="${com.comName}" th:value="${com.companyId}"></option>
 							</select>
 							</li>
-							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
-								是否配置：<select name="configStatus" >
+							<li >
+								是否归属公司：<select name="configStatus" >
 								<option value="-1">所有</option>
 								<option value="0">否</option>
 								<option value="1">是</option>
@@ -113,7 +113,7 @@
 					title : '硬件编号',
 					sortable: true,
 					formatter:function (value, row, index) {
-						if(configStatus =="" && row.configStatus == 0){
+						if(row.scan == 0){
 							return '<a class="btn btn-success btn-xs " href="#" onclick="config(\'' + row.id + '\')">'+value+'</a> '
 						}else {
 							return value;

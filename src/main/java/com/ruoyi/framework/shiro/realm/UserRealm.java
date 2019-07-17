@@ -67,7 +67,6 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
-//        User user = ShiroUtils.getSysUser();
         User user = JwtUtil.getUserByToken(arg0.toString());
         // 角色列表
         Set<String> roles = new HashSet<String>();

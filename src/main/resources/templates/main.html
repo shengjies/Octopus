@@ -13,298 +13,73 @@
     <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
     <link href="../static/ruoyi/css/ry-ui.css" th:href="@{/ruoyi/css/ry-ui.css?v=3.2.0}" rel="stylesheet"/>
 </head>
-<body class="gray-bg" onload="init()">
+<body class="gray-bg" >
 <!--首页展示-->
-<div>
-    <div class="row dashboard-header">
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>图片轮播</h5>
-                    </div>
-                    <div class="ibox-content " th:if="${comPictures != null}">
-                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="10000">
-                            <ol class="carousel-indicators">
-                                <li th:each="item,start:${comPictures}" data-target="#carousel-example-generic"
-                                    th:data-slide-to="${start.index}" th:class="${start.index ==0?'active':''}"></li>
-                            </ol>
-                            <div class="carousel-inner" role="listbox">
-                                <div th:class="${start.index ==0?'item active':'item'}" th:each="item,start:${comPictures}">
-                                    <img alt="image" class="img-responsive" style="width: 100%;height: 360px"
-                                         th:src="${item}">
-                                </div>
-                            </div>
-                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
+<div >
+    <div class="row dashboard-header" th:with="user=${@user.getSysUser()}">
+        <div th:if="${user.tag == '1' and user.companyId == 1}" class="row  border-bottom white-bg dashboard-header">
+            <div class="col-sm-3">
+                <div class="widget style1 navy-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-3">
+                            <i class="fa fa-user fa-3x"></i>
                         </div>
-                    </div>
-                    <div>
-                        <li th:if="${comPictures == null}">
-                            <div class="ibox-content profile-content">
-                                <div class="user-button">
-                                    <div class="row" style="text-align: center">
-                                        <h3>未上传轮播图片</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                        <div class="col-xs-9 text-right">
+                            <span>当日注册数</span><h2 class="font-bold">217</h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-7">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5 style="color: #006dcc">今日生产排单</h5>
-                    </div>
-                    <div class="ibox-content ">
-                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="8">
-                            <thead>
-                            <tr>
-                                <th>生产产线</th>
-                                <th>工单号</th>
-                                <th>产品编码</th>
-                                <th>产品名称</th>
-                                <th>生产数量</th>
-                                <th>工单状态</th>
-                            </tr>
-                            </thead>
-                            <tbody th:with="allWorkerToday = ${@workOrder.selectWorkOrderAllToday(#httpServletRequest.getCookies())}">
-                            <!--循环列表-->
-                            <tr th:each="worker : ${allWorkerToday}">
-                                <td th:text="${worker.productionLine.lineName}"></td>
-                                <td th:text="${worker.workorderNumber}"></td>
-                                <td th:text="${worker.productCode}"></td>
-                                <td th:text="${worker.productName}"></td>
-                                <td th:text="${worker.productNumber}"></td>
-                                <li th:if="${worker.workorderStatus} == 0">
-                                    <td><span class="label label-success">未开始</span>&nbsp;</td>
-                                </li>
-                                <li th:if="${worker.workorderStatus} == 1">
-                                    <td><span class="label label-primary">进行中</span>&nbsp;</td>
-                                </li>
-                                <li th:if="${worker.workorderStatus} == 2">
-                                    <td><span class="label label-danger">已完成</span>&nbsp;</td>
-                                </li>
-                            </tr>
-                            </tbody>
-                        </table>
+            <div class="col-sm-3">
+                <div class="widget style1 navy-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-3">
+                            <i class="fa fa-shield fa-3x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <span>端口可用数</span><h2 class="font-bold">217</h2>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5 style="color: red">异常情况</h5>
-                    </div>
-                    <div class="ibox-content ">
-                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="8">
-                            <thead>
-                            <tr>
-                                <th>工单号</th>
-                                <th>异常类型</th>
-                                <th>备注</th>
-                                <th>发现时间</th>
-                                <th>异常情况</th>
-                            </tr>
-                            </thead>
-                            <tbody th:with="workExcAllToday = ${@workOrderExc.selectWorkExcToday(#httpServletRequest.getCookies())}">
-                            <tr th:each="workOrderExc : ${workExcAllToday}">
-                                <td th:text="${workOrderExc.devWorkOrder.workorderNumber}"></td>
-                                <td th:text="${workOrderExc.workExceptionType.typeName}"></td>
-                                <td th:text="${workOrderExc.remark}"></td>
-                                <td>[[${#dates.format(workOrderExc.createTime, 'yyyy-MM-dd HH:ss')}]]</td>
-                                <li th:if="${workOrderExc.exceStatut} == 0">
-                                    <td><span class="label label-danger">待处理</span>&nbsp;</td>
-                                </li>
-                                <li th:if="${workOrderExc.exceStatut} == 1">
-                                    <td><span class="label label-primary">处理中</span>&nbsp;</td>
-                                </li>
-                                <li th:if="${workOrderExc.exceStatut} == 2">
-                                    <td><span class="label label-success">已解决</span>&nbsp;</td>
-                                </li>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-7">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>消息</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="feed-activity-list" th:with="allNotice=${@notice.selectAllNotice(#httpServletRequest.getCookies())}">
-                            <div class="feed-element" th:each="notice : ${allNotice}">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" th:src="(${notice.createUser.avatar} == '') ? @{/img/profile.jpg} :  ${notice.createUser.avatar}">
-                                </a>
-                                <div class="media-body">
-                                    <strong><span style="color: #00C1B3">[[${notice.createUser.userName}]]</span></strong>
-                                    <div>[[${notice.noticeContent}]]</div>
-                                    <small class="text-muted" style="color: #00a65a">[[${#dates.format(notice.createTime, 'yyyy-MM-dd HH:ss')}]]</small>
+        <div th:if="${user.tag == '2' and user.companyId == -1}" class="row  border-bottom white-bg dashboard-header">
+            <section class="section-content">
+                <div class="ibox-content">
+                    <div class="row animated fadeInRight">
+                        <div class="col-sm-12" style="padding-left: 0px">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title ibox-title-gray dashboard-header gray-bg">
+                                    <h5>资质审核</h5>
+                                </div>
+                                <div class="ibox-content" style="text-align: center">
+                                    <h3>请提交资质认证，通过认证后可使用八爪鱼制造服务！</h3>
+                                        <h4 th:if="${apply != null}" style="color: green">已经提交认证信息</h4>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <a class="btn btn-primary" th:if="${apply == null}" href="#" onclick="apply()">资质认证</a>
+                                    <a class="btn btn-primary" th:if="${apply != null}" href="#" onclick="apply()">查看认证结果</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 </div>
+
 <!--引导个人设置-->
-<div id="setting-info" style="display: none">
-    <!--用户信息-->
-    <div class="ibox float-e-margins" id="user_info">
-        <form class="form-horizontal m" id="form-user-edit">
-            <!--隐藏用户ID-->
-            <input name="userId" type="hidden" th:value="${user.userId}"/>
-            <input name="companyId" type="hidden" th:value="${user.companyId}"/>
-            <input id="loginTag" name="loginTag" type="hidden" th:value="${user.loginTag}"/>
-            <br>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">登录号码：</label>
-                <div class="col-sm-10">
-                    <input type="text" autocomplete="off" class="form-control"
-                           readonly="true" name="loginName" id="loginName"
-                           th:value="${user.loginName}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">用户名称：</label>
-                <div class="col-sm-10">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="userName" placeholder="请输入用户名称" id="userName"
-                           th:value="${user.userName}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">邮箱：</label>
-                <div class="col-sm-10">
-                    <input type="text" autocomplete="off" class="form-control" name="email" id="email"
-                           th:value="${user.email}">
-                </div>
-            </div>
-            <div class="form-group" th:if="${user.loginName == user.createBy}">
-                <label class="col-sm-2 control-label">公司名称：</label>
-                <div class="col-sm-10">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="devCompany.comName" id="user.devCompany.comName"
-                           th:value="${user.devCompany.comName}">
-                </div>
-            </div>
-            <div class="form-group" th:if="${user.loginName == user.createBy}">
-                <label class="col-sm-2 control-label">公司地址：</label>
-                <div class="col-sm-10">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="devCompany.comAddress" id="user.devCompany.comAddress"
-                           th:value="${user.devCompany.comAddress}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">性别：</label>
-                <div class="col-sm-10">
-                    <div class="radio-box">
-                        <input type="radio" id="radio1" th:checked="${user.sex=='0'}"
-                               name="sex" value="0">
-                        <label for="radio1">男</label>
-                    </div>
-                    <div class="radio-box">
-                        <input type="radio" id="radio2" th:checked="${user.sex=='1'}"
-                               name="sex" value="1">
-                        <label for="radio2">女</label>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 <div th:include="include :: footer"></div>
 <script th:src="@{/ajax/libs/select/select2.js}"></script>
-<!--<script th:src="@{/js/jquery.min.js}"></script>-->
 <!--<script th:src="@{/js/bootstrap.min.js}"></script>-->
 <script th:inline="javascript">
-    var prefix = ctx + "device/devCompany";
-    function init() {
-        checkUserLoginTag();
-        /**
-         * 用户进入首页校验用户的登录标记
-         */
-        function checkUserLoginTag() {
-            $.ajax({
-                type: 'POST',
-                url: '/checkUserLoginTag',
-                dataType: 'json',
-                async:false,  //同步请求，
-                success: function (result) {
-                    if (result.msg == 'error') { // 用户未设置
-                        initSetting();
-                    }
-                }
-            });
-        }
-
-        function initSetting() {
-            layer.open({
-                type: 1,
-                area: ['800px', ($(window).height() - 200) + 'px'],
-                fix: false,
-                //不固定
-                maxmin: true,
-                shade: 0.3,
-                title: "请先完成个人初始化设置",
-                content: $("#setting-info"),
-                btn: ['确定', '关闭'],
-                // 弹层外区域关闭
-                shadeClose: true,
-                yes: function (index, layero) {
-                    changeLoginTag(index);
-                },
-                cancel: function (index) {
-                    return true;
-                }
-            });
-        }
-
-        /**
-         * 引导初始化改变用户登录标记
-         */
-        function changeLoginTag(index) {
-            $.ajax({
-                type: 'POST',
-                url: ctx + "system/user/profile/changeLoginTag",
-                dataType: 'json',
-                data: $('#form-user-edit').serialize(),
-                async: false,  //同步请求，
-                success: function (result) {
-                    if (result.code == web_status.SUCCESS) {
-                        $.modal.alert("初始化成功");
-                        $("#user_name",parent.parent.document).html(result.data.userName);
-                        layer.close(index);
-                    } else if (result.code == web_status.FAIL) {
-                        $.modal.alert(result.msg);
-                    }
-                }
-            });
-        }
-
-    }
-
     /**
-     * 公司轮播图修改
+     * 资质认证
      */
-    function comPicture() {
-        var url = prefix + '/comPicture';
-        $.modal.open("修改公司轮播图", url,700,500);
+    function apply() {
+        createMenuItem("/system/apply/add","资质认证")
     }
 
 </script>

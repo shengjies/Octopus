@@ -111,4 +111,11 @@ public interface IDevListService
 	 * @return 结果
 	 */
 	int apiRemove(String ids);
+
+	/**
+	 * 硬件扫描
+	 * @param id 硬件id
+	 * @return
+	 */
+	int devScan(int id);
 }

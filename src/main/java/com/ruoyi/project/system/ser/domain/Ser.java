@@ -36,6 +36,11 @@ public class Ser extends BaseEntity
 	/** 服务器密码 */
 	private String pwd;
 
+	/** 行业id */
+	private Integer inId;
+	/** 行业名称 */
+	private String inName;
+
 	private Integer s_status ;//状态 0、开启 1、关闭
 
 	private Integer s_type;//0、共用 1、专用
@@ -145,6 +150,22 @@ public class Ser extends BaseEntity
 
 	public void setS_type(Integer s_type) {
 		this.s_type = s_type;
+	}
+
+	public Integer getInId() {
+		return inId;
+	}
+
+	public void setInId(Integer inId) {
+		this.inId = inId;
+	}
+
+	public String getInName() {
+		return inName;
+	}
+
+	public void setInName(String inName) {
+		this.inName = inName;
 	}
 
 	@Override

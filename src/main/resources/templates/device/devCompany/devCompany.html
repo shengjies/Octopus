@@ -11,11 +11,18 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								公司名称：<input type="text" name="comName"/>
+								公司名称：<input type="text" name="comName" style="width: 180px"/>
 							</li>
 
 							<li>
 								公司地址：<input type="text" name="comAddress"/>
+							</li>
+							<li>
+								行业：
+								<select style="width: 200px" name="industry" th:with="ins=${@industry.selectIsAll()}">
+									<option value="-1">所以</option>
+									<option th:each="item:${ins}" th:value="${item.id}" th:utext="${item.name}"></option>
+								</select>
 							</li>
 							<li class="select-time">
 								<label>创建时间： </label>
@@ -82,7 +89,7 @@
 					title : '公司Logo',
 					formatter:function (value, row, index) {
 						if(value){
-							return '<img src="'+value+'" width="100" height="50" />'
+							return '<img src="'+value+'" width="80" height="80" />'
 						}
 						return "-";
 					}
@@ -93,18 +100,8 @@
 					sortable: true
 				},
 				// {
-				// 	field : 'comPeople',
-				// 	title : '公司负责人',
-				// 	sortable: true
-				// },
-				// {
 				// 	field : 'comTelephone',
-				// 	title : '公司电话',
-				// 	sortable: true
-				// },
-				// {
-				// 	field : 'comPhoneNumb',
-				// 	title : '负责人手机号',
+				// 	title : '联系电话',
 				// 	sortable: true
 				// },
 				{
@@ -112,6 +109,11 @@
 					title : '公司地址',
 					sortable: true
 				},
+					{
+						field : 'industryName',
+						title : '行业',
+						sortable: true
+					},
 				{
 					field : 'createTime',
 					title : '创建时间',

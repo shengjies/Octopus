@@ -8,7 +8,7 @@ ruoyi:
   copyrightYear: 2019
   # 文件上传路径
   profile: D:/profile/
-#  profile: /home/img/
+#  profile: /home/file/
   # 获取ip地址开关
   addressEnabled: true
 
@@ -128,7 +128,7 @@ gen:
   # 作者
   author: zqm
   # 默认生成包路径 system 需改成自己的模块名称 如 system monitor tool
-  packageName: com.ruoyi.project.erp
+  packageName: com.ruoyi.project.system
   # 自动去除表前缀，默认是true
   autoRemovePre: true
   # 表前缀(类名不会包含表前缀)
@@ -136,12 +136,13 @@ gen:
 
 page:
   url: http://127.0.0.1/t/
-#  url: http://39.108.187.126:8088/t/
+#  url: http://39.108.187.126:88/t/
 
 img:
-  url: http://127.0.0.1/profile/avatar/
-#  url: http://39.108.187.126:8088/profile/avatar/
+  url: http://172.16.30.113/profile/avatar/
+  license: http://172.16.30.113/profile/license/
+#  url: http://39.108.187.126:88/profile/avatar/
   
 file:
   url: http://127.0.0.1/profile/upload/
-#  url: http://39.108.187.126:8088/profile/upload/
+#  url: http://39.108.187.126:88/profile/upload/

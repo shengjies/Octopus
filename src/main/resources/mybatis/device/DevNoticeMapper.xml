@@ -5,9 +5,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.project.device.devNotice.mapper.DevNoticeMapper">
     
     <resultMap type="DevNotice" id="DevNoticeResult">
-        <result property="id"    column="id"    />
+        <result property="id"    column="notice_id"    />
         <result property="noticeContent"    column="notice_content"    />
-        <result property="createId"    column="create_id"    />
+        <result property="createId"    column="create_by"    />
         <result property="receiveBy"    column="receive_by"    />
         <result property="noticeStatus"    column="notice_status"    />
         <result property="companyId"    column="company_id"    />
@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectDevNoticeVo">
-        select id, notice_content, create_id, receive_by, notice_status, company_id, create_time from dev_notice
+        select notice_id, notice_content, create_by, receive_by, notice_status, company_id, create_time from dev_notice
     </sql>
 	
     <select id="selectDevNoticeList" parameterType="DevNotice" resultMap="DevNoticeResult">
@@ -39,14 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectDevNoticeById" parameterType="Integer" resultMap="DevNoticeResult">
         <include refid="selectDevNoticeVo"/>
-        where id = #{id}
+        where notice_id = #{id}
     </select>
         
     <insert id="insertDevNotice" parameterType="DevNotice" useGeneratedKeys="true" keyProperty="id">
         insert into dev_notice
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="noticeContent != null  and noticeContent != ''  ">notice_content,</if>
-			<if test="createId != null  and createId != ''  ">create_id,</if>
+			<if test="createId != null  and createId != ''  ">create_by,</if>
 			<if test="receiveBy != null  and receiveBy != ''  ">receive_by,</if>
 			<if test="noticeStatus != null  ">notice_status,</if>
 			<if test="companyId != null  ">company_id,</if>
@@ -66,21 +66,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update dev_notice
         <trim prefix="SET" suffixOverrides=",">
             <if test="noticeContent != null  and noticeContent != ''  ">notice_content = #{noticeContent},</if>
-            <if test="createId != null  and createId != ''  ">create_id = #{createId},</if>
+            <if test="createId != null  and createId != ''  ">create_by = #{createId},</if>
             <if test="receiveBy != null  and receiveBy != ''  ">receive_by = #{receiveBy},</if>
             <if test="noticeStatus != null  ">notice_status = #{noticeStatus},</if>
             <if test="companyId != null  ">company_id = #{companyId},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
         </trim>
-        where id = #{id}
+        where notice_id = #{id}
     </update>
 
 	<delete id="deleteDevNoticeById" parameterType="Integer">
-        delete from dev_notice where id = #{id}
+        delete from dev_notice where notice_id = #{id}
     </delete>
 	
     <delete id="deleteDevNoticeByIds" parameterType="String">
-        delete from dev_notice where id in 
+        delete from dev_notice where notice_id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

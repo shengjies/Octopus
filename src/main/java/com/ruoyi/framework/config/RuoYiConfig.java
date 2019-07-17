@@ -87,4 +87,8 @@ public class RuoYiConfig
     {
         return profile + "upload/";
     }
+
+    public static String getLicense(){
+        return profile +"license/";
+    }
 }

@@ -1,8 +1,6 @@
 package com.ruoyi.project.monitor.job.task;
 
 import com.ruoyi.framework.web.controller.BaseController;
-import com.ruoyi.project.production.devWorkDayHour.service.IDevWorkDayHourService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Component("ryTask")
 public class RyTask extends BaseController {
 
-    @Autowired
-    private IDevWorkDayHourService devWorkDayHourService;
 
     public void ryParams(String params) {
         System.out.println("执行有参方法：" + params);
@@ -28,6 +24,6 @@ public class RyTask extends BaseController {
      * 每小时定时任务，计算工单数据日志记录
      */
     public void calcDataLog() {
-        devWorkDayHourService.selectCalcDataLog();
+
     }
 }

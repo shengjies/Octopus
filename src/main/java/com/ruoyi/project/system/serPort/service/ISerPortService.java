@@ -79,5 +79,12 @@ public interface ISerPortService
 	 * @return
 	 */
 	int configCompanyEdit(SerPort serPort);
+
+	/**
+	 * 根据服务器id查询对应可用端口
+	 * @param serId 服务器id
+	 * @return
+	 */
+	List<SerPort> selectSerPortBySerId(int serId);
 	
 }

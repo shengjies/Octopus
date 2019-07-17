@@ -24,6 +24,14 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="col-sm-3 control-label">所属行业：</label>
+				<div class="col-sm-8">
+					<select id="inId" th:with="ins=${@industry.selectIsAll()}" class="form-control m-b" name="inId">
+						<option th:each="item:${ins}" th:value="${item.id}" th:utext="${item.name}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="col-sm-3 control-label">可注册状态：</label>
 				<div class="col-sm-8">
 					<select id="s_status" class="form-control m-b" name="s_status">
@@ -72,6 +80,9 @@
 				maxNum:{
 					required:true,
 				},
+				inId:{
+					required:true,
+				}
 			},messages:{
 				sname:{
 					required:"请填写服务器名称"
@@ -84,6 +95,9 @@
 				},
 				maxNum:{
 					required:"请填写最大用户数量"
+				},
+				inId:{
+					required:"请选择所属行业",
 				}
 			}
 		});

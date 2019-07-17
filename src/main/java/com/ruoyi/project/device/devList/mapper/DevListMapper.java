@@ -99,4 +99,11 @@ public interface DevListMapper
 	 * @return
 	 */
 	DevList selectDevListByCode(@Param("code")String code);
+
+	/**
+	 * 硬件扫描
+	 * @param id
+	 * @return
+	 */
+	int devScan(@Param("id")int id);
 }

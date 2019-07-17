@@ -14,6 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="comPicture"    column="com_picture"    />
         <result property="industry"    column="industry"    />
         <result property="totalIso"    column="total_iso"    />
+        <association property="industryName" select="selectCompanyIndustryName" column="industry">
+            <result property="industryName" column="name"/>
+        </association>
     </resultMap>
 
     <sql id="selectDevCompanyVo">
@@ -25,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="comName != null  and comName != '' "> and com_name  like concat(#{comName}, '%')</if>
             <if test="comAddress != null  and comAddress != '' "> and com_address  like concat(#{comAddress}, '%')</if>
+            <if test="industry != null  and industry >-1 "> and industry  = #{industry}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
                 AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
             </if>
@@ -32,6 +36,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
             </if>
         </where>
+    </select>
+
+    <!--查询行业名称-->
+    <select id="selectCompanyIndustryName" resultType="java.lang.String">
+        SELECT `name` FROM tab_industry where  id = #{industry};
     </select>
 
     <select id="selectDevCompanyById" parameterType="Integer" resultMap="DevCompanyResult">

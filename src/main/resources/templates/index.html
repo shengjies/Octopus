@@ -63,7 +63,7 @@
                                 </div>
                             </a>
                             <div class="pull-left info">
-                                <p>[[${user.loginName}]]</p>
+                                <p>[[${user.userName}]]</p>
                                 <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
                                 <a href="javascript:logout()" style="padding-left:5px;"><i
                                         class="fa fa-sign-out text-danger"></i> 注销</a>
@@ -110,14 +110,14 @@
                     <li style="display:none;"><a title="使用文档" href="http://doc.ruoyi.vip" target="_blank"><i
                             class="fa fa-question-circle"></i> 使用文档</a></li>
                     <li><a title="全屏显示" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>
-                    <li class="dropdown user-menu">
-                        <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                            <img id="imgUrl" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} :  ${user.avatar}"
-                                 class="user-image">
-                            <!--显示用户名称-->
-                            <span class="hidden-xs" id="user_name">[[${user.userName}]]</span>
-                        </a>
-                    </li>
+                    <!--<li class="dropdown user-menu">-->
+                        <!--<a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">-->
+                            <!--<img id="imgUrl" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} :  ${user.avatar}"-->
+                                 <!--class="user-image">-->
+                            <!--&lt;!&ndash;显示用户名称&ndash;&gt;-->
+                            <!--<span class="hidden-xs" id="user_name">[[${user.userName}]]</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
                 </ul>
             </nav>
         </div>

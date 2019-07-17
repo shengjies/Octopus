@@ -5,6 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.jwt.JwtUtil;
@@ -12,6 +13,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.device.devCompany.domain.DevCompany;
 import com.ruoyi.project.device.devCompany.service.DevCompanyServiceImpl;
 import com.ruoyi.project.device.devCompany.service.IDevCompanyService;
+import com.ruoyi.project.system.apply.service.IApplyService;
 import com.ruoyi.project.system.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,10 @@ public class IndexController extends BaseController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IApplyService applyService;
+
     @GetMapping("/s")
     public String s(ModelMap mmap,HttpServletRequest request){
         mmap.put("token",request.getParameter("token"));
@@ -52,15 +58,14 @@ public class IndexController extends BaseController {
     }
     // 系统首页
     @GetMapping("/index")
-    public String index(ModelMap mmap, HttpServletRequest request) {
+    public String index(ModelMap mmap) {
         // 取身份信息
-        User tokenUser = JwtUtil.getTokenUser(request);
+        User tokenUser = JwtUtil.getTokenUser(ServletUtils.getRequest());
         User user = userService.selectUserById(tokenUser.getUserId());
         // 根据用户id取出菜单
         List<Menu> menus = menuService.selectMenusByUser(user);
         DevCompany company = devCompanyService.selectDevCompanyById(user.getCompanyId());
         user.setDevCompany(company);
-
         mmap.put("menus", menus);
         mmap.put("user", user);
         mmap.put("copyrightYear", ruoYiConfig.getCopyrightYear());
@@ -84,7 +89,7 @@ public class IndexController extends BaseController {
         }
         mmap.put("user", user);
         mmap.put("version", ruoYiConfig.getVersion());
-
+        mmap.put("apply", applyService.selectApplyByCreateId(tokenUser.getUserId().intValue()));
         return "main";
     }
 

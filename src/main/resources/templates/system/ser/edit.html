@@ -25,6 +25,14 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="col-sm-3 control-label">所属行业：</label>
+				<div class="col-sm-8">
+					<select id="inId" th:field="*{inId}" th:with="ins=${@industry.selectIsAll()}" class="form-control m-b" name="inId">
+						<option th:each="item:${ins}" th:value="${item.id}" th:utext="${item.name}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="col-sm-3 control-label">可注册状态：</label>
 				<div class="col-sm-8">
 					<select id="s_status"  th:field="*{s_status}"  class="form-control m-b" name="s_status">

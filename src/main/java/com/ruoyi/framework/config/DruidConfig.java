@@ -30,32 +30,32 @@ public class DruidConfig
         return druidProperties.dataSource(dataSource);
     }
 
-    @Bean
-    @ConfigurationProperties("spring.datasource.druid.slave")
-    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
-    public DataSource slaveDataSource(DruidProperties druidProperties)
-    {
-        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
-        return druidProperties.dataSource(dataSource);
-    }
+//    @Bean
+//    @ConfigurationProperties("spring.datasource.druid.slave")
+//    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
+//    public DataSource slaveDataSource(DruidProperties druidProperties)
+//    {
+//        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+//        return druidProperties.dataSource(dataSource);
+//    }
 
-    @Bean
-    @ConfigurationProperties("spring.datasource.druid.erp")
-    @ConditionalOnProperty(prefix = "spring.datasource.druid.erp", name = "enabled", havingValue = "true")
-    public DataSource erpDataSource(DruidProperties druidProperties)
-    {
-        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
-        return druidProperties.dataSource(dataSource);
-    }
+//    @Bean
+//    @ConfigurationProperties("spring.datasource.druid.erp")
+//    @ConditionalOnProperty(prefix = "spring.datasource.druid.erp", name = "enabled", havingValue = "true")
+//    public DataSource erpDataSource(DruidProperties druidProperties)
+//    {
+//        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+//        return druidProperties.dataSource(dataSource);
+//    }
 
     @Bean(name = "dynamicDataSource")
     @Primary
-    public DynamicDataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource,DataSource erpDataSource)
+    public DynamicDataSource dataSource(DataSource masterDataSource)
     {
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
-        targetDataSources.put(DataSourceType.SLAVE.name(), slaveDataSource);
-        targetDataSources.put(DataSourceType.ERP.name(), erpDataSource);
+//        targetDataSources.put(DataSourceType.SLAVE.name(), slaveDataSource);
+//        targetDataSources.put(DataSourceType.ERP.name(), erpDataSource);
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 }

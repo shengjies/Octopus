@@ -62,28 +62,16 @@
             <form id="form-register">
                 <h4 class="no-margins">注册：</h4>
                 <div class="form-group">
-                    <input type="text" name="userName" id="userName" class="form-control uname" placeholder="用户名称"/>
+                    <input type="email" name="email" style="color: #000" id="email" class="form-control " placeholder="邮箱"/>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="loginName" id="loginName" class="form-control uname" placeholder="手机号"/>
+                    <input type="text" name="loginName" style="color: #000" id="loginName" class="form-control " placeholder="手机号"/>
                 </div>
                 <div class="form-group">
-                    <input name="password" id="password" type="password" class="form-control pword" placeholder="密码"/>
+                    <input name="password" id="password" style="color: #000" type="password" class="form-control " placeholder="密码"/>
                 </div>
                 <div class="form-group">
-                    <input name="confirm" id="confirm" type="password" class="form-control pword" placeholder="确认密码"/>
-                </div>
-                <div class="form-group">
-                    <select name="industry" id="industry" class="myform-control">
-                        <option value="" >所属行业</option>
-                        <option value="0">金属制品制造</option>
-                        <option value="1">电子设备制造</option>
-                        <option value="2">家具家电制造</option>
-                        <option value="3">汽车制造</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="comName" id="comName" class="form-control uname" placeholder="公司名称"/>
+                    <input name="confirm" id="confirm" style="color: #000" type="password" class="form-control " placeholder="确认密码"/>
                 </div>
                 <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在注册，请稍后...">注册
                 </button>
@@ -108,9 +96,6 @@
         // 表单校验
         $("#form-register").validate({
             rules: {
-                userName:{
-                    required: true,
-                },
                 loginName: {
                     required: true,
                     isPhone: true,
@@ -137,15 +122,15 @@
                     required: true,
                     equalTo: "#password"
                 },
-                comName: {
+                email: {
                     required: true,
                     remote: {
-                        url: ctx + "device/devCompany/checkComNameUnique",
+                        url: ctx + "system/user/checkEmailUnique",
                         type: "post",
                         dataType: "json",
                         data: {
                             name: function () {
-                                return $.common.trim($("#comName").val());
+                                return $.common.trim($("#email").val());
                             }
                         },
                         dataFilter: function (data, type) {
@@ -155,9 +140,6 @@
                 },
             },
             messages: {
-                userName:{
-                    required:'请输入用户名称'
-                },
                 password: {
                     required: "请输入密码",
                     minlength: "密码不能小于6个字符",
@@ -171,18 +153,24 @@
                     required:'请输入手机号码',
                     remote: "登录手机号已经存在"
                 },
-                comName: {
-                    required: "请输入公司名称",
-                    remote: "公司名称已存在"
+                email: {
+                    required: "请输入邮箱",
+                    remote: "邮箱已经存在"
                 }
             },
             onsubmit: true,
             submitHandler: function (form) {
+                var data={
+                    loginName:$("#loginName").val(),
+                    email:$("#email").val(),
+                    password:$("#password").val()
+                }
                 $.ajax({
                     type: 'POST',
-                    url: ctx + 'addUser',
+                    url: ctx + 'registerAdd',
                     dataType: 'json',
-                    data: $('#form-register').serialize(),
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
                     async: false,  //同步请求，
                     error: function (request) {
                         $.modal.alertError("系统错误");

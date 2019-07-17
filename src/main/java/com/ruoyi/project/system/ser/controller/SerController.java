@@ -119,9 +119,13 @@ public class SerController extends BaseController
 	@Log(title = "服务器管理", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
-	public AjaxResult remove(String ids)
+	public AjaxResult remove(int ids)
 	{		
-		return toAjax(serService.deleteSerByIds(ids));
+		try {
+			return success(serService.deleteSerById(ids));
+		}catch (Exception e){
+			return error(e.getMessage());
+		}
 	}
 
 	/**

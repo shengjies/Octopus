@@ -23,11 +23,6 @@
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
-							<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">
-								所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
-								<option value="-1">所有</option>
-								<option th:each="com : ${Company}" th:text="${com.comName}" th:value="${com.companyId}"></option>
-							</select>
 							</li>
 							<li class="select-time">
 								<label>创建时间： </label>

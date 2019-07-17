@@ -35,7 +35,7 @@ public static final String CLAIM_KEY_USER="sub";
      * @return
      */
     public static Date getExpirationDate(){
-        return new Date(System.currentTimeMillis()+60*60*1000);
+        return new Date(System.currentTimeMillis()+12*60*60*1000);
     }
 
     /**
@@ -72,7 +72,11 @@ public static final String CLAIM_KEY_USER="sub";
     }
 
     public static User getTokenUser(HttpServletRequest request){
-       return getTokenCookie(request.getCookies());
+        String token = request.getHeader("token");
+        if(!StringUtils.isEmpty(token)){
+            return getUserByToken(token);
+        }
+        return getTokenCookie(request.getCookies());
     }
 
     public static User getTokenCookie(Cookie[] cookies){

@@ -1,6 +1,7 @@
 package com.ruoyi.framework.shiro;
 
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.ruoyi.framework.jwt.filter.JwtFilter;
 import com.ruoyi.framework.shiro.realm.UserRealm;
 import com.ruoyi.framework.shiro.web.filter.LogoutFilter;
@@ -74,13 +75,15 @@ public class ShiroConfig {
         filterRuleMap.put("/captcha/captchaImage**", "anon");
         // 不需要拦截的访问
         filterRuleMap.put("/login", "anon");
+        filterRuleMap.put("/system/apply/license", "anon");
+        filterRuleMap.put("/logout", "anon");
         filterRuleMap.put("/system/user/checkLoginNameUnique", "anon");
-        filterRuleMap.put("/device/devCompany/checkComNameUnique", "anon");
+        filterRuleMap.put("/system/user/checkEmailUnique", "anon");
         filterRuleMap.put("/t/**", "anon");
         filterRuleMap.put("/s", "anon");
         filterRuleMap.put("/profile/**", "anon");
         filterRuleMap.put("/register", "anon");
-        filterRuleMap.put("/addUser", "anon");
+        filterRuleMap.put("/registerAdd", "anon");
         filterRuleMap.put("/device/devList/validate", "anon");
         filterRuleMap.put("/api/**", "anon");
         filterRuleMap.put("/**", "jwt");
@@ -107,5 +110,11 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;
+    }
+
+    @Bean
+    public ShiroDialect shiroDialect()
+    {
+        return new ShiroDialect();
     }
 }

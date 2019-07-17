@@ -28,4 +28,11 @@ public interface IInitDataManageService {
      * @return
      */
     Map<String,Object> workEx(String code);
+
+    /**
+     * 获取路径
+     * @param code
+     * @return
+     */
+    Map<String,Object> getPath(String code);
 }

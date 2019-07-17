@@ -7,26 +7,6 @@
 <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
 
 <body class="gray-bg">
-<!--<div class="ui-layout-west">-->
-<!--<div class="main-content">-->
-<!--<div class="box box-main">-->
-<!--<div class="box-header">-->
-<!--<div class="box-title">-->
-<!--<i class="fa icon-grid"></i> 组织机构-->
-<!--</div>-->
-<!--<div class="box-tools pull-right">-->
-<!--<a type="button" class="btn btn-box-tool menuItem" href="#" onclick="dept()" title="管理部门"><i class="fa fa-edit"></i></a>-->
-<!--<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>-->
-<!--<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>-->
-<!--<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="ui-layout-content">-->
-<!--<div id="tree" class="ztree"></div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
 
 <div class="container-div ui-layout-center">
     <div class="row">
@@ -37,23 +17,30 @@
                 <div class="select-list">
                     <ul>
                         <li>
-                            登录名称：<input type="text" name="loginName"/>
+                            手机号：<input type="text" name="loginName" style="width: 140px"/>
                         </li>
                         <li>
                             用户名称：<input type="text" name="userName"/>
                         </li>
-                        <!--<li th:if="${@product.isSys(#httpServletRequest.getCookies())}">-->
-                            <!--所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">-->
-                            <!--<option value="-1">所有</option>-->
-                            <!--<option th:each="com : ${Company}" th:text="${com.comName}"-->
-                                    <!--th:value="${com.companyId}"></option>-->
-                        <!--</select>-->
-                        <!--</li>-->
+                        <li>
+                            所属公司：<select name="companyId" th:with="Company=${@devCompany.selectDevCompanyAll()}">
+                            <option value="-1">所有</option>
+                            <option th:each="com : ${Company}" th:text="${com.comName}"
+                                    th:value="${com.companyId}"></option>
+                        </select>
+                        </li>
                         <li>
                             用户状态：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}" style="width: 100px">
                             <option value="">所有</option>
                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
                                     th:value="${dict.dictValue}"></option>
+                        </select>
+                        <li>
+                            用户类型：<select name="tag" style="width: 100px">
+                            <option value=" ">所有</option>
+                            <option value="0">客户用户</option>
+                            <option value="1">服务器用户</option>
+                            <option value="2">游客</option>
                         </select>
                         </li>
 
@@ -79,10 +66,6 @@
         <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
             <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:user:add">
                 <i class="fa fa-plus"></i> 新增
-            </a>
-            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
-               shiro:hasPermission="system:user:edit">
-                <i class="fa fa-edit"></i> 修改
             </a>
             <a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()"
                shiro:hasPermission="system:user:remove">
@@ -136,6 +119,8 @@
             modalName: "用户",
             search: false,
             showExport: false,
+            sortName:'createTime',
+            sortOrder:"desc",
             columns: [{
                 checkbox: true
             },
@@ -145,8 +130,12 @@
                     visible: false
                 },
                 {
+                    field: 'comName',
+                    title: '所属公司'
+                },
+                {
                     field: 'loginName',
-                    title: '登录手机号',
+                    title: '手机号',
                     sortable: true
                 },
                 {
@@ -202,13 +191,31 @@
                     }
                 },
                 {
+                    field: 'tag',
+                    title: '用户类型',
+                    formatter: function (value, row, index) {
+                        if (value ==  1) {
+                            return '<span class="label nav-label label-primary">服务器用户</span>';
+                        } else if(value == 0) {
+                            return '<span>客户用户</span>';
+                        }else{
+                            return '<span style="color: green">游客</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    sortable: true
+                },
+                {
                     title: '操作',
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
-                        actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a>');
+                        // actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a>');
                         return actions.join('');
                     }
                 }]

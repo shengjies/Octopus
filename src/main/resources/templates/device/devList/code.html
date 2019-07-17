@@ -31,10 +31,9 @@
             $.ajax({
                 cache : true,
                 type : "POST",
-                url : ctx + "device/devList/configDev",
+                url : ctx + "device/devList/devscan",
                 data : {
                     "id": id,
-                    "configStatus":1
                 },
                 async : false,
                 error : function(request) {

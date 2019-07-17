@@ -35,7 +35,11 @@
 
     function submitHandler() {
         if ($.validate.form()) {
-            $.operate.save(prefix + "/configCompany", $('#form-serPort-configComany').serialize());
+            $.modal.confirm("确定指定该公司吗",function (e) {
+                if(e){
+                    $.operate.save(prefix + "/configCompany", $('#form-serPort-configComany').serialize());
+                }
+            })
         }
     }
 </script>

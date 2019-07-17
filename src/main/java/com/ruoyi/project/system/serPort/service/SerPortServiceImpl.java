@@ -8,6 +8,7 @@ import com.ruoyi.project.system.serPort.mapper.SerPortMapper;
 import com.ruoyi.project.system.serPort.domain.SerPort;
 import com.ruoyi.project.system.serPort.service.ISerPortService;
 import com.ruoyi.common.support.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 服务器端口配置 服务层实现
@@ -131,8 +132,26 @@ public class SerPortServiceImpl implements ISerPortService
 	 * @return
 	 */
 	@Override
+	@Transactional
 	public int configCompanyEdit(SerPort serPort) {
+		//查询改公司之前是否有过配置
+		SerPort port = serPortMapper.selectInfoByCompanyId(serPort.getCompanyId());
+		if(port != null){
+			//将其配置公司设置为0
+			port.setCompanyId(0);
+			serPortMapper.updateSerPort(port);
+		}
 		serPort.setUpdateTime(new Date());
 		return serPortMapper.updateSerPort(serPort);
+	}
+
+	/**
+	 * 根据服务器id查询对应可用端口
+	 * @param serId 服务器id
+	 * @return
+	 */
+	@Override
+	public List<SerPort> selectSerPortBySerId(int serId) {
+		return serPortMapper.selectSerPortBySerId(serId);
 	}
 }

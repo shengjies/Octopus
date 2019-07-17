@@ -8,6 +8,7 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.exception.base.BaseException;
 import com.ruoyi.framework.jwt.JwtUtil;
 import com.ruoyi.framework.shiro.service.LoginService;
+import com.ruoyi.project.system.user.domain.Login;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -35,7 +37,6 @@ public class LoginController extends BaseController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
-        // 如果是Ajax请求，返回Json字符串。
         if (ServletUtils.isAjaxRequest(request)) {
             return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"未登录或登录超时。请重新登录\"}");
         }
@@ -44,9 +45,9 @@ public class LoginController extends BaseController {
 
     @PostMapping("/login")
     @ResponseBody
-    public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe) {
+    public AjaxResult ajaxLogin(@RequestBody Login login) {
         try {
-            return loginService.login(username,password);
+            return loginService.login(login);
         } catch (AuthenticationException e) {
             String msg = "用户或密码错误";
             if (StringUtils.isNotEmpty(e.getMessage())) {
@@ -57,6 +58,7 @@ public class LoginController extends BaseController {
             return error(b.getMessage());
         }
     }
+
 
     @PostMapping("/logout")
     @ResponseBody

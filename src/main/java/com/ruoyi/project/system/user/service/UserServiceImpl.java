@@ -4,6 +4,7 @@ import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.support.Convert;
 import com.ruoyi.common.utils.PasswordUtil;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
@@ -80,8 +81,6 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private SerMapper serMapper;
 
-//    @Autowired
-//    private PasswordService passwordService;
 
     /**
      * 根据条件分页查询用户对象
@@ -91,13 +90,9 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     @DataScope(tableAlias = "u")
-    public List<User> selectUserList(User user, HttpServletRequest request) {
-        // 生成数据权限过滤条件
-        User sysUser = JwtUtil.getTokenUser(request);
-        Map<String, Object> map = new HashMap<>();
-        map.put("user", user);
-        map.put("companyId", sysUser.getCompanyId());
-        List<User> userList = userMapper.selectUserListByCompanyId(map);
+    public List<User> selectUserList(User user) {
+//        // 生成数据权限过滤条件
+        List<User> userList = userMapper.selectUserListByCompanyId(user);
         List<Role> userRoles = null;
         for (User user1 : userList) {
             userRoles = roleMapper.selectRolesByUserId(user1.getUserId());
@@ -115,6 +110,16 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User selectUserByLoginName(String userName) {
         return userMapper.selectUserByLoginName(userName);
+    }
+
+    /**
+     * 根据用户名称只查询用户信息
+     * @param userName 用户名称
+     * @return
+     */
+    @Override
+    public User selectByLoginName(String userName) {
+        return userMapper.selectByLoginName(userName);
     }
 
     /**
@@ -186,8 +191,8 @@ public class UserServiceImpl implements IUserService {
      * @return 结果
      */
     @Override
-    public int insertUser(User user, HttpServletRequest request) {
-        User sysUser = JwtUtil.getTokenUser(request);
+    public int insertUser(User user) {
+        User sysUser = JwtUtil.getTokenUser(ServletUtils.getRequest());
         // 用户导入设置登录标记为
         user.setDeptId(103L);
         user.randomSalt();
@@ -195,18 +200,18 @@ public class UserServiceImpl implements IUserService {
             user.setUserName(user.getLoginName()); // 设置用户名为登录手机号
         }
         user.setPhonenumber(user.getLoginName()); // 设置用户手机号
-//        user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
+        user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         user.setCreateBy(sysUser.getLoginName());
         // 用户公司设置,通过获取系统登录用户设置系统id
         user.setCompanyId(sysUser.getCompanyId());
 
         // 设置用户标记
-        user.setTag(User.COMPANY_OTHER);
+        user.setTag(User.COMPANY_ADMIN);
 
         // 新增用户信息
         int rows = userMapper.insertUser(user);
         // 新增用户岗位关联
-        insertUserPost(user);
+//        insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
         return rows;
@@ -321,21 +326,7 @@ public class UserServiceImpl implements IUserService {
         return UserConstants.USER_NAME_UNIQUE;
     }
 
-    /**
-     * 校验用户手机号是否唯一
-     *
-     * @param user 用户信息
-     * @return
-     */
-    //@Override
-    //public String checkPhoneUnique(User user) {
-    //    Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
-    //    User info = userMapper.checkPhoneUnique(user.getPhonenumber());
-    //    if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
-    //        return UserConstants.USER_PHONE_NOT_UNIQUE;
-    //    }
-    //    return UserConstants.USER_PHONE_UNIQUE;
-    //}
+
 
     /**
      * 校验email是否唯一
@@ -421,7 +412,7 @@ public class UserServiceImpl implements IUserService {
                 if (StringUtils.isNull(u)) {
                     user.setPassword(password);
                     user.setCreateBy(operName);
-                    this.insertUser(user, request);
+                    this.insertUser(user);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getLoginName() + " 导入成功");
                 } else if (isUpdateSupport) {
@@ -559,6 +550,35 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
+     * 用户注册
+     * @param user 用户信息
+     * @return
+     */
+    @Override
+    public int registerUser(User user) throws Exception {
+        //查询对应用户是否存在
+        User u = userMapper.selectByLoginName(user.getLoginName());
+        if(u != null){
+            throw new Exception("用户已经存在");
+        }
+        //查询对应邮箱是否存在
+        User u2 = userMapper.selectUserByEmail(user.getEmail());
+        if(u2 != null){
+            throw new Exception("邮箱已存在");
+        }
+        user.setUserName(user.getEmail().substring(0,user.getEmail().lastIndexOf("@")));
+        user.randomSalt();
+        user.setPassword(PasswordUtil.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
+        user.setCompanyId(-1);
+        user.setSign(1);
+        user.setPhonenumber(user.getLoginName());
+        user.setCreateBy(user.getLoginName());
+        user.setCreateTime(new Date());
+        user.setTag("2");
+        return userMapper.insertUser(user);
+    }
+
+    /**
      * 查询对应的公司的所以的员工信息
      *
      * @return
@@ -611,9 +631,19 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public User getSysUser() {
-        return ShiroUtils.getSysUser();
+        User u = ShiroUtils.getSysUser();
+        if(u == null)return null;
+        return userMapper.selectByLoginName(u.getLoginName());
     }
 
+    /**
+     * 查询所有服务器用户
+     * @return
+     */
+    @Override
+    public List<User> selectTagSysUser() {
+        return userMapper.selectTagSysUser();
+    }
 
     /*******     操作用户数据    *******/
     /**

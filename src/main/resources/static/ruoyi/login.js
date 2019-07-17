@@ -19,24 +19,23 @@ function login() {
     var password = $.common.trim($("input[name='password']").val());
     var validateCode = $("input[name='validateCode']").val();
     var rememberMe = $("input[name='rememberme']").is(':checked');
+    var data ={"username": username,
+        "password": password}
     $.ajax({
         type: "post",
         url: ctx + "login",
-        data: {
-            "username": username,
-            "password": password,
-            "validateCode" : validateCode,
-            "rememberMe": rememberMe
-        },
+        contentType: 'application/json',
+        data: JSON.stringify(data),
         success: function(r) {
             console.log(r)
             if (r.code == 0) {
-                if(r.sign == 1){
-                    document.cookie="token="+r.token;
-                    window.location.href=r.path
-                }else{
-                    window.location.href=r.path+"?token="+r.token;
-                }
+                // if(r.sign == 1){
+                //     document.cookie="token="+r.token;
+                //     window.location.href=r.path
+                // }else{
+                //     window.location.href=r.path+"?token="+r.token;
+                // }
+                window.location.href=r.path+"?token="+r.token;
             } else {
             	$.modal.closeLoading();
             	$('.imgcode').click();

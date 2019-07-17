@@ -1,7 +1,9 @@
 package com.ruoyi.project.system.ser.mapper;
 
 import com.ruoyi.project.system.ser.domain.Ser;
-import java.util.List;	
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 服务器管理 数据层
@@ -50,13 +52,14 @@ public interface SerMapper
      * @return 结果
      */
 	public int deleteSerById(Integer id);
-	
+
+
 	/**
-     * 批量删除服务器管理
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
-	public int deleteSerByIds(String[] ids);
+	 * 根据行业id查询对应的可用共用服务器
+	 * @param inId 行业id
+	 * @return
+	 */
+	List<Ser> selectSerByInId(@Param("inId") int inId);
+
 	
 }

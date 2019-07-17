@@ -9,10 +9,7 @@ import com.ruoyi.project.system.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -49,14 +46,13 @@ public class RegisterController extends BaseController {
      * @param user
      * @return
      */
-    @PostMapping("/addUser")
+    @PostMapping("/registerAdd")
     @ResponseBody
-    public AjaxResult addUser(User user) {
+    public AjaxResult addUser(@RequestBody User user) {
         try {
-            return toAjax(userService.register(user));
+            return toAjax(userService.registerUser(user));
         } catch (Exception e) {
-            e.printStackTrace();
-            return error("注册失败");
+            return error(e.getMessage());
         }
     }
 }

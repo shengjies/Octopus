@@ -11,12 +11,17 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								服务器名称：<input type="text" name="sname"/>
+								服务器名称：<input type="text" style="width: 150px" name="sname"/>
 							</li>
 
 							<li>
 								服务器IP：<input type="text" name="sip" style="width: 150px"/>
 							</li>
+							<li>
+								所属行业：<select name="inId"  th:with="ins=${@industry.selectIsAll()}" style="width: 200px">
+								<option value="-1">所有</option>
+								<option th:each="item:${ins}" th:value="${item.id}" th:utext="${item.name}"></option>
+							</select>
 							<li>
 								可注册状态：<select name="s_status"  style="width: 100px">
 								<option value="">所有</option>
@@ -101,6 +106,11 @@
 					sortable: true
 				},
 					{
+						field : 'inName',
+						title : '所属行业',
+						sortable: true
+					},
+					{
 						field : 's_status',
 						title : '可注册状态',
 						sortable: true,
@@ -167,10 +177,10 @@
 		 * 添加服务器信息
 		 */
 		function add() {
-			$.modal.open("添加服务器信息",prefix+"/add",800,560);
+			$.modal.open("添加服务器信息",prefix+"/add",800,620);
 		}
 		function edit(id) {
-			$.modal.open("修改服务器信息",prefix+"/edit/"+id,800,560);
+			$.modal.open("修改服务器信息",prefix+"/edit/"+id,800,620);
 		}
 
 		/**

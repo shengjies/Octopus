@@ -88,7 +88,13 @@
 				{
 					field : 'updateTime', 
 					title : '配置时间',
-					sortable: true
+					sortable: true,
+					formatter:function (value, row, index) {
+						if(row.companyId == 0){
+							return "-"
+						}
+						return value;
+					}
 				},
 				{
 					field : 'createTime', 
@@ -106,10 +112,19 @@
 		            formatter: function(value, row, index) {
 		            	var actions = [];
 		            	if(s_type == 1){
-							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="configCompany(\'' + row.id + '\')"><i class="fa fa-edit"></i>指定公司</a> ');
+							if(row.companyId == 0){
+								actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="configCompany(\'' + row.id + '\')"><i class="fa fa-edit"></i>指定公司</a> ');
+							}else{
+								actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" disabled="true"><i class="fa fa-edit"></i>指定公司</a> ');
+							}
 						}
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+						if(row.companyId == 0){
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+						}else{
+							actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" disabled="true"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" disabled="true"><i class="fa fa-remove"></i>删除</a>');
+						}
 						return actions.join('');
 		            }
 		        }]

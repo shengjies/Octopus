@@ -1,5 +1,7 @@
 package com.ruoyi.common.utils.security;
 
+import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.framework.jwt.JwtUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.session.Session;
@@ -36,12 +38,11 @@ public class ShiroUtils
     public static User getSysUser()
     {
         User user = null;
-//        Object obj = getSubject().getPrincipal();
-//        if (StringUtils.isNotNull(obj))
-//        {
-//            user = new User();
-//            BeanUtils.copyBeanProp(user, obj);
-//        }
+        try {
+            user = JwtUtil.getTokenUser(ServletUtils.getRequest());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return user;
     }
 
@@ -74,7 +75,7 @@ public class ShiroUtils
 
     public static String getIp()
     {
-        return getSubject().getSession().getHost();
+        return ServletUtils.getRequest().getRemoteAddr();
     }
 
     public static String getSessionId()

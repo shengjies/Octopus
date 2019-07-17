@@ -54,9 +54,9 @@ public class UserController extends BaseController {
     @RequiresPermissions("system:user:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(User user, HttpServletRequest request) {
+    public TableDataInfo list(User user) {
         startPage();
-        List<User> list = userService.selectUserList(user,request);
+        List<User> list = userService.selectUserList(user);
         return getDataTable(list);
     }
 
@@ -64,8 +64,8 @@ public class UserController extends BaseController {
     @RequiresPermissions("system:user:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(User user,HttpServletRequest request) {
-        List<User> list = userService.selectUserList(user,request);
+    public AjaxResult export(User user) {
+        List<User> list = userService.selectUserList(user);
         ExcelUtil<User> util = new ExcelUtil<User>(User.class);
         return util.exportExcel(list, "用户数据");
     }
@@ -105,7 +105,6 @@ public class UserController extends BaseController {
         } else {
             mmap.put("roles",roleService.selectRoleAll(request));
         }
-
         mmap.put("posts", postService.selectPostAll());
         return prefix + "/add";
     }
@@ -122,7 +121,7 @@ public class UserController extends BaseController {
         if (StringUtils.isNotNull(user.getUserId()) && User.isAdmin(user.getUserId())) {
             return error("不允许修改超级管理员用户");
         }
-        return toAjax(userService.insertUser(user,request));
+        return toAjax(userService.insertUser(user));
     }
 
     /**
@@ -198,15 +197,6 @@ public class UserController extends BaseController {
         return userService.checkLoginNameUnique(user.getLoginName());
     }
 
-    /**
-     * 校验手机号码
-     */
-    //@PostMapping("/checkPhoneUnique")
-    //@ResponseBody
-    //public String checkPhoneUnique(User user)
-    //{
-    //    return userService.checkPhoneUnique(user);
-    //}
 
     /**
      * 校验email邮箱
@@ -232,18 +222,4 @@ public class UserController extends BaseController {
         }
     }
 
-    ///*********      用户API 操作  **********/
-    //@Log(title = "用户管理", businessType = BusinessType.UPDATE)
-    //@PostMapping("/api/edit")
-    //@Transactional(rollbackFor = Exception.class)
-    //@ResponseBody
-    //public AjaxResult ApiEdit(@RequestBody User user,HttpServletRequest request){
-    //    try {
-    //        userService.ApiEdit(user);
-    //        return AjaxResult.success();
-    //    }catch (Exception e){
-    //        e.printStackTrace();
-    //    }
-    //    return AjaxResult.error();
-    //}
 }

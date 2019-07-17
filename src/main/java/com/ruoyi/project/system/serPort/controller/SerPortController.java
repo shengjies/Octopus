@@ -163,4 +163,16 @@ public class SerPortController extends BaseController
 		return toAjax(serPortService.configCompanyEdit(serPort));
 	}
 
+	@Log(title = "根据服务器id查询对应的端口", businessType = BusinessType.UPDATE)
+	@PostMapping("/selectBySid")
+	@ResponseBody
+	public AjaxResult selectSerPortBySerId(int sid){
+		try {
+			return AjaxResult.success("ok",serPortService.selectSerPortBySerId(sid));
+		}catch (Exception e){
+			e.printStackTrace();
+			return error();
+		}
+	}
+
 }

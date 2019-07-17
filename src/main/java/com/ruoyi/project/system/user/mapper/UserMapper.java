@@ -27,10 +27,10 @@ public interface UserMapper
      * 根据条件分页查询用户对象
      * 通过公司ID
      *
-     * @param map 用户和公司所属公司id
+     * @param user 用户和公司所属公司id
      * @return 用户信息集合信息
      */
-    public List<User> selectUserListByCompanyId(Map map);
+    public List<User> selectUserListByCompanyId(User user);
 
     /**
      * 通过用户名查询用户
@@ -38,8 +38,20 @@ public interface UserMapper
      * @param userName 用户名
      * @return 用户对象信息
      */
-    @DataSource(DataSourceType.SLAVE)
     public User selectUserByLoginName(String userName);
+
+    /**
+     * 根据用户名称查询对应的信息
+     * @param loginName 用户名称
+     * @return
+     */
+    public User selectByLoginName(@Param("loginName") String loginName);
+
+    /**
+     * 查询所以服务器用户
+     * @return
+     */
+    List<User> selectTagSysUser();
 
     /**
      * 通过手机号码查询用户

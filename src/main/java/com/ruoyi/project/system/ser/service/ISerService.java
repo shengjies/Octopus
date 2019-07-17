@@ -46,10 +46,10 @@ public interface ISerService
 	/**
      * 删除服务器管理信息
      * 
-     * @param ids 需要删除的数据ID
+     * @param id 需要删除的数据ID
      * @return 结果
      */
-	public int deleteSerByIds(String ids);
+	public String deleteSerById(int id) throws Exception;
 
 	/**
 	 * 查询对应的服务器端口配置数量是否大于等于服务器的最多用户数
@@ -57,5 +57,12 @@ public interface ISerService
 	 * @return
 	 */
 	boolean findMax(int sid);
+
+	/**
+	 * 根据行业id查询对应的可用共用服务器
+	 * @param inId 行业id
+	 * @return
+	 */
+	List<Ser> selectSerByInId(int inId);
 	
 }

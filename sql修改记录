@@ -80,3 +80,33 @@ ADD COLUMN `total_iso` VARCHAR(45) NULL AFTER `industry`;
 
 ALTER TABLE `mainservers`.`sys_user`
 ADD COLUMN `r_sign` INT NULL DEFAULT 0 AFTER `user_department`;
+
+
+2019-07-10
+#======================用户服务器修改点=========================
+ALTER TABLE `devicemanage`.`sys_user`
+ADD COLUMN `dev_type` VARCHAR(45) NULL COMMENT '设备类型' AFTER `user_department`,
+ADD COLUMN `dev_code` VARCHAR(65) NULL COMMENT '设备号' AFTER `dev_type`;
+
+#添加行业管理
+CREATE TABLE `devicemanage`.`tab_industry` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL COMMENT '行业名称',
+  `remork` TEXT NULL COMMENT '备注信息',
+  `c_time` DATETIME NULL COMMENT '创建时间',
+  `in_status` INT NULL DEFAULT 0 COMMENT '状态 0、可用 1、禁用',
+  PRIMARY KEY (`id`))
+COMMENT = '行业管理';
+
+
+#服务器添加行业归属
+ALTER TABLE `devicemanage`.`tab_ser`
+ADD COLUMN `in_id` INT NULL DEFAULT 0 AFTER `s_type`;
+
+ALTER TABLE `devicemanage`.`sys_user`
+ADD COLUMN `grade` INT NULL DEFAULT 1 COMMENT '用户等级' AFTER `sign`;
+
+
+ALTER TABLE `devicemanage`.`dev_list`
+ADD COLUMN `scan` INT NULL DEFAULT 0 COMMENT '标记是否扫码' AFTER `config_status`;
+

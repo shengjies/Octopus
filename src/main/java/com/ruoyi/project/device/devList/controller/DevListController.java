@@ -225,4 +225,21 @@ public class DevListController extends BaseController
 		map.put("code",devListService.selectAll(request.getCookies()));
 		return map;
 	}
+
+	/**
+	 * 硬件扫描
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/devscan")
+	public AjaxResult devScan(int id){
+		try {
+			devListService.devScan(id);
+			return AjaxResult.success();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return AjaxResult.error();
+	}
 }

@@ -121,4 +121,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSerPortVo"/>
         where company_id = #{cid} limit 1;
     </select>
+    <!--根据公司id查询对应的服务端口-->
+    <select id="selectInfoByCompanyId" resultMap="SerPortResult1">
+        SELECT * FROM tab_ser_port where company_id = #{companyId} limit 1;
+    </select>
+
+    <!--根据服务器id查询对应可用端口-->
+    <select id="selectSerPortBySerId" resultMap="SerPortResult1">
+        SELECT * FROM tab_ser_port where sid = #{serId} and company_id = 0;
+    </select>
 </mapper>

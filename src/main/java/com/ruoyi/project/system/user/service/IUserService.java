@@ -19,7 +19,7 @@ public interface IUserService
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<User> selectUserList(User user, HttpServletRequest request);
+    public List<User> selectUserList(User user);
 
     /**
      * 通过用户名查询用户
@@ -28,6 +28,13 @@ public interface IUserService
      * @return 用户对象信息
      */
     public User selectUserByLoginName(String userName);
+
+    /**
+     * 根据用户名称只查询用户信息
+     * @param userName 用户名称
+     * @return
+     */
+    public User selectByLoginName(String userName);
 
     /**
      * 通过手机号码查询用户
@@ -76,7 +83,7 @@ public interface IUserService
      * @param user 用户信息
      * @return 结果
      */
-    public int insertUser(User user,HttpServletRequest request);
+    public int insertUser(User user);
 
     /**
      * 保存用户信息
@@ -167,6 +174,13 @@ public interface IUserService
     public int register(User user);
 
     /**
+     * 用户注册
+     * @param user 用户信息
+     * @return
+     */
+    public int registerUser(User user) throws Exception;
+
+    /**
      * 查询对应的公司的所有的员工信息
      * @return
      */
@@ -178,6 +192,11 @@ public interface IUserService
      */
     User getSysUser();
 
+    /**
+     * 查询所有服务器用户
+     * @return
+     */
+    List<User> selectTagSysUser();
     /**
      * 更新用户的登录标记为0
      * @param user

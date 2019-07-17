@@ -29,6 +29,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="userPosition"    column="user_position"    />
 		<result property="phonenumber"    column="phonenumber"    />
 		<result property="loginTag"    column="login_tag"    />
+		<result property="devType"    column="dev_type"    />
+		<result property="devCode"    column="dev_code"    />
+		<result property="sign"    column="sign"    />
+		<result property="grade"    column="grade"    />
 		<association property="devCompany"    column="company_id" javaType="DevCompany" resultMap="DevCompanyResult" />
 		<association property="dept"    column="dept_id" javaType="Dept" resultMap="deptResult" />
 		<collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
@@ -61,10 +65,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="comPicture"    column="com_picture"    />
 	</resultMap>
 
+
+	<resultMap type="User" id="UserResult1">
+		<id     property="userId"       column="user_id"      />
+		<result property="deptId"       column="dept_id"      />
+		<result property="loginName"    column="login_name"   />
+		<result property="userName"     column="user_name"    />
+		<result property="email"        column="email"        />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="salt"         column="salt"         />
+		<result property="status"       column="status"       />
+		<result property="delFlag"      column="del_flag"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<result property="companyId"    column="company_id"    />
+		<result property="tag"    column="tag"    />
+		<result property="userDepartment"    column="user_department"    />
+		<result property="userPosition"    column="user_position"    />
+		<result property="phonenumber"    column="phonenumber"    />
+		<result property="loginTag"    column="login_tag"    />
+		<result property="devType"    column="dev_type"    />
+		<result property="devCode"    column="dev_code"    />
+		<result property="sign"    column="sign"    />
+		<result property="comName"    column="com_name"    />
+	</resultMap>
 	<sql id="selectUserVo">
         select  u.user_id,  u.login_name, u.user_name, u.email, u.sex, u.avatar, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,u.user_department,u.user_position,u.phonenumber,u.login_tag,
        		    r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status,
-       		    u.company_id,u.tag,u.create_by
+       		    u.company_id,u.tag,u.create_by,u.grade,u.sign
 		from sys_user u
 			 left join sys_user_role ur on u.user_id = ur.user_id
 			 left join sys_role r on r.role_id = ur.role_id
@@ -72,7 +107,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
 	<select id="selectUserList" parameterType="User" resultMap="UserResult">
-		select c.com_name, u.user_id, u.login_name, u.user_name, u.email, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,u.company_id,u.user_department,u.user_position,u.phonenumber,u.login_tag from sys_user u
+		select c.com_name, u.user_id, u.login_name, u.user_name, u.email, u.password, u.sex,
+		u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by,
+		 u.create_time, u.remark,u.company_id,u.user_department,u.user_position,
+		 u.phonenumber,u.login_tag,u.grade from sys_user u
 		left join dev_company c on u.company_id = c.company_id
 		where u.del_flag = '0' AND u.tag = '0'
 		<if test="loginName != null and loginName != ''">
@@ -100,34 +138,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!--通过公司id查询用户信息-->
-	<select id="selectUserListByCompanyId" parameterType="Map" resultMap="UserResult">
-		select c.com_name, u.user_id, u.login_name, u.user_name, u.email, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.company_id,u.user_department,u.user_position,u.phonenumber,u.login_tag from sys_user u
+	<select id="selectUserListByCompanyId"  resultMap="UserResult1">
+		select c.com_name, u.user_id, u.login_name, u.user_name, u.email, u.password, u.sex,
+		 u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time,
+		  u.remark, u.company_id,u.user_department,u.user_position,u.phonenumber,u.login_tag,u.tag,u.grade
+		  from sys_user u
 		left join dev_company c on u.company_id = c.company_id
-		where u.del_flag = '0' AND u.tag = '0'
-		<if test="user.loginName != null and user.loginName != ''">
-			AND u.login_name like concat('%', #{user.loginName}, '%')
+		where 1=1
+		<if test="loginName != null and loginName != ''">
+			AND u.login_name like concat('%', #{loginName}, '%')
 		</if>
-		<if test="user.userName != null and user.userName != ''">
-			AND u.user_name like concat('%', #{user.userName}, '%')
+		<if test="userName != null and userName != ''">
+			AND u.user_name like concat('%', #{userName}, '%')
 		</if>
-		<if test="companyId != null and companyId != ''">
+		<if test="companyId != null and companyId != '' and companyId > 0">
 			AND u.company_id = #{companyId}
 		</if>
-		<if test="user.status != null and user.status != ''">
-			AND u.status = #{user.status}
+		<if test="tag != null and tag != ''">
+			AND u.tag = #{tag}
 		</if>
-		<if test="user.sex != null and user.sex != ''">
-			AND u.sex = #{user.sex}
+		<if test="status != null and status != ''">
+			AND u.status = #{status}
 		</if>
-		<if test="user.params.beginTime != null and user.params.beginTime != ''"><!-- 开始时间检索 -->
-			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{user.params.beginTime},'%y%m%d')
+		<if test="sex != null and sex != ''">
+			AND u.sex = #{sex}
 		</if>
-		<if test="user.params.endTime != null and user.params.endTime != ''"><!-- 结束时间检索 -->
-			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{user.params.endTime},'%y%m%d')
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 		</if>
-
-		<!-- 数据范围过滤 -->
-		${user.params.dataScope}
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		</if>
 	</select>
 
 	<select id="selectUserByLoginName" parameterType="String" resultMap="UserResult">
@@ -135,6 +176,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where u.login_name = #{userName}
 	</select>
 
+	<!--根据用户名称查询对应的用户信息-->
+	<select id="selectByLoginName" resultMap="UserResult1">
+			SELECT * FROM sys_user where login_name=#{loginName} limit 1;
+	</select>
 	<select id="selectUserByPhoneNumber" parameterType="String" resultMap="UserResult">
 		<include refid="selectUserVo"/>
 		where u.phonenumber = #{phonenumber}
@@ -142,7 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectUserByEmail" parameterType="String" resultMap="UserResult">
 	    <include refid="selectUserVo"/>
-		where u.email = #{email}
+		where u.email = #{email} limit 1
 	</select>
 
 	<select id="checkLoginNameUnique" parameterType="String" resultType="int">
@@ -194,6 +239,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="userPosition != null  and userPosition != ''  ">user_position = #{userPosition},</if>
 			<if test="phonenumber != null  and phonenumber != ''  ">phonenumber = #{phonenumber},</if>
 			<if test="loginTag != null  and loginTag != ''  ">login_tag = #{loginTag},</if>
+			<if test="devType != null  and devType != ''  ">dev_type = #{devType},</if>
+			<if test="devCode != null  and devCode != ''  ">dev_code = #{devCode},</if>
+			<if test="tag != null  and tag != ''  ">tag = #{tag},</if>
+			<if test="grade != null  and grade != ''  ">grade = #{grade},</if>
  			update_time = sysdate()
  		</set>
  		where user_id = #{userId}
@@ -220,6 +269,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="userPosition != null  and userPosition != ''  ">user_position = #{userPosition},</if>
 			<if test="phonenumber != null  and phonenumber != ''  ">phonenumber = #{phonenumber},</if>
 			<if test="loginTag != null  and loginTag != ''  ">login_tag = #{loginTag},</if>
+			<if test="grade != null  and grade != ''  ">grade = #{grade},</if>
 			update_time = sysdate()
 		</set>
 		where login_name = #{loginName}
@@ -244,6 +294,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="userPosition != null  and userPosition != ''  ">user_position,</if>
 			<if test="phonenumber != null  and phonenumber != ''  ">phonenumber,</if>
 			<if test="loginTag != null  and loginTag != ''  ">login_tag,</if>
+			<if test="devType != null and devType != ''" >dev_type,</if>
+			<if test="devCode != null and devCode != ''" >dev_code,</if>
+			<if test="sign !=null and sign != ''" >sign,</if>
+			<if test="grade !=null and grade != ''" >grade,</if>
  			create_time
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
@@ -263,6 +317,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="userPosition != null  and userPosition != ''  ">#{userPosition},</if>
 			<if test="phonenumber != null  and phonenumber != ''  ">#{phonenumber},</if>
 			<if test="loginTag != null  and loginTag != ''  ">#{loginTag},</if>
+			<if test="devType != null and devType != ''" >#{devType},</if>
+			<if test="devCode != null and devCode != ''" >#{devCode},</if>
+			<if test="sign !=null and sign != ''" >#{sign},</if>
+			<if test="grade !=null and grade != ''" >#{grade},</if>
  			sysdate()
  		)
 	</insert>
@@ -283,4 +341,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateUserDelFlag">
 		update sys_user set del_flag =0,company_id =#{companyId} where user_id = #{id}
 	</update>
+
+	<!--查询所以服务器用户-->
+	<select id="selectTagSysUser" resultMap="UserResult1">
+		SELECT user_id,user_name FROM sys_user where tag = 1;
+	</select>
 </mapper> 

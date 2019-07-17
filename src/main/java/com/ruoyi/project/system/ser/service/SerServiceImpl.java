@@ -18,7 +18,7 @@ import com.ruoyi.common.support.Convert;
  * @author ruoyi
  * @date 2019-06-03
  */
-@Service
+@Service("ser")
 public class SerServiceImpl implements ISerService 
 {
 	@Autowired
@@ -77,20 +77,24 @@ public class SerServiceImpl implements ISerService
 	public int updateSer(Ser ser)
 	{
 		ser.setSpath("http://"+ser.getSip());
-		System.out.println(ser);
 	    return serMapper.updateSer(ser);
 	}
 
 	/**
      * 删除服务器管理对象
      * 
-     * @param ids 需要删除的数据ID
+     * @param id 需要删除的数据ID
      * @return 结果
      */
 	@Override
-	public int deleteSerByIds(String ids)
-	{
-		return serMapper.deleteSerByIds(Convert.toStrArray(ids));
+	public String deleteSerById(int id) throws Exception {
+		//查询对应服务器是否存在端口
+		int count = serPortMapper.countSerPort(id);
+		if(count > 0){
+			throw new Exception("该服务器存在端口，不能删除");
+		}
+		serMapper.deleteSerById(id);
+		return "操作成功";
 	}
 
 	/**
@@ -107,5 +111,15 @@ public class SerServiceImpl implements ISerService
 			return ser.getMaxNum() > count;
 		}
 		return false;
+	}
+
+	/**
+	 * 根据行业id查询对应的可用共用服务器
+	 * @param inId 行业id
+	 * @return
+	 */
+	@Override
+	public List<Ser> selectSerByInId(int inId) {
+		return serMapper.selectSerByInId(inId);
 	}
 }

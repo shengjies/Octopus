@@ -1,5 +1,6 @@
 package com.ruoyi.project.system.serPort.mapper;
 
+import com.ruoyi.project.system.ser.domain.Ser;
 import com.ruoyi.project.system.serPort.domain.SerPort;
 import org.apache.ibatis.annotations.Param;
 
@@ -88,5 +89,19 @@ public interface SerPortMapper
 	 * @return
 	 */
 	SerPort selectNotConfigSerPort();
+
+	/**
+	 * 根据公司id查询对应的服务端口
+	 * @param companyId 公司id
+	 * @return
+	 */
+	SerPort selectInfoByCompanyId(@Param("companyId")int companyId);
+
+	/**
+	 * 根据服务器id查询对应可用端口
+	 * @param serId 服务器id
+	 * @return
+	 */
+	List<SerPort> selectSerPortBySerId(@Param("serId")int serId);
 	
 }
