@@ -333,7 +333,7 @@ public class InitDataManageServiceImpl implements IInitDataManageService {
                 return map;
             }
             //查询公司信息
-            DevCompany devCompany = devCompanyMapper.selectDevCompanyById(devList.getCompanyId());
+            DevCompany devCompany = devCompanyMapper.selectDevCompanyById2(devList.getCompanyId());
             if(devCompany ==null){
                 map.put("status",0);
                 map.put("path","");
@@ -347,7 +347,7 @@ public class InitDataManageServiceImpl implements IInitDataManageService {
                 return map;
             }
             //查询服务器
-            Ser ser = serMapper.selectSerById(serPort.getSid());
+            Ser ser = serMapper.selectSerById2(serPort.getSid());
             if(ser ==null){
                 map.put("status",0);
                 map.put("path","");

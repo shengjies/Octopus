@@ -19,6 +19,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </association>
     </resultMap>
 
+    <resultMap type="DevCompany" id="DevCompanyResult1">
+        <result property="companyId"    column="company_id"    />
+        <result property="comName"    column="com_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="comAddress"    column="com_address"    />
+        <result property="comType"    column="com_type"    />
+        <result property="comLogo"    column="com_logo"    />
+        <result property="comPicture"    column="com_picture"    />
+        <result property="industry"    column="industry"    />
+        <result property="totalIso"    column="total_iso"    />
+    </resultMap>
+
     <sql id="selectDevCompanyVo">
         select company_id, com_name, create_time, com_address, com_type, com_logo, com_picture,industry,total_iso from dev_company
     </sql>
@@ -46,6 +58,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDevCompanyById" parameterType="Integer" resultMap="DevCompanyResult">
         <include refid="selectDevCompanyVo"/>
         where company_id = #{companyId}
+    </select>
+
+    <!--交互使用-->
+    <select id="selectDevCompanyById2" parameterType="Integer" resultMap="DevCompanyResult1">
+        select * from dev_company  where company_id = #{companyId}
     </select>
 
     <insert id="insertDevCompany" parameterType="DevCompany" useGeneratedKeys="true" keyProperty="companyId">

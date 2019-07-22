@@ -110,3 +110,5 @@ ADD COLUMN `grade` INT NULL DEFAULT 1 COMMENT '用户等级' AFTER `sign`;
 ALTER TABLE `devicemanage`.`dev_list`
 ADD COLUMN `scan` INT NULL DEFAULT 0 COMMENT '标记是否扫码' AFTER `config_status`;
 
+ALTER TABLE `devicemanage`.`dev_list`
+CHANGE COLUMN `device_id` `device_id` VARCHAR(12) NULL DEFAULT NULL ;

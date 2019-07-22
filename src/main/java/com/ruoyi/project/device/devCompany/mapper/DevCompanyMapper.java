@@ -19,7 +19,14 @@ public interface DevCompanyMapper
      * @return 公司信息
      */
 	public DevCompany selectDevCompanyById(Integer id);
-	
+
+	/**
+	 * 交互使用
+	 * @param id
+	 * @return
+	 */
+	public DevCompany selectDevCompanyById2(Integer id);
+
 	/**
      * 查询公司列表
      * 

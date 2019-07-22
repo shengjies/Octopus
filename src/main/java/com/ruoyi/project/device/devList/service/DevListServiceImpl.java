@@ -99,25 +99,25 @@ public class DevListServiceImpl implements IDevListService
 				continue;
 			}
 			devList = new DevList();
-			devList.setDeviceId(devId);
+			devList.setDeviceId(devModel.getModelName()+devId);
 			devList.setDeviceStatus(1);
 			devList.setDefId(0);
 			devList.setDeviceUploadTime(15);
 			devList.setDevModelId(devModelId);
 			devList.setCreateDate(new Date());
-			DevList dev = devListMapper.selectDevListByDevId(devId);
+			DevList dev = devListMapper.selectDevListByDevId(devList.getDeviceId());
 			if(dev == null){
 				devListMapper.insertDevList(devList);
-				for(int j =1;j <=4;j++){
-					devIo = new DevIo();
-					devIo.setDevId(devList.getId());
-					devIo.setIoOrder(j);
-					devIo.setIsSign(0);
-					devIo.setLineId(0);
-					devIo.setRemark("上传数据");
-					devIo.setCreateTime(new Date());
-					devIoMapper.insertDevIo(devIo);
-				}
+//				for(int j =1;j <=4;j++){
+//					devIo = new DevIo();
+//					devIo.setDevId(devList.getId());
+//					devIo.setIoOrder(j);
+//					devIo.setIsSign(0);
+//					devIo.setLineId(0);
+//					devIo.setRemark("上传数据");
+//					devIo.setCreateTime(new Date());
+//					devIoMapper.insertDevIo(devIo);
+//				}
 				i++;
 			}
 		}

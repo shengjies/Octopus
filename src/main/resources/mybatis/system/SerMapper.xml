@@ -22,6 +22,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <result property="inName" column="inName"/>
         </association>
     </resultMap>
+
+    <resultMap type="Ser" id="SerResult1">
+        <result property="id"    column="id"    />
+        <result property="sname"    column="sname"    />
+        <result property="sip"    column="sip"    />
+        <result property="spath"    column="spath"    />
+        <result property="suserNum"    column="suser_num"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="maxNum"    column="max_num"    />
+        <result property="spwd"    column="spwd"    />
+        <result property="pwd"    column="pwd"    />
+        <result property="s_status"    column="s_status"    />
+        <result property="s_type"    column="s_type"    />
+        <result property="inId"    column="in_id"    />
+    </resultMap>
 	
 	<sql id="selectSerVo">
         select id, sname, sip, spath, suser_num, remark, create_time, max_num, spwd, pwd,s_status,s_type,in_id from tab_ser
@@ -51,6 +67,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectSerById" parameterType="Integer" resultMap="SerResult">
         <include refid="selectSerVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectSerById2" parameterType="Integer" resultMap="SerResult1">
+       select * from tab_ser  where id = #{id}
     </select>
         
     <insert id="insertSer" parameterType="Ser" useGeneratedKeys="true" keyProperty="id">

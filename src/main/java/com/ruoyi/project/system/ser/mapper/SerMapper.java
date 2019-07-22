@@ -20,7 +20,14 @@ public interface SerMapper
      * @return 服务器管理信息
      */
 	public Ser selectSerById(Integer id);
-	
+
+	/**
+	 * 交付使用
+	 * @param id
+	 * @return
+	 */
+	public Ser selectSerById2(Integer id);
+
 	/**
      * 查询服务器管理列表
      * 
