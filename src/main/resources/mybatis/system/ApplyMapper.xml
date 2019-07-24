@@ -108,7 +108,7 @@
     </select>
     <!--查询审核人名称-->
     <select id="selectExaminePeopleName" resultType="java.lang.String">
-        SELECT user_name FROM devicemanage.sys_user where user_id = #{examine_people};
+        SELECT user_name FROM sys_user where user_id = #{examine_people};
     </select>
     <!--查询服务器名称-->
     <select id="selectServiceName" resultType="java.lang.String">

@@ -50,10 +50,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDevModel" resultType="java.lang.String">
-        SELECT model_name FROM devicemanage.dev_model where id =#{dev_model_id}
+        SELECT model_name FROM dev_model where id =#{dev_model_id}
     </select>
     <select id="selectDevComName" resultType="java.lang.String">
-        SELECT com_name FROM devicemanage.dev_company where company_id=#{company_id};
+        SELECT com_name FROM dev_company where company_id=#{company_id};
     </select>
     <select id="selectDevListById" parameterType="Integer" resultMap="DevListResult">
         <include refid="selectDevListVo"/>
@@ -108,6 +108,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateDevListByDevCode" parameterType="DevList">
+        update dev_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceStatus != null  ">device_status = #{deviceStatus},</if>
+            <if test="configStatus != null  ">config_status = #{configStatus},</if>
+            <if test="deviceName != null  and deviceName != ''  ">device_name = #{deviceName},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="configDate != null  ">config_date = #{configDate},</if>
+        </trim>
+        where device_id = #{deviceId}
+    </update>
+
 	<update id="deleteDevListById" parameterType="Integer">
         update  dev_list set def_id =1  where id = #{id}
     </update>
@@ -148,7 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectAll" resultType="com.ruoyi.project.device.devList.domain.DevList" >
-        SELECT id,device_name as deviceName  FROM devicemanage.dev_list where device_status = 1 and  company_id =#{company_id};
+        SELECT id,device_name as deviceName  FROM dev_list where device_status = 1 and  company_id =#{company_id};
     </select>
 
     <!--根据硬件编号查询对应的硬件是否存在-->

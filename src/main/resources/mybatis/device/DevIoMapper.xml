@@ -98,7 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!--根据硬件id查询对应的顺序的IO数据-->
     <select id="selectDevIoByDevIdAndOrder" resultMap="DevIoResult">
-        SELECT * FROM devicemanage.dev_io where dev_id = #{dev_id} and io_order = #{order_id} limit 1
+        SELECT * FROM dev_io where dev_id = #{dev_id} and io_order = #{order_id} limit 1
     </select>
 
 

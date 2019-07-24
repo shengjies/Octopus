@@ -106,4 +106,11 @@ public interface DevListMapper
 	 * @return
 	 */
 	int devScan(@Param("id")int id);
+
+	/**
+	 * api更新硬件
+	 * @param devList
+	 * @return 结果
+	 */
+	int updateDevListByDevCode(DevList devList);
 }

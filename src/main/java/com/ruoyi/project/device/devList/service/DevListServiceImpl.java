@@ -240,7 +240,9 @@ public class DevListServiceImpl implements IDevListService
 	 */
 	@Override
 	public int apiAddSave(DevList devList) {
-		return devListMapper.addSave(devList);
+		devListMapper.addSave(devList);
+		Integer devId = devListMapper.selectDevListByCode(devList.getDeviceId()).getId();
+		return devId;
 	}
 
 	/**
