@@ -100,7 +100,7 @@ public class AjaxResult extends HashMap<String, Object>
         json.put("data", data);
         return json;
     }
-    public static AjaxResult login(String path,String token,int sign,String u,String ip,int q,String name,String email){
+    public static AjaxResult login(String path,String token,int sign,String u,String ip,int q,int uid,String name,String email){
         AjaxResult register = new AjaxResult();
         register.put("path", path);
         register.put("u", u);
@@ -109,6 +109,7 @@ public class AjaxResult extends HashMap<String, Object>
         register.put("sign", sign);
         register.put("ip", ip);
         register.put("q", q);
+        register.put("uid", uid);
         register.put("name", name);
         register.put("email", email);
         return register;

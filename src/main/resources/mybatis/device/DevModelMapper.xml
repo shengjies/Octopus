@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertDevModel" parameterType="DevModel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `devicemanage`.`dev_model`(`model_name`,`def_id`,`create_time`)
+        INSERT INTO `dev_model`(`model_name`,`def_id`,`create_time`)
         VALUES(#{modelName},0,now());
     </insert>
 	 

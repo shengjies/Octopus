@@ -146,7 +146,7 @@ public class LoginService
         Map<String,Object> map = new HashMap<>();
         map.put(JwtUtil.CLAIM_KEY_USER, JSON.toJSONString(user));
         return AjaxResult.login(path,JwtUtil.getToken(map),Integer.parseInt(user.getTag()),
-                login.getUsername(),ip,user.getCompanyId() == -1?0:1,user.getUserName(),user.getEmail());
+                login.getUsername(),ip,user.getCompanyId() == -1?0:1,user.getUserId().intValue(),user.getUserName(),user.getEmail());
     }
 
     private boolean maybeEmail(String username)
