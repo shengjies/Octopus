@@ -139,11 +139,10 @@ public class LoginService
             }
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(login.getUsername(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
-        user.setPassword(null);
         user.setDevType(login.getDevType());
         user.setDevCode(login.getDevCode());
         recordLoginInfo(user);
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>(16);
         map.put(JwtUtil.CLAIM_KEY_USER, JSON.toJSONString(user));
         return AjaxResult.login(path,JwtUtil.getToken(map),Integer.parseInt(user.getTag()),
                 login.getUsername(),ip,user.getCompanyId() == -1?0:1,user.getUserId().intValue(),user.getUserName(),user.getEmail());

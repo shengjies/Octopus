@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author ruoyi
  */
-@Component
+// @Component
 public class UserRealm extends AuthorizingRealm
 {
     private static final Logger log = LoggerFactory.getLogger(UserRealm.class);

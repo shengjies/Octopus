@@ -138,24 +138,24 @@
                             <th>工单状态</th>
                         </tr>
                         </thead>
-                        <tbody th:with="allWorkerToday = ${@workOrder.selectWorkOrderAllToday(#httpServletRequest.getCookies())}">
-                        <!--循环列表-->
-                        <tr th:each="worker : ${allWorkerToday}">
-                            <td th:text="${worker.productionLine.lineName}"></td>
-                            <td th:text="${worker.workorderNumber}"></td>
-                            <td th:text="${worker.productCode}"></td>
-                            <td th:text="${worker.productName}"></td>
-                            <td th:text="${worker.productNumber}"></td>
-                            <li th:if="${worker.workorderStatus} == 0">
-                                <td><span class="label label-success">未开始</span>&nbsp;</td>
-                            </li>
-                            <li th:if="${worker.workorderStatus} == 1">
-                                <td><span class="label label-primary">进行中</span>&nbsp;</td>
-                            </li>
-                            <li th:if="${worker.workorderStatus} == 2">
-                                <td><span class="label label-danger">已完成</span>&nbsp;</td>
-                            </li>
-                        </tr>
+                        <!--<tbody th:with="allWorkerToday = ${@workOrder.selectWorkOrderAllToday(#httpServletRequest.getCookies())}">-->
+                        <!--&lt;!&ndash;循环列表&ndash;&gt;-->
+                        <!--<tr th:each="worker : ${allWorkerToday}">-->
+                            <!--<td th:text="${worker.productionLine.lineName}"></td>-->
+                            <!--<td th:text="${worker.workorderNumber}"></td>-->
+                            <!--<td th:text="${worker.productCode}"></td>-->
+                            <!--<td th:text="${worker.productName}"></td>-->
+                            <!--<td th:text="${worker.productNumber}"></td>-->
+                            <!--<li th:if="${worker.workorderStatus} == 0">-->
+                                <!--<td><span class="label label-success">未开始</span>&nbsp;</td>-->
+                            <!--</li>-->
+                            <!--<li th:if="${worker.workorderStatus} == 1">-->
+                                <!--<td><span class="label label-primary">进行中</span>&nbsp;</td>-->
+                            <!--</li>-->
+                            <!--<li th:if="${worker.workorderStatus} == 2">-->
+                                <!--<td><span class="label label-danger">已完成</span>&nbsp;</td>-->
+                            <!--</li>-->
+                        <!--</tr>-->
                         </tbody>
                         <tfoot>
                         <tr>
